@@ -1,0 +1,30 @@
+server:
+  port: 8088
+
+spring:
+  datasource:
+#    url: jdbc:mysql://localhost:3306/bank
+#    username: root1
+#    password: admin
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true # This enables the H2 console for easy database management (optional)
+      path: /h2-console # This sets the path for accessing the H2 console (optional)
+    tcpServer:
+      port: 9092 # This sets the TCP port for remote access to the H2 database (optional)
+
+
+
+twilio:
+  account_sid: ${twilio.account_sid1}
+  auth_token: ${twilio.auth_token1}
+

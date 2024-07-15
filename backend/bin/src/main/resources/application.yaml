@@ -1,0 +1,19 @@
+server:
+  port: 8088
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/bank
+    username: root1
+    password: admin
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+
+
+twilio:
+  account_sid: ${twilio.account_sid1}
+  auth_token: ${twilio.auth_token1}
