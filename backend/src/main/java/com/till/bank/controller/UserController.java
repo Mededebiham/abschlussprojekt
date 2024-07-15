@@ -35,21 +35,7 @@ public class UserController {
         User1 user = userService.getUserById(id);
         return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
-    @CrossOrigin(origins = "*")
-    @PostMapping("/twillio")
-    public ResponseEntity<String> getSecurityCode(@RequestBody String phone) {
-        ResponseEntity<String> response = userService.getSecurityCode(phone);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            // Twilio message sent successfully
-            String responseBody = response.getBody();
-            String[] parts = responseBody.split("=");
-            String messageBody = parts[1]; // Extract the part after the "=" sign
-            return ResponseEntity.ok("Security code sent successfully= " + messageBody);
-        } else {
-            // Error occurred in sending the Twilio message
-            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        }
-    }
+
 
     @CrossOrigin(origins = "*")
     @PostMapping

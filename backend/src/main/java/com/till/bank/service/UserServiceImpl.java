@@ -30,8 +30,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONObject;
 
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
+
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
@@ -161,35 +160,7 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-    @Override
-    public ResponseEntity<String> getSecurityCode(String phone) {
 
-
-        String accountSid = env.getProperty("twilio.account_sid");
-        String authToken = env.getProperty("twilio.auth_token");
-        Twilio.init(accountSid, authToken);
-        // Generate a random 4-digit code
-        Random random = new Random();
-        int code = random.nextInt(10000); // Generates a random number between 0 (inclusive) and 10000 (exclusive)
-        // Create the message body with the generated code
-        String messageBody = "Your verification code is: " + String.format("%04d", code);
-
-
-        // Create and send the message
-        try {
-            Message message = Message.creator(
-                            new com.twilio.type.PhoneNumber(phone), // Use the provided phone number
-                            new com.twilio.type.PhoneNumber("+12135893113"),
-                            messageBody)
-                    .create();
-
-            // Handle the successful response
-            return ResponseEntity.ok("Message sent successfull= " + messageBody);
-        } catch (Exception e) {
-            // Handle any exceptions
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send message: " + e.getMessage());
-        }
-    }
     public String generateAccountNumber() {
         Random random = new Random();
         int accountNumber = random.nextInt(900000) + 100000; // Generates a random number between 100000 and 999999
