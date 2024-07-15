@@ -17,5 +17,4 @@ public interface UserService {
     User1 login(LoginRequest loginRequest);
     void deleteUser(Long id);
 
-    ResponseEntity<String> getSecurityCode(String phone);
 }
