@@ -133,7 +133,7 @@ const ClientProfil: React.FC = ({ }) => {
                     <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleTransfers}>Alle Umsätze</button>
 
                     {/* New Payout Section */}
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={toggleNewPayout}>Neue Überweisung</button>
+                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={toggleNewPayout}>✚ Überweisung</button>
                 </div>
             </div>
             <div className="ml-5"> Ihre Kontoübersicht: {bankAccount?.balance}</div>
@@ -160,7 +160,7 @@ const ClientProfil: React.FC = ({ }) => {
                 )}
                 {showNewPayout && (
                     <div>
-                        <h3>Neue Überweisung</h3>
+                        <h3>Überweisung</h3>
                         <NewPayout />
                     </div>
                 )}

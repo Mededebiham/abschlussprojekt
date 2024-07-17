@@ -149,9 +149,9 @@ const DepositsHistory: React.FC<DepositsHistoryProps> = ({ transfers }) => {
                 </table>
             </div>
             <div className="flex justify-center">
-                <button onClick={prevPage} disabled={currentPage === 1} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">↩ Zurück</button>
+                <button onClick={prevPage} disabled={currentPage === 1} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">❮ Zurück</button>
                 <span>{currentPage}/{totalPages}</span>
-                <button onClick={nextPage} disabled={currentPage === totalPages} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Weiter ↪</button>
+                <button onClick={nextPage} disabled={currentPage === totalPages} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Weiter ❯</button>
             </div>
         </div>
     );

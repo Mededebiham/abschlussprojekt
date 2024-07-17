@@ -182,7 +182,7 @@ const NewPayout: React.FC = () => {
   //     if (code) {
   //       setCodeRandom(code[0]); // Set the code in state as a string
   //     }
-  //   } catch (error) {
+  //    catch (error) {
   //     console.error('Authentication failed:', error);
   //   }
   // };
