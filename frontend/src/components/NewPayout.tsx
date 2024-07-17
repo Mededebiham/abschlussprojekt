@@ -218,13 +218,13 @@ const NewPayout: React.FC = () => {
     <div className="container">
       {/* Input field 1 */}
       <div className={`input ${showInput1 ? 'show' : ''}`}>
-        <p className="text-white font-bold">Who do you want to send the money to?</p>
-        <input type="text" placeholder="Type your name here" name="recipient" value={recipientNotImportTheName} onChange={(e) => setRecipientNotImportTheName(e.target.value)} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-        <p className="text-white font-bold">IBAN number</p>
-        <input type="text" placeholder="Type the IBAN here" name="iban" value={bankData.iban} onChange={handleBankChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-        <p className="text-white font-bold">Or Bank id with account number</p>
-        <input type="text" placeholder="Type here" name="bankId" value={bankData.bankId} onChange={handleBankChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-        <input type="text" placeholder="Type here" name="accountNumber" value={bankData.accountNumber} onChange={handleBankChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <p className="text-white font-bold">Empfänger</p>
+        <input type="text" placeholder="Empfänger" name="recipient" value={recipientNotImportTheName} onChange={(e) => setRecipientNotImportTheName(e.target.value)} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <p className="text-white font-bold">IBAN</p>
+        <input type="text" placeholder="IBAN" name="iban" value={bankData.iban} onChange={handleBankChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <p className="text-white font-bold">Oder BIC und Kontonummer</p>
+        <input type="text" placeholder="BIC" name="bankId" value={bankData.bankId} onChange={handleBankChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <input type="text" placeholder="Kontonummer" name="accountNumber" value={bankData.accountNumber} onChange={handleBankChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
 
 
       </div>
@@ -256,7 +256,7 @@ const NewPayout: React.FC = () => {
 
       {/* Button to toggle input fields */}
       {showInput1 &&
-        <button disabled={input1Disabled} onClick={handleBankAccountClick}>Verify the account</button>
+        <button disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
       }
       {(showInput5 === false && showInput6 === false && showInput4 === false && showInput1 === false) &&
         <button onClick={handleButtonClick}>Next</button>
@@ -265,7 +265,7 @@ const NewPayout: React.FC = () => {
         <button onClick={handleSendSms}>Send me an sms</button>
       }
       {showInput5 &&
-        <button disabled={input6Disabled} onClick={handleButtonClick}>Verify</button>
+        <button disabled={input6Disabled} onClick={handleButtonClick}>Verifizieren</button>
       }*/}
     </div>
   );
