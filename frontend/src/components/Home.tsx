@@ -75,7 +75,7 @@ const Home = () => {
   };
 
   return (
-      <div className="h-screen flex">
+      <div className="h-screen flex bg-blue-50">
         <div className="w-full max-w-screen-xl px-6">
           <Slider {...settings}>
             {posts.map((post, index) => (
