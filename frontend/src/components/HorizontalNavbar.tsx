@@ -27,21 +27,24 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ isLoggedIn, user, l
       <div className="flex items-center">
         <img src="/piggy-bank.png" alt="Piggy Bank Icon" className="w-10 h-10 mr-4 ml-1" />
       </div>
-      <ul className="flex list-none m-0 p-0">
-        {user !== null && <li className="mx-10 text-white">Welcome {user?.username}!</li>}
-        <li className="mr-5 text-white"><a href="/">Home</a></li>
-        <li className="mx-10 text-white"><a href="/About">About</a></li>
-        {isLoggedIn ? (
-          <>
-            {user?.role === "user" ? (<li className="mx-10 text-white"><a href="/ClientProfil">Profile</a></li>) :
-              (<li className="mx-10 text-white"><a href="/AdminProfil">Profile</a></li>)
-            }
-            <li className="mx-10 text-white" onClick={handleLogout}><a href="#">Logout</a></li>
-          </>
-        ) : (
-          <li className="mx-10 text-white"><a href="/SignIn">SignIn</a></li>
-        )}
-      </ul>
+        <ul className="flex list-none m-0 p-0">
+            {user !== null && <li className="mx-10 text-white">Willkommen {user?.username}!</li>}
+            <li className="mr-5 text-white"><a href="/">Home</a></li>
+            <li className="mx-10 text-white"><a href="/About">Über uns</a></li>
+            <li className="mx-10 text-white"><a href="/Produkt">Unsere Produkt</a></li>
+            <li className="mx-10 text-white"><a href="/Register">Registrieren</a></li>
+            {isLoggedIn ? (
+                <>
+                    {user?.role === "user" ? (
+                            <li className="mx-10 text-white"><a href="/ClientProfil">Profile</a></li>) :
+                        (<li className="mx-10 text-white"><a href="/AdminProfil">Profile</a></li>)
+                    }
+                    <li className="mx-10 text-white" onClick={handleLogout}><a href="#">Abmelden</a></li>
+                </>
+            ) : (
+                <li className="mx-10 text-white"><a href="/SignIn">Anmelden</a></li>
+            )}
+        </ul>
     </nav>
   );
 }

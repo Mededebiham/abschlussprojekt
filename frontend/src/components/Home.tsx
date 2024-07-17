@@ -10,7 +10,7 @@ const Home: React.FC = () => {
  
   return (
     <div className="h-screen  items-center">
-      <h2 className="text-white font-bold text-center ml-20 mt-20">Welcome !</h2>
+      <h2 className="text-white font-bold text-center ml-20 mt-20">Willkommen  !</h2>
     </div>
   );
 }
