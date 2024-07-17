@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 interface RegisterFormProps {
-  onSubmit: (formData: RegisterFormData) => void;
+  onSubmit: (formData: { balance: number; userDto: RegisterFormData }) => void;
 }
 
 interface RegisterFormData {
@@ -34,6 +34,7 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       country: '',
     },
   });
+  const [balance,setBalance]=useState(0);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [isPasswordsMatch, setIsPasswordsMatch] = useState(true);
@@ -45,6 +46,11 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       [name]: value,
     });
   };
+
+  const handleBalanceChange = (e:  React.ChangeEvent<HTMLInputElement>) => {
+    setBalance(Number(e.target.value));
+  };
+
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -87,68 +93,84 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(formData);
+    const registerUserForm={userDto:formData, balance:balance}
+    console.log(registerUserForm);
+    onSubmit(registerUserForm);
   };
+
 
   return (
     <div className="w-full max-w-xs bg-transparent">
       <form onSubmit={handleSubmit} className="bg-white bg-opacity-25 shadow-md rounded px-8 pt-6 pb-8 ">
-        <input type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
-        <input type="text" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+        <input type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange}
+               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+        <input type="text" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange}
+               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
 
-        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
-       
-        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-       
+        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange}
+               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
+        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange}
+               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
         <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={handleChangeConfirmPassword}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={handleChangeConfirmPassword}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         <input
-          type="tel"
-          name="phoneNumber"
-          placeholder="Phone Number"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="tel"
+            name="phoneNumber"
+            placeholder="Phone Number"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         <input
-          type="text"
-          name="street"
-          placeholder="Street"
-          value={formData.address.street}
-          onChange={handleAddressChange}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="text"
+            name="street"
+            placeholder="Street"
+            value={formData.address.street}
+            onChange={handleAddressChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         <input
-          type="text"
-          name="streetNumber"
-          placeholder="Street Number"
-          value={formData.address.streetNumber}
-          onChange={handleAddressChange}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
-        <input type="text" name="city" placeholder="City" value={formData.address.city} onChange={handleAddressChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="text"
+            name="streetNumber"
+            placeholder="Street Number"
+            value={formData.address.streetNumber}
+            onChange={handleAddressChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+        <input type="text" name="city" placeholder="City" value={formData.address.city} onChange={handleAddressChange}
+               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         <input
-          type="text"
-          name="zipCode"
-          placeholder="Zip Code"
-          value={formData.address.zipCode}
-          onChange={handleAddressChange}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="text"
+            name="zipCode"
+            placeholder="Zip Code"
+            value={formData.address.zipCode}
+            onChange={handleAddressChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         <input
-          type="text"
-          name="country"
-          placeholder="Country"
-          value={formData.address.country}
-          onChange={handleAddressChange}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="text"
+            name="country"
+            placeholder="Country"
+            value={formData.address.country}
+            onChange={handleAddressChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+        <input
+            type="number"
+            name="balance"
+            placeholder="Your deposit value"
+            value={balance}
+            onChange={handleBalanceChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
         <button
-          type="submit"
-          disabled={isButtonDisabled}
-          className={`bg-red-500 hover:bg-red-700 text-white font-bold my-2 py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
-            isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+            type="submit"
+            disabled={isButtonDisabled}
+            className={`bg-red-500 hover:bg-red-700 text-white font-bold my-2 py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
+                isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
         >
           Register
         </button>

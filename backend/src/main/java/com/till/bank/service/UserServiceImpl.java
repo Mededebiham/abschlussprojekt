@@ -2,6 +2,7 @@ package com.till.bank.service;
 
 
 import com.till.bank.dto.LoginRequest;
+import com.till.bank.dto.UserCreationRequest;
 import com.till.bank.dto.UserDto;
 import com.till.bank.entity.Address;
 import com.till.bank.entity.BankAccount;
@@ -107,13 +108,14 @@ public class UserServiceImpl implements UserService {
 //        return null;
     }
     @Override
-    public User1 createUser(UserDto userdto) {
-        if (userRepository.existsByEmail(userdto.getEmail())) {
-            throw new EmailAlreadyExistsException("Email already exists: " + userdto.getEmail());
+    public UserDto createUser(UserCreationRequest userCreationRequest) {
+        log.info(userCreationRequest.toString());
+        if (userRepository.existsByEmail(userCreationRequest.getUserDto().getEmail())) {
+            throw new EmailAlreadyExistsException("Email already exists: " + userCreationRequest.getUserDto().getEmail());
         }
-        userdto.setRole("user");
-        Address address = new Address(userdto.getAddress().getStreet(), userdto.getAddress().getStreetNumber(),
-                userdto.getAddress().getCity(), userdto.getAddress().getZipCode(), userdto.getAddress().getCountry());
+        userCreationRequest.getUserDto().setRole("user");
+        Address address = new Address(userCreationRequest.getUserDto().getAddress().getStreet(), userCreationRequest.getUserDto().getAddress().getStreetNumber(),
+                userCreationRequest.getUserDto().getAddress().getCity(), userCreationRequest.getUserDto().getAddress().getZipCode(), userCreationRequest.getUserDto().getAddress().getCountry());
 
         // Save the Address entity
         Address savedAddress = addressRepository.save(address);
@@ -121,28 +123,33 @@ public class UserServiceImpl implements UserService {
         // Generate a six-digit account number
         String accountNumber = generateAccountNumber();
         //Generate the IBAN number
-        String iban = generateIBAN(userdto.getAddress().getZipCode(),accountNumber,userdto.getAddress().getCountry());
+        String iban = generateIBAN(userCreationRequest.getUserDto().getAddress().getZipCode(),accountNumber,userCreationRequest.getUserDto().getAddress().getCountry());
         BankAccount bankAccount=new BankAccount(); //  BankAccount(userdto.getAddress().getZipCode(),accountNumber,iban ,null ,0.0);
         BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
 
 
-        User1 user= new User1(userdto.getFirstName(),userdto.getLastName(),userdto.getEmail(),userdto.getPassword(),userdto.getPhoneNumber(), userdto.getRole(), userdto.getAddress(),savedBankAccount);
+        //User1 user= this.convertUserDtoToUser(userCreationRequest.getUserDto(),savedBankAccount);
+        User1 user= new User1(userCreationRequest.getUserDto().getFirstName(),userCreationRequest.getUserDto().getLastName(),
+                userCreationRequest.getUserDto().getEmail(),userCreationRequest.getUserDto().getPassword(),
+                userCreationRequest.getUserDto().getPhoneNumber(), userCreationRequest.getUserDto().getRole(),
+                userCreationRequest.getUserDto().getAddress(),savedBankAccount);
 //        user.setPassword(bCryptPasswordEncoder.encode(userdto.getPassword()));
         User1 savedUser = userRepository.save(user);
 
         savedBankAccount.setUser(savedUser);
-        savedBankAccount.setBankId(userdto.getAddress().getZipCode());
+        savedBankAccount.setBankId(userCreationRequest.getUserDto().getAddress().getZipCode());
         savedBankAccount.setAccountNumber(accountNumber);
         savedBankAccount.setIBAN(iban);
-        savedBankAccount.setBalance(0.0);
+        savedBankAccount.setBalance(userCreationRequest.getBalance());
         // Update the bank account entity with the user's ID
         savedBankAccount.setUser(savedUser);
 
         // Save the updated bank account entity
         bankAccountRepository.save(savedBankAccount);
 
+        //now create a new registrequest in order for the admin to see what he has to approve
 
-        return savedUser;
+        return this.convertUserToUserDto(savedUser);
     }
 
     @Override
@@ -210,4 +217,25 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    public User1 convertUserDtoToUser(UserDto userDto,BankAccount bankAccount) {
+        User1 user= new User1(userDto.getFirstName(),userDto.getLastName(),
+                userDto.getEmail(),userDto.getPassword(),
+                userDto.getPhoneNumber(), userDto.getRole(),
+                userDto.getAddress(), bankAccount);
+        return user;
+    }
+
+    public UserDto convertUserToUserDto(User1 user) {
+        UserDto userDto= new UserDto();
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+        userDto.setEmail(user.getEmail());
+        userDto.setPassword(user.getPassword());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+        userDto.setRole(user.getRole());
+        userDto.setAddress(user.getAddress());
+        userDto.setBankAccount(user.getBankAccount());
+        userDto.setConfirmedByAdmin(user.isConfirmedByAdmin());
+        return userDto;
+    }
 }

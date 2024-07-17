@@ -3,6 +3,7 @@ package com.till.bank.controller;
 
 
 import com.till.bank.dto.LoginRequest;
+import com.till.bank.dto.UserCreationRequest;
 import com.till.bank.dto.UserDto;
 import com.till.bank.entity.User1;
 import com.till.bank.service.UserService;
@@ -37,11 +38,13 @@ public class UserController {
     }
 
 
+    //changed return type to userdto
     @CrossOrigin(origins = "*")
     @PostMapping
-    public ResponseEntity<User1> createUser(@RequestBody UserDto userdto) {
-        return new ResponseEntity<>(userService.createUser(userdto), HttpStatus.CREATED);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserCreationRequest userCreationRequest) {
+        return new ResponseEntity<>(userService.createUser(userCreationRequest), HttpStatus.CREATED);
     }
+
     @PostMapping("/login")
     @CrossOrigin(origins = "*")
     public ResponseEntity<User1> loginUser(@RequestBody LoginRequest loginRequest) {
