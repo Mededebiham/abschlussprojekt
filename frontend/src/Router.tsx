@@ -20,7 +20,7 @@ const AppRouter: React.FC = () => {
         <Route path="/ClientProfil" element={<ClientProfil />} />
         <Route path="/AdminProfil" element={<AdminProfil />} />
         <Route path="/NewPayout" element={<NewPayout />} />
-        <Route path="/Register" element={<Register />} />
+        <Route path="/Register1" element={<Register />} />
         <Route path="/Produkt" element={<Produkt />} />
       </Routes>
     </Router>

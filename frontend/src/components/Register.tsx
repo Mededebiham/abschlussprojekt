@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 interface RegisterFormProps {
-  onSubmit?: (formData: RegisterFormData) => void;
+  onSubmit: (formData: RegisterFormData) => void;
 }
 
 interface RegisterFormData {
@@ -87,9 +87,10 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (onSubmit) {
+
       onSubmit(formData);
-    }
+
+
   };
 
   return (
