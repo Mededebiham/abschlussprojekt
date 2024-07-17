@@ -46,7 +46,8 @@ function App() {
           {/* Pass the logout function as a prop */}
           <HorizontalNavbar isLoggedIn={isLoggedIn} user={user} logout={logout} />
         </div>
-        <div style={{ display: 'flex' ,backgroundImage: 'linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(/background1.jpg) '  }}>
+    {/*  <div style={{ display: 'flex' ,backgroundImage: 'linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(/background1.jpg) '  }}>*/}
+        <div style={{ display: 'flex'  }}>
           <VerticalNavbar />
           <Router /> 
         </div>
