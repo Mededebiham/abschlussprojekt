@@ -23,8 +23,3 @@ spring:
       port: 9092 # This sets the TCP port for remote access to the H2 database (optional)
 
 
-
-twilio:
-  account_sid: ${twilio.account_sid1}
-  auth_token: ${twilio.auth_token1}
-
