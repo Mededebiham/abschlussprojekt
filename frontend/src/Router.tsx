@@ -8,6 +8,8 @@ import ClientProfil from "./components/ClientProfil"
 import NewPayout from "./components/NewPayout"
 import About from "./components/About"
 import AccountsPage from "./pages/AccountsPage/AccountsPage";
+import Register from "./components/Register";
+import Produkt from "./components/Produkt";
 
 const AppRouter: React.FC = () => {
   return (
@@ -21,6 +23,8 @@ const AppRouter: React.FC = () => {
         <Route path="/NewPayout" element={<NewPayout />} />
         <Route path="/accounts" element={<AccountsPage />} />
 
+        <Route path="/Register" element={<Register />} />
+        <Route path="/Produkt" element={<Produkt />} />
       </Routes>
     </Router>
   );

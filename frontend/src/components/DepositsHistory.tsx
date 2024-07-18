@@ -86,40 +86,40 @@ const DepositsHistory: React.FC<DepositsHistoryProps> = ({ transfers }) => {
             <div className="flex mt-5">
                     <div className="my-5">
                         {/* All Users */}
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2 mb-5" onClick={sortByDateAsc}>Sort By Date Ascending</button>
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2 mb-5" onClick={sortByDateAsc}>Datum (aufsteigend)</button>
                         {/* All Transfers*/}
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2 mt-5" onClick={sortByDateDes}>Sort By Date Descending</button>
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2 mt-5" onClick={sortBySum}>Sort By Sum</button>
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2 mt-5" onClick={notAuthorized}>Not authorized</button>
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2 mt-5" onClick={onlyAuthorized}>Authorized</button>
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2 mt-5" onClick={sortByDateDes}>Datum (absteigend)</button>
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2 mt-5" onClick={sortBySum}>Betrag</button>
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2 mt-5" onClick={notAuthorized}>Nicht autorisiert</button>
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2 mt-5" onClick={onlyAuthorized}>Autorisiert</button>
 
                     </div>
                  </div>
                  <input
                         type="text"
                         className='my-4 ml-4 rounded text-black'
-                        placeholder="Search transfers..."
+                        placeholder="Umsätze durchsuchen"
                         value={searchQueryTransfer}
                         onChange={(e) => setSearchQueryTransfer(e.target.value)}
                     />
-                <button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mx-4 mt-5" onClick={resetSearch}>Reset</button>
+                <button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mx-4 mt-5" onClick={resetSearch}>Zurücksetzen</button>
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
                         <tr>
                             <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                Recipient
+                                Empfänger
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Sender
+                                Überweisender
                             </th>
                             <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                Date
+                                Datum
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Reason of Transfer
+                                Verwendungszweck
                             </th>
                             <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                Sum
+                                Betrag
                             </th>
                          
                         </tr>
@@ -149,9 +149,9 @@ const DepositsHistory: React.FC<DepositsHistoryProps> = ({ transfers }) => {
                 </table>
             </div>
             <div className="flex justify-center">
-                <button onClick={prevPage} disabled={currentPage === 1} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Previous</button>
+                <button onClick={prevPage} disabled={currentPage === 1} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">❮ Zurück</button>
                 <span>{currentPage}/{totalPages}</span>
-                <button onClick={nextPage} disabled={currentPage === totalPages} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Next</button>
+                <button onClick={nextPage} disabled={currentPage === totalPages} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Weiter ❯</button>
             </div>
         </div>
     );

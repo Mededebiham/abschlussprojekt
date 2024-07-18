@@ -123,44 +123,44 @@ const ClientProfil: React.FC = ({ }) => {
 
     return (
         <div className="text-white">
-            <h2 className=" text-white font-bold my-5 ml-5" >Welcome, {user?.username}!</h2>
+            <h2 className=" text-white font-bold my-5 ml-5" >Willkommen, {user?.username}!</h2>
             <div className="flex justify-between mx-5 my-5">
                 <div className="flex mt-5">
                     {/* Button to toggle deposits section visibility */}
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleDeposits}>Show Deposits</button>
+                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleDeposits}>Eingehende Umsätze</button>
                     {/* Button to toggle payouts section visibility */}
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={togglePayouts}>Show Payouts</button>
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleTransfers}>Show All Transfers</button>
+                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={togglePayouts}>Ausgehende Umsätze</button>
+                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleTransfers}>Alle Umsätze</button>
 
                     {/* New Payout Section */}
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={toggleNewPayout}>New Payout</button>
+                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={toggleNewPayout}>✚ Überweisung</button>
                 </div>
             </div>
-            <div className="ml-5"> Your Account balance is as follows: {bankAccount?.balance}</div>
+            <div className="ml-5"> Ihre Kontoübersicht: {bankAccount?.balance}</div>
             {/* Deposits Section */}
             <div className="flex justify-center mx-5 my-5">
                 {showDeposits && (
                     <div>
-                        <h3>Deposits History</h3>
+                        <h3>Eingehende Umsätze</h3>
                         <DepositsHistory transfers={deposits} />
                     </div>
                 )}
                 {/* Payouts Section */}
                 {showPayouts && (
                     <div>
-                        <h3>Payouts History</h3>
+                        <h3>Ausgehende Umsätze</h3>
                         <PayoutsHistory transfers={payouts} />
                     </div>
                 )}
                 {showTransfers && (
                     <div>
-                        <h3>Transfers History</h3>
+                        <h3>Alle Umsätze</h3>
                         <TransfersHistory transfers={transfers} userRole={user?.role} />
                     </div>
                 )}
                 {showNewPayout && (
                     <div>
-                        <h3>New Payout</h3>
+                        <h3>Überweisung</h3>
                         <NewPayout />
                     </div>
                 )}
