@@ -3,14 +3,25 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:3306/finanz_pilot
-    username: root
-    password: root
+    url: jdbc:mariadb://sql7.freesqldatabase.com/sql7720631
+    username: sql7720631
+    password: u9CfQv1x9d
     driver-class-name: org.mariadb.jdbc.Driver
+
+#    url: jdbc:mariadb://localhost:3306/finanz_pilot
+#    username: root
+#    password: root
+#    driver-class-name: org.mariadb.jdbc.Driver
+
+
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
+  h2:
+    console:
+      enabled: true # This enables the H2 console for easy database management (optional)
+      path: /h2-console # This sets the path for accessing the H2 console (optional)
     tcpServer:
       port: 9092 # This sets the TCP port for remote access to the H2 database (optional)
     properties:
