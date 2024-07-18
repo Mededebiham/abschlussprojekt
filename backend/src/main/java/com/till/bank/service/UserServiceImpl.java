@@ -6,6 +6,7 @@ import com.till.bank.dto.UserCreationRequest;
 import com.till.bank.dto.UserDto;
 import com.till.bank.entity.Address;
 import com.till.bank.entity.BankAccount;
+import com.till.bank.entity.RegistRequest;
 import com.till.bank.entity.User1;
 import com.till.bank.error.EmailAlreadyExistsException;
 import com.till.bank.repository.AddressRepository;
@@ -22,6 +23,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -30,6 +32,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONObject;
+import org.springframework.web.client.RestTemplate;
 
 
 @Service
@@ -47,6 +50,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private BankAccountRepository bankAccountRepository;
+
+    @Autowired
+    private RegistRequestService registRequestService;
+
 
     //commented because I had problems with the new version of spring boot 3.2.2 to include security
 //    @Autowired
@@ -148,6 +155,7 @@ public class UserServiceImpl implements UserService {
         bankAccountRepository.save(savedBankAccount);
 
         //now create a new registrequest in order for the admin to see what he has to approve
+        registRequestService.createRegistRequest(new RegistRequest(new Date(),savedUser));
 
         return this.convertUserToUserDto(savedUser);
     }
