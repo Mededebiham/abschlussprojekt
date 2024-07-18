@@ -10,6 +10,7 @@ const AccountCard = ({ account }) => {
                     <strong>Kontotyp:</strong>
                     <p>
                         {account.type}
+
                     </p>
                 </div>
                 <div className="account-detail">
