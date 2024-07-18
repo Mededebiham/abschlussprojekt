@@ -11,6 +11,9 @@ import lombok.Data;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -44,9 +47,9 @@ public class User1 {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bank_account", referencedColumnName = "id")
-    private BankAccount bankAccount;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "bank_account", referencedColumnName = "id")
+    private List<BankAccount> bankAccount;
 
     public User1(String firstName, String lastName, String email, String password, String phoneNumber, String role, Address address,BankAccount bankAccount) {
         this.firstName = firstName;
@@ -56,5 +59,7 @@ public class User1 {
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.address = address;
-        this.bankAccount=bankAccount;}
+        this.bankAccount = new ArrayList<>();
+        this.bankAccount.add(bankAccount);
+       ;}
 }

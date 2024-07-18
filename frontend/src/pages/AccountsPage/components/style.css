@@ -1,17 +1,16 @@
 /* AccountCard.css */
 .account-card {
-    background-color: #333;
+    background-color: #424242;
     color: #fff;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-around;
+    align-items: baseline;
     transition: transform 0.3s, box-shadow 0.3s;
     width: 100%;
-    max-width: 1200px;
-    margin: 20px auto;
+    margin: 10px auto;
 }
 
 .account-card:hover {
@@ -25,7 +24,8 @@
 }
 
 .account-detail {
-    flex: 1;
+
+
 }
 
 .account-balance {

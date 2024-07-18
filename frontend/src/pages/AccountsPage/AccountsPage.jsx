@@ -30,16 +30,17 @@ export const accounts = [
 
 function AccountsPage() {
     return (
-        <div className="accounts-page">
+
             <div className="account-list-container">
                 <h1>Konten</h1>
+                <div className="underline"></div>
                 <div className="account-list">
                     {accounts.map((account, index) => (
-                        <AccountCard key={index} account={account} />
+                        <AccountCard key={index} account={account}/>
                     ))}
                 </div>
             </div>
-        </div>
+
     );
 };
 export default AccountsPage;
