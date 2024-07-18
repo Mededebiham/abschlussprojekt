@@ -9,6 +9,7 @@ import NewPayout from "./components/NewPayout"
 import About from "./components/About"
 import Register from "./components/Register";
 import Produkt from "./components/Produkt";
+import AccountsPage from './pages/AccountsPage/AccountsPage';
 
 const AppRouter: React.FC = () => {
   return (
