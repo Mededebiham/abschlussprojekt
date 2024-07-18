@@ -32,7 +32,7 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ isLoggedIn, user, l
             <li className="mr-5 text-white"><a href="/">Home</a></li>
             <li className="mx-10 text-white"><a href="/About">Über uns</a></li>
             <li className="mx-10 text-white"><a href="/Produkt">Unsere Produkt</a></li>
-            <li className="mx-10 text-white"><a href="/Register">Registrieren</a></li>
+
             {isLoggedIn ? (
                 <>
                     {user?.role === "user" ? (
@@ -42,7 +42,9 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ isLoggedIn, user, l
                     <li className="mx-10 text-white" onClick={handleLogout}><a href="#">Abmelden</a></li>
                 </>
             ) : (
-                <li className="mx-10 text-white"><a href="/SignIn">Anmelden</a></li>
+                <>
+                <li className="mx-10 text-white"><a href="/Register">Registrieren</a></li>
+                <li className="mx-10 text-white"><a href="/SignIn">Anmelden</a></li></>
             )}
         </ul>
     </nav>

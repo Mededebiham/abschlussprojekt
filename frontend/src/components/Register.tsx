@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import axios from "axios";
+import {User} from "../store/types";
+import Cookies from "js-cookie";
+import { login, LoginAction  } from '../store/reducers';
+import {useNavigate} from "react-router-dom";
 
 interface RegisterFormProps {
   onSubmit?: (formData: createUser) => void;
@@ -42,6 +47,8 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [isPasswordsMatch, setIsPasswordsMatch] = useState(true);
+  const [errorApi, setErrorApi] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -95,14 +102,32 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     setIsButtonDisabled(isAnyFieldEmpty || !isPasswordsMatch);
   }, [formData, isPasswordsMatch]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const registerUserForm={userDto:formData, balance:balance}
-    console.log(registerUserForm);
-    if (onSubmit) {
-      //onSubmit(formData);
-      onSubmit(registerUserForm);
+     const registerUserForm={userDto:formData, balance:balance}
+    try {
+      const response = await axios.post('http://localhost:8088/users', registerUserForm, {
 
+      });
+      console.log(response.data); // Handle response from backend
+      // Destructure the response outside the axios method
+      const { firstName, id, role,confirmedByAdmin } = response.data; // Assuming response.data contains user data
+
+      // Create a User object
+      const user: User =
+          { username: firstName, id, role,confirmedByAdmin };
+
+      // Dispatch the login action with user data
+      Cookies.set('isloggedin', 'true');
+      Cookies.set('user', JSON.stringify(user));
+      login(user);
+
+      // Dispatch login success action with the user data
+      //loginSuccess(user);
+      navigate("/");
+    } catch (error) {
+      console.error('Error creating user:', error);
+      setErrorApi('Failed to register. Please try again later.');
     }
   };
 

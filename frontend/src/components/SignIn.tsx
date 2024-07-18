@@ -66,6 +66,7 @@ const ConnectedSignIn: React.FC<SignInProps & DispatchProps & RootStateProps> = 
   
     try {
       // Send an API request to the backend to authenticate the user
+      console.log(loginUser)
       const response = await axios.post('http://localhost:8088/users/login', loginUser);
   
       // Destructure the response outside the axios method
