@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 interface RegisterFormProps {
-  onSubmit: (formData: RegisterFormData) => void;
+  onSubmit?: (formData: createUser) => void;
 }
 
 interface RegisterFormData {
@@ -17,6 +17,10 @@ interface RegisterFormData {
     zipCode: string;
     country: string;
   };
+}
+interface createUser {
+  userDto : RegisterFormData;
+  balance: number;
 }
 
 const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
@@ -95,9 +99,10 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     e.preventDefault();
     const registerUserForm={userDto:formData, balance:balance}
     console.log(registerUserForm);
-    onSubmit(registerUserForm);
     if (onSubmit) {
-      onSubmit(formData);
+      //onSubmit(formData);
+      onSubmit(registerUserForm);
+
     }
   };
 
