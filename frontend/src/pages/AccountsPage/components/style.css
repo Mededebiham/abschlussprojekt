@@ -1,0 +1,33 @@
+/* AccountCard.css */
+.account-card {
+    background-color: #333;
+    color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.account-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.account-info {
+    display: flex;
+    gap: 30px;
+}
+
+.account-detail {
+    flex: 1;
+}
+
+.account-balance {
+    text-align: right;
+}

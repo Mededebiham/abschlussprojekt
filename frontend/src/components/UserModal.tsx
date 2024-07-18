@@ -69,7 +69,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user }) => {
                     <div>
                         <input
                             type="text"
-                            placeholder="Search transfers..."
+                            placeholder="Umsätze durchsuchen"
                             value={searchQueryTransfer}
                             onChange={(e) => setSearchQueryTransfer(e.target.value)}
                         />
