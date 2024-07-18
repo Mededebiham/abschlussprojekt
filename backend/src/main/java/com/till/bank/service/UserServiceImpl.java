@@ -6,7 +6,7 @@ import com.till.bank.dto.UserCreationRequest;
 import com.till.bank.dto.UserDto;
 import com.till.bank.entity.Address;
 import com.till.bank.entity.BankAccount;
-import com.till.bank.entity.CheckingAccount;
+import com.till.bank.entity.RegistRequest;
 import com.till.bank.entity.User1;
 import com.till.bank.error.EmailAlreadyExistsException;
 import com.till.bank.repository.AddressRepository;
@@ -16,12 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.*;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -30,6 +32,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONObject;
+import org.springframework.web.client.RestTemplate;
 
 
 @Service
@@ -47,6 +50,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private BankAccountRepository bankAccountRepository;
+
+    @Autowired
+    private RegistRequestService registRequestService;
+
 
     //commented because I had problems with the new version of spring boot 3.2.2 to include security
 //    @Autowired
@@ -124,10 +131,9 @@ public class UserServiceImpl implements UserService {
         String accountNumber = generateAccountNumber();
         //Generate the IBAN number
         String iban = generateIBAN(userCreationRequest.getUserDto().getAddress().getZipCode(),accountNumber,userCreationRequest.getUserDto().getAddress().getCountry());
-        BankAccount bankAccount=new CheckingAccount(); //  BankAccount(userdto.getAddress().getZipCode(),accountNumber,iban ,null ,0.0);
+        BankAccount bankAccount=new BankAccount(); //  BankAccount(userdto.getAddress().getZipCode(),accountNumber,iban ,null ,0.0);
         BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
 
-        List<BankAccount> accounts = new ArrayList<>();
 
         //User1 user= this.convertUserDtoToUser(userCreationRequest.getUserDto(),savedBankAccount);
         User1 user= new User1(userCreationRequest.getUserDto().getFirstName(),userCreationRequest.getUserDto().getLastName(),
@@ -149,6 +155,7 @@ public class UserServiceImpl implements UserService {
         bankAccountRepository.save(savedBankAccount);
 
         //now create a new registrequest in order for the admin to see what he has to approve
+        registRequestService.createRegistRequest(new RegistRequest(new Date(),savedUser));
 
         return this.convertUserToUserDto(savedUser);
     }
@@ -235,7 +242,7 @@ public class UserServiceImpl implements UserService {
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setRole(user.getRole());
         userDto.setAddress(user.getAddress());
-        userDto.setBankAccount(user.getBankAccount().getLast());
+        userDto.setBankAccount(user.getBankAccount());
         userDto.setConfirmedByAdmin(user.isConfirmedByAdmin());
         return userDto;
     }

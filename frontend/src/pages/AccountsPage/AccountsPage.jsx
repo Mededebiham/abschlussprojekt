@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import AccountCard from "./components/AccountCard";
 import './style.css'
+import {useNavigate} from "react-router-dom";
+import Cookies from "js-cookie";
 
 export const accounts = [
     {
@@ -29,6 +31,19 @@ export const accounts = [
 ];
 
 function AccountsPage() {
+    const navigate = useNavigate();
+    const userData = JSON.parse(Cookies.get('user') || '{}');
+
+    useEffect(() => {
+
+        if (userData?.confirmedByAdmin === false) {
+            navigate('/Unconfirmed'); // Redirect to an unconfirmed user page
+        } else {
+            console.log("do sth else")
+        }
+
+    }, []);
+
     return (
 
             <div className="account-list-container">

@@ -1,32 +1,53 @@
 package com.till.bank.repository;
+
 import com.till.bank.entity.Address;
 import com.till.bank.entity.BankAccount;
-import com.till.bank.entity.CheckingAccount;
 import com.till.bank.entity.User1;
+import com.till.bank.repository.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class UserRepositoryTest {
 
-    @Mock
+    @Autowired
     private UserRepository userRepository;
 
+    @Test
+    void testFindByEmail1() {
+        // Arrange
+        String email = "test@example.com";
+        User1 user = new User1();
+        user.setEmail(email);
+        userRepository.save(user);
 
+        // Act
+        User1 foundUser = userRepository.findByEmail(email);
+
+        // Assert
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getEmail()).isEqualTo(email);
+    }
+    @Test
+    public void testFindById() {
+        User1 user = userRepository.findById(1L).orElse(null);
+        assertNotNull(user);
+    }
 
     @Test
     public void testFindByEmail() {
         // Mocking the behavior of UserRepository
         Address address = new Address("123 Main St", "Apt 101", "City", "12345", "Country");
 
-        BankAccount bankAccount = new CheckingAccount("Bank1", "1234567890", "IBAN123", null, 1000.0); // Set user to null for now
+        BankAccount bankAccount = new BankAccount("Bank1", "1234567890", "IBAN123", null, 1000.0); // Set user to null for now
 
         User1 user = new User1("First", "Last", "test@example.com", "password", "0584874474", "user", address, bankAccount);
 

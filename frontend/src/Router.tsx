@@ -9,6 +9,7 @@ import NewPayout from "./components/NewPayout"
 import About from "./components/About"
 import Register from "./components/Register";
 import Produkt from "./components/Produkt";
+import Unconfirmed from "./components/Unconfirmed";
 import AccountsPage from './pages/AccountsPage/AccountsPage';
 
 const AppRouter: React.FC = () => {
@@ -25,6 +26,7 @@ const AppRouter: React.FC = () => {
 
         <Route path="/Register" element={<Register />} />
         <Route path="/Produkt" element={<Produkt />} />
+        <Route path="/Unconfirmed" element={<Unconfirmed />} />
       </Routes>
     </Router>
   );
