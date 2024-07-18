@@ -34,6 +34,7 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       country: '',
     },
   });
+  const [balance,setBalance]=useState(0);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [isPasswordsMatch, setIsPasswordsMatch] = useState(true);
@@ -45,6 +46,11 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       [name]: value,
     });
   };
+
+  const handleBalanceChange = (e:  React.ChangeEvent<HTMLInputElement>) => {
+    setBalance(Number(e.target.value));
+  };
+
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -87,10 +93,14 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const registerUserForm={userDto:formData, balance:balance}
+    console.log(registerUserForm);
+    onSubmit(registerUserForm);
     if (onSubmit) {
       onSubmit(formData);
     }
   };
+
 
   return (
     <div className="w-full max-w-xs bg-transparent">
@@ -145,12 +155,21 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
           value={formData.address.country}
           onChange={handleAddressChange}
           className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
+        <input
+            type="number"
+            name="balance"
+            placeholder="Your deposit value"
+            value={balance}
+            onChange={handleBalanceChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
         <button
-          type="submit"
-          disabled={isButtonDisabled}
-          className={`bg-red-500 hover:bg-red-700 text-white font-bold my-2 py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
-            isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+            type="submit"
+            disabled={isButtonDisabled}
+            className={`bg-red-500 hover:bg-red-700 text-white font-bold my-2 py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
+                isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
         >
           Registrieren
         </button>

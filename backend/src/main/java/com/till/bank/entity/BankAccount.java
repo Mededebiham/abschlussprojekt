@@ -17,13 +17,10 @@ public class BankAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Bank id is mandatory")
     private String bankId;
 
-    @NotBlank(message = "Account number is mandatory")
     private String accountNumber;
 
-    @NotBlank(message = "IBAN id is mandatory")
     private String IBAN;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -31,7 +28,7 @@ public class BankAccount {
     @JsonIgnore
     private User1 user;
 
-    @NotBlank(message = "Balance is mandatory")
+
     private double balance;
 
     public BankAccount(String bankId, String accountNumber, String IBAN, User1 user, double balance) {

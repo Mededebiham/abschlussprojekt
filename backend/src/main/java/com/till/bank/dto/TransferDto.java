@@ -1,6 +1,9 @@
 package com.till.bank.dto;
 
 import com.till.bank.entity.BankAccount;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,12 +16,25 @@ import java.util.Date;
 public class TransferDto {
 
     private Long id;
-    private BankAccountDto recipient;
-    private BankAccountDto sender;
-    private Date date;
-    private String reasonOfTransfer;
-    private double sum;
     private boolean isAuthorized=false;
+
+
+    @NotBlank(message = "Sender is mandatory")
+    private BankAccountDto sender;
+
+
+    @NotBlank(message = "Recipient is mandatory")
+    private BankAccountDto recipient;
+
+    @NotBlank(message = "Date is mandatory")
+    private Date date;
+
+    @NotBlank(message = "Reason Of transfer is mandatory")
+    private String reasonOfTransfer;
+
+    @NotBlank(message = "Sum is mandatory")
+    private double sum;
+
 
     // Getters and setters
     // Constructors

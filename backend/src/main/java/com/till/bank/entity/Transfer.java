@@ -22,24 +22,18 @@ public class Transfer {
 
     @ManyToOne
     @JoinColumn(name = "sender_id")
-    @NotBlank(message = "Sender is mandatory")
     private BankAccount sender;
 
     @ManyToOne
     @JoinColumn(name = "recipient_id")
-    @NotBlank(message = "Recipient is mandatory")
     private BankAccount recipient;
 
-    @NotBlank(message = "Date is mandatory")
     private Date date;
 
-    @NotBlank(message = "Reason Of transfer is mandatory")
     private String reasonOfTransfer;
 
-    @NotBlank(message = "Sum is mandatory")
     private double sum;
 
-    @NotBlank(message = "Authorization status is mandatory")
     private boolean isAuthorized;
 
     // Getters and setters

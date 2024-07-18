@@ -26,6 +26,10 @@ interface RegisterFormData {
     country: string;
   };
 }
+interface createUser {
+  userDto : RegisterFormData;
+  balance: number;
+}
 interface LoginUser {
   email:string;
   password:string
@@ -65,12 +69,12 @@ const ConnectedSignIn: React.FC<SignInProps & DispatchProps & RootStateProps> = 
       const response = await axios.post('http://localhost:8088/users/login', loginUser);
   
       // Destructure the response outside the axios method
-      const { firstName, id, role } = response.data; // Assuming response.data contains user data
+      const { firstName, id, role,confirmedByAdmin } = response.data; // Assuming response.data contains user data
       console.log(response.data);
       
       // Create a User object
       const user: User = 
-      { username: firstName, id, role };
+      { username: firstName, id, role,confirmedByAdmin };
   
       // Dispatch login success action with the user data
       console.log(user);
@@ -89,7 +93,7 @@ const ConnectedSignIn: React.FC<SignInProps & DispatchProps & RootStateProps> = 
   };
   
 
-  const handleRegisterSubmit = async(formData: RegisterFormData) => {
+  const handleRegisterSubmit = async(formData: createUser) => {
     // Logic for handling register submission
     try {      
       const response = await axios.post('http://localhost:8088/users', formData, {
@@ -97,11 +101,11 @@ const ConnectedSignIn: React.FC<SignInProps & DispatchProps & RootStateProps> = 
       });
       console.log(response.data); // Handle response from backend
       // Destructure the response outside the axios method
-      const { firstName, id, role } = response.data; // Assuming response.data contains user data
+      const { firstName, id, role,confirmedByAdmin } = response.data; // Assuming response.data contains user data
   
       // Create a User object
       const user: User = 
-      { username: firstName, id, role };
+      { username: firstName, id, role,confirmedByAdmin };
 
         // Dispatch the login action with user data
         Cookies.set('isloggedin', 'true');

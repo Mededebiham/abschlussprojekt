@@ -3,6 +3,7 @@ export interface User {
   username: string;
   id: string;
   role: string;
+  confirmedByAdmin:boolean;
   // Add more user-related fields as needed
 }
 export interface LoginState {
