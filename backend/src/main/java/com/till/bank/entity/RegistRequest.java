@@ -26,10 +26,15 @@ public class RegistRequest {
 
     private boolean isApproved;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bank_account_id", referencedColumnName = "id")
+    @JsonIgnore
+    private BankAccount bankAccount;
 
-    public RegistRequest(Date date, User1 savedUser) {
+    public RegistRequest(Date date, User1 savedUser, BankAccount savedBankAccount) {
         this.date = date;
         this.user = savedUser;
+        this.bankAccount = savedBankAccount;
         this.isApproved = false;
     }
 }

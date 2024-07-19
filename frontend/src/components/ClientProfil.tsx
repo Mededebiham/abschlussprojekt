@@ -128,6 +128,7 @@ const ClientProfil: React.FC = ({ }) => {
     return (
         <div className="text-white">
             <h2 className=" text-white font-bold my-5 ml-5" >Willkommen, {user?.username}!</h2>
+
             <div className="flex justify-between mx-5 my-5">
                 <div className="flex mt-5">
                     {/* Button to toggle deposits section visibility */}

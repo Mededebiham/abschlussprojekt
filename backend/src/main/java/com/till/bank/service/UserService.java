@@ -15,7 +15,7 @@ public interface UserService {
     User1 getUserById(Long id);
     UserDto createUser(UserCreationRequest userCreationRequest);
     User1 updateUser(Long id, UserDto userDto);
-    User1 login(LoginRequest loginRequest);
+    UserDto login(LoginRequest loginRequest);
     void deleteUser(Long id);
 
 }

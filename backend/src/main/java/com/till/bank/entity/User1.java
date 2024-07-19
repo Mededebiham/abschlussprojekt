@@ -49,7 +49,7 @@ public class User1 {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JoinColumn(name = "bank_account", referencedColumnName = "id")
-    private List<BankAccount> bankAccount;
+    private List<BankAccount> bankAccount =new ArrayList<>();
 
     public User1(String firstName, String lastName, String email, String password, String phoneNumber, String role, Address address,BankAccount bankAccount) {
         this.firstName = firstName;
@@ -59,7 +59,16 @@ public class User1 {
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.address = address;
-        this.bankAccount = new ArrayList<>();
         this.bankAccount.add(bankAccount);
        ;}
+
+    public User1(String firstName, String lastName, String email, String password, String phoneNumber, String role, Address address) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.address = address;
+    }
 }
