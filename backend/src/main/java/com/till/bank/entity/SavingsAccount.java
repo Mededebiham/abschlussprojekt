@@ -14,4 +14,16 @@ import java.math.BigDecimal;
 public class SavingsAccount extends BankAccount{
     private BigDecimal interestRate;
 
+
+    public SavingsAccount() {
+        super();
+    }
+
+    public SavingsAccount(String bankId, String accountNumber, String IBAN, User1 user, double balance, BigDecimal interestRate) {
+        super(bankId, accountNumber, IBAN, user, balance);
+        this.interestRate = interestRate;
+    }
+
+
+
 }

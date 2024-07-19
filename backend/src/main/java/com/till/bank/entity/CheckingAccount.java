@@ -3,18 +3,18 @@ package com.till.bank.entity;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @DiscriminatorValue("Girokonto")
-@Data
+@Getter
+@Setter
 public class CheckingAccount extends BankAccount {
 
 
-    public CheckingAccount(Long id, String bankId, String accountNumber, String IBAN, User1 user, double balance) {
-        super(id, bankId, accountNumber, IBAN, user, balance);
-    }
-
     public CheckingAccount() {
+        super();
     }
 
     public CheckingAccount(String bankId, String accountNumber, String IBAN, User1 user, double balance) {
