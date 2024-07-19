@@ -60,7 +60,7 @@ public class User1 {
         this.role = role;
         this.address = address;
         this.bankAccount.add(bankAccount);
-       ;}
+    }
 
     public User1(String firstName, String lastName, String email, String password, String phoneNumber, String role, Address address) {
         this.firstName = firstName;
