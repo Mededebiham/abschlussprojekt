@@ -9,6 +9,7 @@ import com.till.bank.error.EmailAlreadyExistsException;
 import com.till.bank.repository.AddressRepository;
 import com.till.bank.repository.BankAccountRepository;
 import com.till.bank.repository.UserRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +37,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+
     @Autowired
     private UserRepository userRepository;
 
@@ -62,7 +64,37 @@ public class UserServiceImpl implements UserService {
 
     private static final String REST_COUNTRIES_URL = "https://restcountries.com/v3.1/name/";
 
+    @PostConstruct
+    public void createInitialUsers() {
+        createUserIfNotExists("medede@example.com", "Medede", "Tchala", "password", "1234567890", "admin","Street1", "1", "City", "12345", "Deutschland");
+        createUserIfNotExists("tillman@example.com", "Tillman", "Tillman", "password", "1234567890", "admin","Street2", "2", "City", "12345", "Deutschland");
+        createUserIfNotExists("yasin@example.com", "Yasin", "Yasin", "password", "1234567890", "admin","Street3", "3", "City", "12345", "Deutschland");
+        createUserIfNotExists("mats@example.com", "Mats", "Mats", "password", "1234567890", "admin","Street4", "4", "City", "12345", "Deutschland");
+    }
 
+    private void createUserIfNotExists(String email, String firstName, String lastName, String password, String phoneNumber, String role,String street,String streetNumber,String city, String zipcode, String country) {
+        if (!userRepository.existsByEmail(email)&&userRepository.count() <= 4) {
+            Address address = new Address(street, streetNumber, city, zipcode, country);
+            User1 user = new User1(firstName, lastName, email, password, phoneNumber, role, address);
+            User1 savedUser = userRepository.save(user);
+            String accountNumber = generateAccountNumber();
+            String iban = generateIBAN(address.getZipCode(), accountNumber, address.getCountry());
+            BankAccount bankAccount = new CheckingAccount();
+            bankAccount.setBankId(address.getZipCode());
+            bankAccount.setAccountNumber(accountNumber);
+            bankAccount.setIBAN(iban);
+            bankAccount.setBalance(1000000);
+            bankAccount.setAccountType("CheckingAccount");
+            bankAccount.setUser(savedUser);
+            bankAccount.setConfirmedByAdmin(true); // Mark bank account as confirmed by admin
+            BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
+
+            savedUser.getBankAccount().add(savedBankAccount);
+            savedUser.setRole(role);
+            savedUser.setConfirmedByAdmin(true);
+            userRepository.save(savedUser);
+        }
+    }
     @Override
     public List<User1> getAllUsers() {
         return userRepository.findAll();
@@ -163,7 +195,7 @@ public class UserServiceImpl implements UserService {
         savedBankAccount.setAccountType(userCreationRequest.getAccountType());
         savedBankAccount.setIBAN(iban);
         savedBankAccount.setBalance(userCreationRequest.getBalance());
-        savedBankAccount.setAccountType(userCreationRequest.getAccount_type());
+        savedBankAccount.setAccountType(userCreationRequest.getAccountType());
         // Update the bank account entity with the user's ID
         savedBankAccount.setUser(savedUser);
 
