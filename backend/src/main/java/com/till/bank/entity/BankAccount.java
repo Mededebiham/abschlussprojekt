@@ -8,13 +8,14 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
+import static jakarta.persistence.DiscriminatorType.STRING;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "account_type")
-public class BankAccount {
+public abstract class BankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +33,7 @@ public class BankAccount {
 
     private double balance;
 
-    @Column(name = "account_type", nullable = false, insertable = false, updatable = false)
+    @Column(name = "account_type", nullable = false)
     private String accountType;
 
     public BankAccount(String bankId, String accountNumber, String IBAN, User1 user, double balance) {
@@ -41,7 +42,6 @@ public class BankAccount {
         this.IBAN = IBAN;
         this.user = user;
         this.balance = balance;
-        this.accountType = "Girokonto";
 
     }
 
