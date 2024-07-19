@@ -24,7 +24,7 @@ public class UserRepositoryTest {
     @Test
     void testFindByEmail1() {
         // Arrange
-        String email = "test@example.com";
+        String email = "yasin@gmail.com";
         User1 user = new User1();
         user.setEmail(email);
         userRepository.save(user);
