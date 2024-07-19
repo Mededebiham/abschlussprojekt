@@ -4,10 +4,7 @@ package com.till.bank.service;
 import com.till.bank.dto.LoginRequest;
 import com.till.bank.dto.UserCreationRequest;
 import com.till.bank.dto.UserDto;
-import com.till.bank.entity.Address;
-import com.till.bank.entity.BankAccount;
-import com.till.bank.entity.RegistRequest;
-import com.till.bank.entity.User1;
+import com.till.bank.entity.*;
 import com.till.bank.error.EmailAlreadyExistsException;
 import com.till.bank.repository.AddressRepository;
 import com.till.bank.repository.BankAccountRepository;
@@ -131,7 +128,21 @@ public class UserServiceImpl implements UserService {
         String accountNumber = generateAccountNumber();
         //Generate the IBAN number
         String iban = generateIBAN(userCreationRequest.getUserDto().getAddress().getZipCode(),accountNumber,userCreationRequest.getUserDto().getAddress().getCountry());
-        BankAccount bankAccount=new BankAccount(); //  BankAccount(userdto.getAddress().getZipCode(),accountNumber,iban ,null ,0.0);
+//        BankAccount bankAccount=new BankAccount(); //  BankAccount(userdto.getAddress().getZipCode(),accountNumber,iban ,null ,0.0);
+
+        BankAccount bankAccount;
+        if ("Girokonto".equals(userCreationRequest.getAccountType())) {
+            bankAccount = new CheckingAccount();
+
+        } else if ("Sparkonto".equals(userCreationRequest.getAccountType())) {
+            bankAccount = new SavingsAccount();
+
+            // Create SavingsAccount instance
+        } else {
+            throw new IllegalArgumentException("Invalid account type: " + userCreationRequest.getAccountType());
+        }
+
+        bankAccount.setAccountType(userCreationRequest.getAccountType());
         BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
 
 
@@ -145,9 +156,11 @@ public class UserServiceImpl implements UserService {
 //        user.setPassword(bCryptPasswordEncoder.encode(userdto.getPassword()));
         User1 savedUser = userRepository.save(user);
 
+
         savedBankAccount.setUser(savedUser);
         savedBankAccount.setBankId(userCreationRequest.getUserDto().getAddress().getZipCode());
         savedBankAccount.setAccountNumber(accountNumber);
+        savedBankAccount.setAccountType(userCreationRequest.getAccountType());
         savedBankAccount.setIBAN(iban);
         savedBankAccount.setBalance(userCreationRequest.getBalance());
         savedBankAccount.setAccountType(userCreationRequest.getAccount_type());

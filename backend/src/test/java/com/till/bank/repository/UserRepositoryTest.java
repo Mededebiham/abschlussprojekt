@@ -2,6 +2,7 @@ package com.till.bank.repository;
 
 import com.till.bank.entity.Address;
 import com.till.bank.entity.BankAccount;
+import com.till.bank.entity.CheckingAccount;
 import com.till.bank.entity.User1;
 import com.till.bank.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ public class UserRepositoryTest {
         // Mocking the behavior of UserRepository
         Address address = new Address("123 Main St", "Apt 101", "City", "12345", "Country");
 
-        BankAccount bankAccount = new BankAccount("Bank1", "1234567890", "IBAN123", null, 1000.0); // Set user to null for now
+        BankAccount bankAccount = new CheckingAccount("Bank1", "1234567890", "IBAN123", null, 1000.0); // Set user to null for now
 
         User1 user = new User1("First", "Last", "test@example.com", "password", "0584874474", "user", address, bankAccount);
 
