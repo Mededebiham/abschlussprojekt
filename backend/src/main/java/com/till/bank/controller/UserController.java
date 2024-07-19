@@ -47,9 +47,9 @@ public class UserController {
 
     @PostMapping("/login")
     @CrossOrigin(origins = "*")
-    public ResponseEntity<User1> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<UserDto> loginUser(@RequestBody LoginRequest loginRequest) {
         // Call your UserService method to handle the login request
-        User1 user = userService.login(loginRequest);
+        UserDto user = userService.login(loginRequest);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {

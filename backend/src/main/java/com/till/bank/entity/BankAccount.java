@@ -33,6 +33,8 @@ public abstract class BankAccount {
 
     private double balance;
 
+    private boolean confirmedByAdmin = false;
+
     @Column(name = "account_type", nullable = false)
     private String accountType;
 
@@ -54,6 +56,8 @@ public abstract class BankAccount {
                 ", user=" + (user != null ? user.getId() : "null") + // Customized user representation
                 ", balance=" + balance +
                 ", id=" + id +
+                ", accountType='" + accountType + '\'' +
+                ", confirmedByAdmin=" + confirmedByAdmin +
                 '}';
     }
 }

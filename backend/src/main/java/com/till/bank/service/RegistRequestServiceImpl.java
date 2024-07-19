@@ -16,7 +16,7 @@ import java.util.Optional;
 public class RegistRequestServiceImpl implements RegistRequestService {
 
 
-    private RegistRequestRepository registRequestRepository;
+    private final RegistRequestRepository registRequestRepository;
 
     public RegistRequestServiceImpl(RegistRequestRepository registRequestRepository) {
         this.registRequestRepository = registRequestRepository;

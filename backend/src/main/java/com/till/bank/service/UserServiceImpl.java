@@ -74,11 +74,11 @@ public class UserServiceImpl implements UserService {
         return userOptional.orElse(null);
     }
 
-    public User1 login(LoginRequest loginRequest) {
+    public UserDto login(LoginRequest loginRequest) {
         User1 user= userRepository.findByEmail(loginRequest.getEmail());
 //        if (bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
         if(loginRequest.getPassword().equals(user.getPassword())){
-            return user;
+            return this.convertUserToUserDto(user,user.getBankAccount().get(0));
         }
         else return null;
         //POSSIBLE TOKEN IMPLEMENTATION
@@ -150,7 +150,9 @@ public class UserServiceImpl implements UserService {
         User1 user= new User1(userCreationRequest.getUserDto().getFirstName(),userCreationRequest.getUserDto().getLastName(),
                 userCreationRequest.getUserDto().getEmail(),userCreationRequest.getUserDto().getPassword(),
                 userCreationRequest.getUserDto().getPhoneNumber(), userCreationRequest.getUserDto().getRole(),
-                userCreationRequest.getUserDto().getAddress(),savedBankAccount);
+                userCreationRequest.getUserDto().getAddress());
+        // Add the saved bank account to the user's bank accounts list
+        user.getBankAccount().add(savedBankAccount);
 //        user.setPassword(bCryptPasswordEncoder.encode(userdto.getPassword()));
         User1 savedUser = userRepository.save(user);
 
@@ -161,6 +163,7 @@ public class UserServiceImpl implements UserService {
         savedBankAccount.setAccountType(userCreationRequest.getAccountType());
         savedBankAccount.setIBAN(iban);
         savedBankAccount.setBalance(userCreationRequest.getBalance());
+        savedBankAccount.setAccountType(userCreationRequest.getAccount_type());
         // Update the bank account entity with the user's ID
         savedBankAccount.setUser(savedUser);
 
@@ -168,9 +171,9 @@ public class UserServiceImpl implements UserService {
         bankAccountRepository.save(savedBankAccount);
 
         //now create a new registrequest in order for the admin to see what he has to approve
-        registRequestService.createRegistRequest(new RegistRequest(new Date(),savedUser));
+        registRequestService.createRegistRequest(new RegistRequest(new Date(),savedUser,savedBankAccount));
 
-        return this.convertUserToUserDto(savedUser);
+        return this.convertUserToUserDto(savedUser,savedBankAccount);
     }
 
     @Override
@@ -246,7 +249,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    public UserDto convertUserToUserDto(User1 user) {
+    public UserDto convertUserToUserDto(User1 user,BankAccount bankAccount) {
         UserDto userDto= new UserDto();
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
@@ -255,7 +258,7 @@ public class UserServiceImpl implements UserService {
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setRole(user.getRole());
         userDto.setAddress(user.getAddress());
-        userDto.setBankAccount(user.getBankAccount().getLast());
+        userDto.setBankAccount(bankAccount);
         userDto.setConfirmedByAdmin(user.isConfirmedByAdmin());
         return userDto;
     }

@@ -8,13 +8,14 @@ import jakarta.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class BankAccountDto {
     private Long id;
     private String bankId;
     private String accountNumber;
     private String IBAN;
-
+    private String accountType;
+    private boolean confirmedByAdmin = false;
     private User1 user;
     private double balance;
 
@@ -30,6 +31,17 @@ public class BankAccountDto {
         this.bankId = bankId;
         this.accountNumber = accountNumber;
         this.IBAN = IBAN;
+    }
+
+    public BankAccountDto(Long id, String bankId, String accountNumber, String IBAN, String accountType, boolean confirmedByAdmin, User1 user, double balance) {
+        this.id = id;
+        this.bankId = bankId;
+        this.accountNumber = accountNumber;
+        this.IBAN = IBAN;
+        this.accountType = accountType;
+        this.confirmedByAdmin = confirmedByAdmin;
+        this.user = user;
+        this.balance = balance;
     }
 
     public BankAccountDto(long l) {

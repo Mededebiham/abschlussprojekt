@@ -6,12 +6,10 @@ import NewPayout from './NewPayout';
 import PayoutsHistory from './PayoutsHistory';
 import DepositsHistory from './DepositsHistory';
 import TransfersHistory from './TransfersHistory';
-import { Transfer } from "../store/types"
+import { Transfer, BankAccount } from "../store/types";
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
-import { BankAccount } from '../store/types';
-
 
 const ClientProfil: React.FC = ({ }) => {
     // State variables to manage component visibility
@@ -23,7 +21,8 @@ const ClientProfil: React.FC = ({ }) => {
     const [deposits, setDeposits] = useState<Transfer[]>([]);
     const [payouts, setPayouts] = useState<Transfer[]>([]);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [bankAccount, setBankAccount] = useState<BankAccount>();
+    const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
+    const [selectedBankAccount, setSelectedBankAccount] = useState<BankAccount | null>(null);
     const [user, setUser] = useState<User | null>(null); // Provide the type for user
     const navigate = useNavigate();
 
@@ -41,107 +40,107 @@ const ClientProfil: React.FC = ({ }) => {
             if (userData?.confirmedByAdmin === false) {
                 navigate('/unconfirmed'); // Redirect to an unconfirmed user page
             } else {
-                const fetchData = async () => {
-                    //get all of the transfers
+                const fetchBankAccounts = async () => {
                     try {
-                        const usersTransferResponse = await axios.get('http://localhost:8088/transfers/user/transfers/' + userData?.id);
-                        setTransfers(usersTransferResponse.data);
-                        console.log(userData?.id);
-                        console.log(usersTransferResponse);
-
-
-                        //Get all of the deposits
-                        const usersDepositsResponse = await axios.get('http://localhost:8088/transfers/user/deposits/' + userData?.id);
-                        setDeposits(usersDepositsResponse.data);
-
-                        //Get all of the payouts
-                        const usersPayoutsResponse = await axios.get('http://localhost:8088/transfers/user/payouts/' + userData?.id);
-                        setPayouts(usersPayoutsResponse.data);
-
+                        const response = await axios.get(`http://localhost:8088/bankAccounts/user/${userData?.id}`);
+                        setBankAccounts(response.data);
+                        setSelectedBankAccount(response.data[0]); // Set the first bank account as default
                     } catch (error) {
-                        console.error('Error fetching data:', error);
+                        console.error('Error fetching bank accounts:', error);
                     }
                 };
 
-                fetchData();
-                getBankAccountOfUser(userData?.id)
-                    .then((bankAccount) => {
-                        console.log(bankAccount);
-                        setBankAccount(bankAccount);
-                    })
-                    .catch((error) => {
-                        console.error('Error fetching bank account:', error);
-                    });
+                fetchBankAccounts();
             }
         }
     }, []);
 
+    useEffect(() => {
+        if (selectedBankAccount) {
+            const fetchData = async () => {
+                try {
+                    const bankAccountId = selectedBankAccount.id;
 
-    // Function to toggle deposits section visibility
+                    // Get all transfers for the selected bank account
+                    const usersTransferResponse = await axios.get(`http://localhost:8088/transfers/bankAccount/transfers/${bankAccountId}`);
+                    setTransfers(usersTransferResponse.data);
+
+                    // Get all deposits for the selected bank account
+                    const usersDepositsResponse = await axios.get(`http://localhost:8088/transfers/bankAccount/deposits/${bankAccountId}`);
+                    setDeposits(usersDepositsResponse.data);
+
+                    // Get all payouts for the selected bank account
+                    const usersPayoutsResponse = await axios.get(`http://localhost:8088/transfers/bankAccount/payouts/${bankAccountId}`);
+                    setPayouts(usersPayoutsResponse.data);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            };
+
+            fetchData();
+        }
+    }, [selectedBankAccount]);
+
+    const handleBankAccountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedId = event.target.value;
+        const selectedAccount = bankAccounts.find(account => account.id === selectedId);
+        setSelectedBankAccount(selectedAccount || null);
+    };
+
     const toggleDeposits = () => {
         setShowDeposits(!showDeposits);
-        setShowPayouts(false); // Close payouts section if open
+        setShowPayouts(false);
         setShowNewPayout(false);
         setShowTransfers(false);
-
     };
 
-    // Function to toggle payouts section visibility
     const togglePayouts = () => {
         setShowPayouts(!showPayouts);
-        setShowDeposits(false); // Close deposits section if open
+        setShowDeposits(false);
         setShowNewPayout(false);
         setShowTransfers(false);
-
     };
+
     const toggleTransfers = () => {
         setShowTransfers(!showTransfers);
         setShowPayouts(false);
-        setShowDeposits(false); // Close deposits section if open
+        setShowDeposits(false);
         setShowNewPayout(false);
-
     };
+
     const toggleNewPayout = () => {
         setShowNewPayout(!showNewPayout);
-        setShowDeposits(false); // Close deposits section if open
-        setShowPayouts(false); // Close payouts section if open
+        setShowDeposits(false);
+        setShowPayouts(false);
         setShowTransfers(false);
-
     };
-
-    const getBankAccountOfUser = async (userId: string | null) => {
-        if (userId !== null) {
-            try {
-                const response = await axios.get(`http://localhost:8088/bankAccount/user/${userId}`);
-                console.log(response.data);
-                return response.data;
-            } catch (error) {
-                console.error('Authentication failed:', error);
-            }
-        } else {
-            return null;
-        }
-    }
-
-
 
     return (
         <div className="text-white">
-            <h2 className=" text-white font-bold my-5 ml-5" >Willkommen, {user?.username}!</h2>
+            <h2 className="text-white font-bold my-5 ml-5">Willkommen, {user?.username}!</h2>
+
             <div className="flex justify-between mx-5 my-5">
                 <div className="flex mt-5">
-                    {/* Button to toggle deposits section visibility */}
                     <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleDeposits}>Eingehende Umsätze</button>
-                    {/* Button to toggle payouts section visibility */}
                     <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={togglePayouts}>Ausgehende Umsätze</button>
                     <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleTransfers}>Alle Umsätze</button>
-
-                    {/* New Payout Section */}
                     <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={toggleNewPayout}>✚ Überweisung</button>
                 </div>
             </div>
-            <div className="ml-5"> Ihre Kontoübersicht: {bankAccount?.balance}</div>
-            {/* Deposits Section */}
+
+            <div className="ml-5">
+                <label htmlFor="bankAccountSelect">Wählen Sie ein Bankkonto: </label>
+                <select id="bankAccountSelect" onChange={handleBankAccountChange}>
+                    {bankAccounts.map(account => (
+                        <option key={account.id} value={account.id}>
+                            {account.accountNumber} - {account.balance}€
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            <div className="ml-5">Ihre Kontoübersicht: {selectedBankAccount?.balance}</div>
+
             <div className="flex justify-center mx-5 my-5">
                 {showDeposits && (
                     <div>
@@ -149,7 +148,6 @@ const ClientProfil: React.FC = ({ }) => {
                         <DepositsHistory transfers={deposits} />
                     </div>
                 )}
-                {/* Payouts Section */}
                 {showPayouts && (
                     <div>
                         <h3>Ausgehende Umsätze</h3>

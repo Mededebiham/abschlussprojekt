@@ -52,7 +52,45 @@ public class TransferServiceImpl implements TransferService {
         return transferRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transfer not found with id: " + id));
     }
+    @Override
+    public List<TransferDto> getAllTransfersOfABankAccount(Long bankAccountId) {
+        List<TransferDto> transferDtos = new ArrayList<>();
+        List<Transfer> transfersSent = transferRepository.findBySender_Id(bankAccountId);
+        List<Transfer> transfersReceived = transferRepository.findByRecipient_Id(bankAccountId);
 
+        for (Transfer transfer : transfersSent) {
+            transferDtos.add(convertTToTDto(transfer));
+        }
+        for (Transfer transfer : transfersReceived) {
+            transferDtos.add(convertTToTDto(transfer));
+        }
+        log.info("All Transfers: {}", transferDtos);
+        return transferDtos;
+    }
+
+    @Override
+    public List<TransferDto> getAllDepositsOfABankAccount(Long bankAccountId) {
+        List<TransferDto> transferDtos = new ArrayList<>();
+        List<Transfer> transfersReceived = transferRepository.findByRecipient_Id(bankAccountId);
+
+        for (Transfer transfer : transfersReceived) {
+            transferDtos.add(convertTToTDto(transfer));
+        }
+        log.info("All Deposits: {}", transferDtos);
+        return transferDtos;
+    }
+
+    @Override
+    public List<TransferDto> getAllPayoutsOfABankAccount(Long bankAccountId) {
+        List<TransferDto> transferDtos = new ArrayList<>();
+        List<Transfer> transfersSent = transferRepository.findBySender_Id(bankAccountId);
+
+        for (Transfer transfer : transfersSent) {
+            transferDtos.add(convertTToTDto(transfer));
+        }
+        log.info("All Payouts: {}", transferDtos);
+        return transferDtos;
+    }
     @Override
     public Transfer createTransfer(TransferDto transferDto) {
         //if recipient or sender are null
@@ -207,6 +245,8 @@ public BankAccountDto convertBAToBADto(BankAccount bankAccount){
     bankAccountDto.setIBAN(bankAccount.getIBAN());
     bankAccountDto.setBankId(bankAccount.getBankId());
     bankAccountDto.setBalance(bankAccount.getBalance());
+    bankAccountDto.setAccountType(bankAccount.getAccountType());
+    bankAccountDto.setConfirmedByAdmin(bankAccount.isConfirmedByAdmin());
     return bankAccountDto;
 }
     @Override
