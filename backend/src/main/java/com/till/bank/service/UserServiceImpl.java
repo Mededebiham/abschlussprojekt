@@ -242,7 +242,7 @@ public class UserServiceImpl implements UserService {
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setRole(user.getRole());
         userDto.setAddress(user.getAddress());
-        userDto.setBankAccount(user.getBankAccount());
+        userDto.setBankAccount(user.getBankAccount().getLast());
         userDto.setConfirmedByAdmin(user.isConfirmedByAdmin());
         return userDto;
     }
