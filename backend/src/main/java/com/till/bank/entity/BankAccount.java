@@ -5,14 +5,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BankAccount {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "account_type")
+public abstract class BankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,8 +28,10 @@ public class BankAccount {
     @JsonIgnore
     private User1 user;
 
-
     private double balance;
+
+    @Column(name = "account_type", nullable = false, insertable = false, updatable = false)
+    private String accountType;
 
     public BankAccount(String bankId, String accountNumber, String IBAN, User1 user, double balance) {
         this.bankId = bankId;
@@ -38,6 +40,7 @@ public class BankAccount {
         this.user = user;
         this.balance = balance;
     }
+
     @Override
     public String toString() {
         return "BankAccount{" +
