@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// @ts-ignore
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -68,24 +67,25 @@ const Home = () => {
       {
         breakpoint: 768,
         settings: {
-          arrows: false,
+          arrows: true,
         },
       },
     ],
   };
 
   return (
-      <div className="h-screen flex bg-blue-50">
+      <div className="relative  h-screen flex bg-blue-50">
         <div className="w-full max-w-screen-xl px-6">
-          <Slider {...settings}>
+          <Slider {...settings}  className="h-full">
             {posts.map((post, index) => (
                 <div key={index} className="p-4">
-                  <div className="bg-white rounded-lg shadow-lg">
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-screen-lg">
                     <div
-                        className="bg-cover bg-center bg-no-repeat rounded-lg"
+                        className="relative w-full h-96 bg-cover bg-center bg-no-repeat rounded-lg"
                         style={{
                           backgroundImage: `url(${post.image})`,
-                          minHeight: 'calc(100vh - 4rem)',
+                          minHeight: 'calc(100vh - 12rem)',
+
                         }}
                     >
                       <div className="bg-white bg-opacity-50 p-6 rounded-lg">
