@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
-@DiscriminatorValue("Sparkonto")
 public class SavingsAccount extends BankAccount{
     private BigDecimal interestRate;
 

@@ -12,7 +12,7 @@ import lombok.ToString;
 public class UserCreationRequest {
     private UserDto userDto;
     private double balance;
-    private String account_type;
+    private String accountType;
 
 
 }

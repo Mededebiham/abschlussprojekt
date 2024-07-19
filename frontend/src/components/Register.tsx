@@ -26,6 +26,7 @@ interface RegisterFormData {
 interface createUser {
   userDto : RegisterFormData;
   balance: number;
+  accountType: string;
 }
 
 const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
@@ -49,6 +50,7 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
   const [isPasswordsMatch, setIsPasswordsMatch] = useState(true);
   const [errorApi, setErrorApi] = useState('');
   const navigate = useNavigate();
+  const [accountType, setAccountType] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -78,6 +80,9 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     const { value } = e.target;
     setConfirmPassword(value);
   };
+  const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setAccountType(e.target.value);
+  };
 
   useEffect(() => {
     const isPasswordsMatching = formData.password === confirmPassword;
@@ -104,7 +109,7 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-     const registerUserForm={userDto:formData, balance:balance}
+     const registerUserForm={userDto:formData, balance:balance,accountType: accountType}
     try {
       const response = await axios.post('http://localhost:8088/users', registerUserForm, {
 
@@ -135,56 +140,61 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
   return (
     <div className="w-full max-w-xs bg-transparent">
       <form onSubmit={handleSubmit} className="bg-white bg-opacity-25 shadow-md rounded px-8 pt-6 pb-8 ">
-        <input type="text" name="firstName" placeholder="Vorname" value={formData.firstName} onChange={handleChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
-        <input type="text" name="lastName" placeholder="Nachname" value={formData.lastName} onChange={handleChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+        <input type="text" name="firstName" placeholder="Vorname" value={formData.firstName} onChange={handleChange}
+               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+        <input type="text" name="lastName" placeholder="Nachname" value={formData.lastName} onChange={handleChange}
+               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
 
-        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
-       
-        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-       
+        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange}
+               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
+        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange}
+               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
         <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Pasword wiederholen"
-          value={confirmPassword}
-          onChange={handleChangeConfirmPassword}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="password"
+            name="confirmPassword"
+            placeholder="Pasword wiederholen"
+            value={confirmPassword}
+            onChange={handleChangeConfirmPassword}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         <input
-          type="tel"
-          name="phoneNumber"
-          placeholder="Telefonnummer"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="tel"
+            name="phoneNumber"
+            placeholder="Telefonnummer"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         <input
-          type="text"
-          name="street"
-          placeholder="Straße"
-          value={formData.address.street}
-          onChange={handleAddressChange}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="text"
+            name="street"
+            placeholder="Straße"
+            value={formData.address.street}
+            onChange={handleAddressChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         <input
-          type="text"
-          name="streetNumber"
-          placeholder="Haus Nummer"
-          value={formData.address.streetNumber}
-          onChange={handleAddressChange}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
-        <input type="text" name="city" placeholder="Stadt" value={formData.address.city} onChange={handleAddressChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="text"
+            name="streetNumber"
+            placeholder="Haus Nummer"
+            value={formData.address.streetNumber}
+            onChange={handleAddressChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+        <input type="text" name="city" placeholder="Stadt" value={formData.address.city} onChange={handleAddressChange}
+               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         <input
-          type="text"
-          name="zipCode"
-          placeholder="Postleitzahl"
-          value={formData.address.zipCode}
-          onChange={handleAddressChange}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="text"
+            name="zipCode"
+            placeholder="Postleitzahl"
+            value={formData.address.zipCode}
+            onChange={handleAddressChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         <input
-          type="text"
-          name="country"
-          placeholder="Land"
-          value={formData.address.country}
-          onChange={handleAddressChange}
-          className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            type="text"
+            name="country"
+            placeholder="Land"
+            value={formData.address.country}
+            onChange={handleAddressChange}
+            className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
 
         <input
             type="number"
@@ -194,6 +204,19 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
             onChange={handleBalanceChange}
             className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
 
+        <div className="my-2">
+          <select
+              name="accountType"
+              id="accountType"
+              value={accountType}
+              onChange={handleAccountTypeChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="" disabled>Kontotyp</option>
+            <option value="Girokonto">Girokonto</option>
+            <option value="Sparkonto">Sparkonto</option>
+          </select>
+        </div>
         <button
             type="submit"
             disabled={isButtonDisabled}
