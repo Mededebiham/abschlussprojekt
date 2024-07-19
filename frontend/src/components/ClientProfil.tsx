@@ -38,37 +38,41 @@ const ClientProfil: React.FC = ({ }) => {
         if (!loggedIn) {
             navigate('/SignIn');
         } else {
-            const fetchData = async () => {
-                //get all of the transfers
-                try {
-                    const usersTransferResponse = await axios.get('http://localhost:8088/transfers/user/transfers/' + userData?.id);
-                    setTransfers(usersTransferResponse.data);
-                    console.log(userData?.id);
-                    console.log(usersTransferResponse);
+            if (userData?.confirmedByAdmin === false) {
+                navigate('/unconfirmed'); // Redirect to an unconfirmed user page
+            } else {
+                const fetchData = async () => {
+                    //get all of the transfers
+                    try {
+                        const usersTransferResponse = await axios.get('http://localhost:8088/transfers/user/transfers/' + userData?.id);
+                        setTransfers(usersTransferResponse.data);
+                        console.log(userData?.id);
+                        console.log(usersTransferResponse);
 
 
-                    //Get all of the deposits 
-                    const usersDepositsResponse = await axios.get('http://localhost:8088/transfers/user/deposits/' + userData?.id);
-                    setDeposits(usersDepositsResponse.data);
+                        //Get all of the deposits
+                        const usersDepositsResponse = await axios.get('http://localhost:8088/transfers/user/deposits/' + userData?.id);
+                        setDeposits(usersDepositsResponse.data);
 
-                    //Get all of the payouts
-                    const usersPayoutsResponse = await axios.get('http://localhost:8088/transfers/user/payouts/' + userData?.id);
-                    setPayouts(usersPayoutsResponse.data);
+                        //Get all of the payouts
+                        const usersPayoutsResponse = await axios.get('http://localhost:8088/transfers/user/payouts/' + userData?.id);
+                        setPayouts(usersPayoutsResponse.data);
 
-                } catch (error) {
-                    console.error('Error fetching data:', error);
-                }
-            };
+                    } catch (error) {
+                        console.error('Error fetching data:', error);
+                    }
+                };
 
-            fetchData();
-            getBankAccountOfUser(userData?.id)
-                .then((bankAccount) => {
-                    console.log(bankAccount);
-                    setBankAccount(bankAccount);
-                })
-                .catch((error) => {
-                    console.error('Error fetching bank account:', error);
-                });
+                fetchData();
+                getBankAccountOfUser(userData?.id)
+                    .then((bankAccount) => {
+                        console.log(bankAccount);
+                        setBankAccount(bankAccount);
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching bank account:', error);
+                    });
+            }
         }
     }, []);
 

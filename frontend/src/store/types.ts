@@ -10,6 +10,11 @@ export interface LoginState {
   isLoggedIn: boolean;
   user: User | null;
 }
+export interface BankAPI {
+  iban: string;
+  accountNumber: string;
+  bankId: string;
+}
 export interface RootState {
   isLoggedIn: boolean;
   user: User | null;
