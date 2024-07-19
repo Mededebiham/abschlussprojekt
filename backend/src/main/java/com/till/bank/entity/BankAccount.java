@@ -23,8 +23,8 @@ public class BankAccount {
 
     private String IBAN;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     @JsonIgnore
     private User1 user;
 
