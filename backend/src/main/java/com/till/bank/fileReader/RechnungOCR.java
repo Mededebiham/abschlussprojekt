@@ -1,5 +1,5 @@
 package com.till.bank.fileReader;
-
+//
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 
