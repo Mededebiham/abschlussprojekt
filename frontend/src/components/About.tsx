@@ -6,7 +6,7 @@ const profiles = [
   {
     id: 1,
     name: 'Medede Biham Tchala',
-    description:'Hallo. Ich bin Medede einer der drei Entwickler, die an der Erstellung der Plattform zu' +
+    description: 'Hallo. Ich bin Medede einer der drei Entwickler, die an der Erstellung der Plattform zu' +
         ' simulieren eines Online-Banking gearbeitet haben. Mit einem starken Fokus auf die Entwicklung' +
         ' robuster, skalierbarer und sicherer Backend-Lösungen trage ich dazu bei, dass unsere Anwendungen' +
         ' reibungslos und effizient funktionieren. Meine Leidenschaft für Technologie und Problemlösung treibt ' +
@@ -16,19 +16,19 @@ const profiles = [
   {
     id: 2,
     name: 'Tillman',
-    description: 'Bitte hier eine Beschreibung zu dir und eventuel ein Bild von dir hochladen',
+    description: 'Bitte hier eine Beschreibung zu dir und eventuell ein Bild von dir hochladen',
     imageUrl: 'https://avatars.githubusercontent.com/u/96163637?v=4',
   },
   {
     id: 3,
     name: 'Yasin',
-    description: 'Bitte hier eine Beschreibung zu dir und eventuel',
+    description: 'Bitte hier eine Beschreibung zu dir und eventuell',
     imageUrl: 'https://avatars.githubusercontent.com/u/76652837?v=4',
   },
   {
     id: 4,
     name: 'Mats',
-    description: 'Bitte hier eine Beschreibung zu dir und eventuel ein Bild von dir hochladen 4',
+    description: 'Bitte hier eine Beschreibung zu dir und eventuell ein Bild von dir hochladen 4',
     imageUrl: 'https://avatars.githubusercontent.com/u/165942282?v=4',
   },
 ];
@@ -53,14 +53,14 @@ const About: React.FC = () => {
             <h2 className="text-black text-center ml-20 mt-20">You are not logged in.</h2>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10 px-4 lg:px-20">
           {profiles.map((profile) => (
-              <div key={profile.id} className="bg-white p-4 rounded-lg shadow-lg">
-                <div className="w-full flex justify-center items-center overflow-hidden rounded-full h-40">
-                  <img src={profile.imageUrl} alt={profile.name} className="h-full w-full object-cover rounded-2xl" />
+              <div key={profile.id} className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+                <div className="w-40 h-40 flex justify-center items-center overflow-hidden rounded-full mb-4">
+                  <img src={profile.imageUrl} alt={profile.name} className="h-full w-full object-cover rounded-full" />
                 </div>
-                <h3 className="text-xl font-bold mt-4">{profile.name}</h3>
-                <p className="mt-2 text-gray-600 whitespace-pre-line">{profile.description}</p>
+                <h3 className="text-xl font-bold text-center mb-2">{profile.name}</h3>
+                <p className="text-gray-600 text-center whitespace-pre-line">{profile.description}</p>
               </div>
           ))}
         </div>
