@@ -35,21 +35,24 @@ public class TransferController {
         return new ResponseEntity<>(transfer, HttpStatus.OK);
     }
 
-    @GetMapping("/user/transfers/{id}")
-    public ResponseEntity<List<TransferDto>> getAllTransfersOfAUser(@PathVariable Long id) {
-        List<TransferDto> transfers = transferService.getAllTransfersOfAUser(id);
+    @GetMapping("/bankAccount/transfers/{bankAccountId}")
+    public ResponseEntity<List<TransferDto>> getAllTransfersOfABankAccount(@PathVariable Long bankAccountId) {
+        List<TransferDto> transfers = transferService.getAllTransfersOfABankAccount(bankAccountId);
         return new ResponseEntity<>(transfers, HttpStatus.OK);
     }
-    @GetMapping("/user/deposits/{id}")
-    public ResponseEntity<List<TransferDto>> getAllDepositsOfAUser(@PathVariable Long id) {
-        List<TransferDto> transfers = transferService.getAllDepositsOfAUser(id);
+
+    @GetMapping("/bankAccount/deposits/{bankAccountId}")
+    public ResponseEntity<List<TransferDto>> getAllDepositsOfABankAccount(@PathVariable Long bankAccountId) {
+        List<TransferDto> transfers = transferService.getAllDepositsOfABankAccount(bankAccountId);
         return new ResponseEntity<>(transfers, HttpStatus.OK);
     }
-    @GetMapping("/user/payouts/{id}")
-    public ResponseEntity<List<TransferDto>> getAllPayoutsOfAUser(@PathVariable Long id) {
-        List<TransferDto> transfers = transferService.getAllPayoutsOfAUser(id);
+
+    @GetMapping("/bankAccount/payouts/{bankAccountId}")
+    public ResponseEntity<List<TransferDto>> getAllPayoutsOfABankAccount(@PathVariable Long bankAccountId) {
+        List<TransferDto> transfers = transferService.getAllPayoutsOfABankAccount(bankAccountId);
         return new ResponseEntity<>(transfers, HttpStatus.OK);
     }
+
 
     @PostMapping
     public ResponseEntity<TransferDto> createTransfer(@RequestBody TransferDto transferDto) {

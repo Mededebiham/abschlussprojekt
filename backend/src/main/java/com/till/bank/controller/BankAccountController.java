@@ -46,7 +46,8 @@ public class BankAccountController {
         bankAccountDto.setBankId(bankAccount.getBankId());
         bankAccountDto.setBalance(bankAccount.getBalance());
         bankAccountDto.setId(bankAccount.getId());
-
+        bankAccountDto.setAccountType(bankAccount.getAccountType());
+        bankAccountDto.setConfirmedByAdmin(bankAccount.isConfirmedByAdmin());
         return new ResponseEntity<>(bankAccountDto, HttpStatus.OK);
     }
     @GetMapping("/accountNumbOrIBAN")
@@ -67,6 +68,8 @@ public class BankAccountController {
             responseDto.setUser(bankAccount.getUser()); // Assuming UserDto constructor accepts a User1 object
             responseDto.setId(bankAccount.getId()); // Assuming UserDto constructor accepts a User1 object
             // Return the ResponseEntity with the BankAccountResponseDto object as the body
+            responseDto.setAccountType(bankAccount.getAccountType());
+            responseDto.setConfirmedByAdmin(bankAccount.isConfirmedByAdmin());
             return ResponseEntity.ok(responseDto);
         } else {
             // Handle the case where bankAccount is null

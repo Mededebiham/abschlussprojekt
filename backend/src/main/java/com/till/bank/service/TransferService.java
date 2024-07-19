@@ -18,6 +18,9 @@ public interface TransferService {
     Transfer updateTransfer(Long id, TransferDto transferDto);
 
     void deleteTransfer(Long id);
+    List<TransferDto> getAllTransfersOfABankAccount(Long bankAccountId);
+    List<TransferDto> getAllPayoutsOfABankAccount(Long bankAccountId);
+    List<TransferDto> getAllDepositsOfABankAccount(Long bankAccountId);
 
     List<TransferDto> getAllTransfersOfAUser(Long id);
     List<TransferDto> getAllDepositsOfAUser(Long id);
