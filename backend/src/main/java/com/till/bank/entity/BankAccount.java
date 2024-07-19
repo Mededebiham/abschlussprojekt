@@ -12,6 +12,8 @@ import jakarta.validation.constraints.Pattern;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "account_type")
 public class BankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,13 +25,15 @@ public class BankAccount {
 
     private String IBAN;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     @JsonIgnore
     private User1 user;
 
-
     private double balance;
+
+    @Column(name = "account_type", nullable = false, insertable = false, updatable = false)
+    private String accountType;
 
     public BankAccount(String bankId, String accountNumber, String IBAN, User1 user, double balance) {
         this.bankId = bankId;
@@ -37,7 +41,10 @@ public class BankAccount {
         this.IBAN = IBAN;
         this.user = user;
         this.balance = balance;
+        this.accountType = "Girokonto";
+
     }
+
     @Override
     public String toString() {
         return "BankAccount{" +
