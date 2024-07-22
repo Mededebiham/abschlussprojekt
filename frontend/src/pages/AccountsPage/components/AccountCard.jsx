@@ -1,10 +1,16 @@
 // AccountCard.js
 import React from 'react';
 import './style.css';
+import { useNavigate } from 'react-router-dom';
 
 const AccountCard = ({ account }) => {
+    const navigate = useNavigate();
+    const handleCardClick = () => {
+        // Profile sayfasına yönlendirme
+        navigate("/ClientProfil");
+    };
     return (
-        <div className="account-card">
+        <div className="account-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
             <div className="account-info">
                 <div className="account-detail">
                     <strong>Kontotyp: </strong>
