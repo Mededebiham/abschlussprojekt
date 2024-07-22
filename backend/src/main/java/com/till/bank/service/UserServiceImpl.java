@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
             bankAccount.setAccountNumber(accountNumber);
             bankAccount.setIBAN(iban);
             bankAccount.setBalance(1000000);
-            bankAccount.setAccountType("CheckingAccount");
+//            bankAccount.setAccountType("CheckingAccount");
             bankAccount.setUser(savedUser);
             bankAccount.setConfirmedByAdmin(true); // Mark bank account as confirmed by admin
             BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
@@ -160,7 +160,6 @@ public class UserServiceImpl implements UserService {
         String accountNumber = generateAccountNumber();
         //Generate the IBAN number
         String iban = generateIBAN(userCreationRequest.getUserDto().getAddress().getZipCode(),accountNumber,userCreationRequest.getUserDto().getAddress().getCountry());
-//        BankAccount bankAccount=new BankAccount(); //  BankAccount(userdto.getAddress().getZipCode(),accountNumber,iban ,null ,0.0);
 
         BankAccount bankAccount;
         if ("Girokonto".equals(userCreationRequest.getAccountType())) {
@@ -169,7 +168,6 @@ public class UserServiceImpl implements UserService {
         } else if ("Sparkonto".equals(userCreationRequest.getAccountType())) {
             bankAccount = new SavingsAccount();
 
-            // Create SavingsAccount instance
         } else {
             throw new IllegalArgumentException("Invalid account type: " + userCreationRequest.getAccountType());
         }
@@ -196,8 +194,6 @@ public class UserServiceImpl implements UserService {
         savedBankAccount.setIBAN(iban);
         savedBankAccount.setBalance(userCreationRequest.getBalance());
         savedBankAccount.setAccountType(userCreationRequest.getAccountType());
-        // Update the bank account entity with the user's ID
-        savedBankAccount.setUser(savedUser);
 
         // Save the updated bank account entity
         bankAccountRepository.save(savedBankAccount);
