@@ -1,8 +1,8 @@
 package com.till.bank.service;
 
 import com.till.bank.dto.BankAccountDto;
+import com.till.bank.dto.BankAccountDtoForAccountsPage;
 import com.till.bank.entity.BankAccount;
-import com.till.bank.entity.Transfer;
 import com.till.bank.entity.User1;
 import com.till.bank.repository.BankAccountRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -86,6 +87,20 @@ public class BankAccountServiceImpl implements BankAccountService {
         }else {
             return null;
         }
+    }
+
+    @Override
+    public List<BankAccountDtoForAccountsPage> getBankAccountsByUserId(Long userId) {
+        List<BankAccount> accounts = bankAccountRepository.findByUserId(userId).orElseThrow();
+        System.out.println("account service " + accounts);
+        return accounts.stream()
+                .map(account -> new BankAccountDtoForAccountsPage(
+                        account.getAccountType(),
+                        account.getIBAN(),
+                        account.getUser(),
+                        account.getBalance() // Assume accountType is available in BankAccount entity
+                ))
+                .collect(Collectors.toList());
     }
 
 }

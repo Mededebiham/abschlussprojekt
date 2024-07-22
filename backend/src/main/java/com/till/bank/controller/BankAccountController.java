@@ -2,6 +2,7 @@ package com.till.bank.controller;
 
 
 import com.till.bank.dto.BankAccountDto;
+import com.till.bank.dto.BankAccountDtoForAccountsPage;
 import com.till.bank.entity.BankAccount;
 import com.till.bank.service.BankAccountService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,10 +47,18 @@ public class BankAccountController {
         bankAccountDto.setBankId(bankAccount.getBankId());
         bankAccountDto.setBalance(bankAccount.getBalance());
         bankAccountDto.setId(bankAccount.getId());
-        bankAccountDto.setAccountType(bankAccount.getAccountType());
+//        bankAccountDto.setAccountType(bankAccount.getAccountType());
         bankAccountDto.setConfirmedByAdmin(bankAccount.isConfirmedByAdmin());
         return new ResponseEntity<>(bankAccountDto, HttpStatus.OK);
     }
+
+    @GetMapping("/user/{id}/accounts")
+    public ResponseEntity<List<BankAccountDtoForAccountsPage>> getUserAccounts(@PathVariable Long id) {
+        List<BankAccountDtoForAccountsPage> accounts = bankAccountService.getBankAccountsByUserId(id);
+        System.out.println(accounts);
+        return accounts != null ? ResponseEntity.ok(accounts) : ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/accountNumbOrIBAN")
     public ResponseEntity<?> getBankAccountByAccNumbOrIBAN(@RequestParam String bankId, @RequestParam String accountNumber, @RequestParam String IBAN) {
         BankAccountDto bankAccountDto = new BankAccountDto(bankId, accountNumber, IBAN);
