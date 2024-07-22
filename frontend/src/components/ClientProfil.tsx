@@ -133,11 +133,11 @@ const ClientProfil: React.FC = ({ }) => {
                 </div>
             </div>
 
-            <div className="ml-5">
-                <label htmlFor="bankAccountSelect">Wählen Sie ein Bankkonto: </label>
+            <div className="ml-5 bg-black">
+                <label className="bg-black" htmlFor="bankAccountSelect">Wählen Sie ein Bankkonto: </label>
                 <select id="bankAccountSelect" onChange={handleBankAccountChange} value={selectedBankAccount?.id.toString() || ''}>
                     {bankAccounts.map(account => (
-                        <option key={account.id} value={account.id.toString()}>
+                        <option className="text-black bg-black" key={account.id} value={account.id.toString()}>
                             {account.accountType}
                         </option>
                     ))}

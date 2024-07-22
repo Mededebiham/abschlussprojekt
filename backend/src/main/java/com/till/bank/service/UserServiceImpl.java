@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
             bankAccount.setAccountNumber(accountNumber);
             bankAccount.setIBAN(iban);
             bankAccount.setBalance(1000000);
-            bankAccount.setAccountType("CheckingAccount");
+            bankAccount.setAccountType("Girokonto");
             bankAccount.setUser(savedUser);
             bankAccount.setConfirmedByAdmin(true); // Mark bank account as confirmed by admin
             BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
