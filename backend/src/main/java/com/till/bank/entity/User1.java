@@ -30,6 +30,7 @@ public class User1 {
     private String email;
     private String password;
     private String phoneNumber;
+    @Column(name = "confirmed_by_admin", nullable = false)
     private boolean confirmedByAdmin = false;
     private String role;
 

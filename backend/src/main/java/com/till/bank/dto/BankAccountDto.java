@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
-
 public class BankAccountDto {
     private Long id;
     private String bankId;

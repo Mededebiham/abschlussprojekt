@@ -74,6 +74,7 @@ export interface BankAccount {
   bankId: string;
   user: UserForBankAccount;
   balance: number;
+  accountType:string;
 }
 
 export interface Transfer {
