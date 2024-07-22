@@ -89,7 +89,7 @@ const NewPayout: React.FC = () => {
   const getBankAccountOfUser = async (userId: string | null) => {
     if (userId !== null) {
       try {
-        const response = await axios.get(`http://localhost:8088/bankAccount/user/${userId}`);
+        const response = await axios.get(`http://localhost:8088/bankAccounts/user/${userId}`);
         return response.data;
       } catch (error) {
         console.error('Error fetching bank account:', error);

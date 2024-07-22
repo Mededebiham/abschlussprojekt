@@ -102,10 +102,11 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       !streetNumber ||
       !city ||
       !zipCode ||
-      !country;
+      !country ||
+        !accountType;
 
     setIsButtonDisabled(isAnyFieldEmpty || !isPasswordsMatch);
-  }, [formData, isPasswordsMatch]);
+  }, [formData, isPasswordsMatch,accountType]);
 
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

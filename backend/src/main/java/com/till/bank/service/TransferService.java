@@ -22,10 +22,7 @@ public interface TransferService {
     List<TransferDto> getAllPayoutsOfABankAccount(Long bankAccountId);
     List<TransferDto> getAllDepositsOfABankAccount(Long bankAccountId);
 
-    List<TransferDto> getAllTransfersOfAUser(Long id);
-    List<TransferDto> getAllDepositsOfAUser(Long id);
 
-    List<TransferDto> getAllPayoutsOfAUser(Long id);
     BankAccountDto convertBAToBADto(BankAccount bankAccount);
     TransferDto convertTToTDto(Transfer transfer);
 

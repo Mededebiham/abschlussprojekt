@@ -91,6 +91,7 @@ public class TransferServiceImpl implements TransferService {
         log.info("All Payouts: {}", transferDtos);
         return transferDtos;
     }
+
     @Override
     public Transfer createTransfer(TransferDto transferDto) {
         //if recipient or sender are null
@@ -160,84 +161,8 @@ public class TransferServiceImpl implements TransferService {
         transferRepository.deleteById(id);
     }
 
-    @Override
-    public List<TransferDto> getAllTransfersOfAUser(Long userId) {
-        List<TransferDto> transferDtos = new ArrayList<>();
-
-        Optional<BankAccount> bankAccountOptional = bankAccountRepository.findByUser_Id(userId);
-        if (bankAccountOptional.isPresent()) {
-            BankAccount bankAccount = bankAccountOptional.get();
-
-            // Find transfers sent by the user
-            List<Transfer> transfersSent = transferRepository.findBySender_Id(bankAccount.getId());
-
-            // Find transfers received by the user
-            List<Transfer> transfersReceived = transferRepository.findByRecipient_Id(bankAccount.getId());
-
-            // Convert Transfer objects to TransferDto objects
-            for (Transfer transfer : transfersSent) {
-                transferDtos.add(convertTToTDto(transfer));
-            }
-            for (Transfer transfer : transfersReceived) {
-                transferDtos.add(convertTToTDto(transfer));
-            }
-
-            log.info("All Transfers: {}", transferDtos);
-        } else {
-            log.warn("No bank account found for user with ID: {}", userId);
-        }
-        return transferDtos;
-    }
-
-    @Override
-    public List<TransferDto> getAllDepositsOfAUser(Long userId) {
-        List<TransferDto> transferDtos = new ArrayList<>();
-
-        Optional<BankAccount> bankAccountOptional = bankAccountRepository.findByUser_Id(userId);
-        if (bankAccountOptional.isPresent()) {
-            BankAccount bankAccount = bankAccountOptional.get();
-
-            // Find transfers received by the user
-            List<Transfer> transfersReceived = transferRepository.findByRecipient_Id(bankAccount.getId());
-
-            // Convert Transfer objects to TransferDto objects
-            for (Transfer transfer : transfersReceived) {
-                transferDtos.add(convertTToTDto(transfer));
-            }
-
-            log.info("All Transfers: {}", transferDtos);
-        } else {
-            log.warn("No bank account found for user with ID: {}", userId);
-        }
-        return transferDtos;
-    }
-
-@Override
-public List<TransferDto> getAllPayoutsOfAUser(Long userId) {
-    List<TransferDto> transferDtos = new ArrayList<>();
-
-    Optional<BankAccount> bankAccountOptional = bankAccountRepository.findByUser_Id(userId);
-    if (bankAccountOptional.isPresent()) {
-        BankAccount bankAccount = bankAccountOptional.get();
-
-        // Find transfers sent by the user
-        List<Transfer> transfersSent = transferRepository.findBySender_Id(bankAccount.getId());
-
-        // Convert Transfer objects to TransferDto objects
-        for (Transfer transfer : transfersSent) {
-
-            transferDtos.add(convertTToTDto(transfer));
-        }
-
-        log.info("All Transfers: {}", transferDtos);
-    } else {
-        log.warn("No bank account found for user with ID: {}", userId);
-    }
-    return transferDtos;
-}
 @Override
 public BankAccountDto convertBAToBADto(BankAccount bankAccount){
-        log.info("BANKACCOUNT OBJECT BEFORE CONVERTING "+bankAccount);
     //convert bank account to bank account dto for the sender
     BankAccountDto bankAccountDto=new BankAccountDto();
     bankAccountDto.setAccountNumber(bankAccount.getAccountNumber());

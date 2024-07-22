@@ -5,17 +5,19 @@ import com.till.bank.dto.BankAccountDto;
 import com.till.bank.dto.BankAccountDtoForAccountsPage;
 import com.till.bank.entity.BankAccount;
 import com.till.bank.service.BankAccountService;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/bankAccount")
+@RequestMapping("/bankAccounts")
 //@CrossOrigin(origins = "http://localhost:3000")
 public class BankAccountController {
 
@@ -38,8 +40,22 @@ public class BankAccountController {
         return new ResponseEntity<>(bankAccount, HttpStatus.OK);
     }
     @GetMapping("/user/{userId}")
-    public ResponseEntity<BankAccountDto> getBankAccountByUserId(@PathVariable Long userId) {
-        BankAccount bankAccount = bankAccountService.getBankAccountByUserId(userId);
+    public ResponseEntity<List<BankAccountDto>> getBankAccountsByUserId(@PathVariable Long userId) {
+        List<BankAccount> bankAccounts = bankAccountService.getBankAccountsByUserId(userId);
+        log.info("Found {} bank accounts for user {}", bankAccounts.size(), userId);
+        log.info("account: "+bankAccounts.get(0).toString());
+
+        List<BankAccountDto> bankAccountDtos = new ArrayList<>();
+        for (BankAccount bankAccount : bankAccounts) {
+            bankAccountDtos.add(convertBAToBADto(bankAccount));
+            log.debug("Bank Account: {}", bankAccount);
+        }
+
+        return new ResponseEntity<>(bankAccountDtos, HttpStatus.OK);
+    }
+
+
+    private static BankAccountDto convertBAToBADto(BankAccount bankAccount) {
         BankAccountDto bankAccountDto=new BankAccountDto();
         bankAccountDto.setAccountNumber(bankAccount.getAccountNumber());
         bankAccountDto.setUser(bankAccount.getUser());
@@ -47,9 +63,9 @@ public class BankAccountController {
         bankAccountDto.setBankId(bankAccount.getBankId());
         bankAccountDto.setBalance(bankAccount.getBalance());
         bankAccountDto.setId(bankAccount.getId());
-//        bankAccountDto.setAccountType(bankAccount.getAccountType());
+        bankAccountDto.setAccountType(bankAccount.getAccountType());
         bankAccountDto.setConfirmedByAdmin(bankAccount.isConfirmedByAdmin());
-        return new ResponseEntity<>(bankAccountDto, HttpStatus.OK);
+        return bankAccountDto;
     }
 
     @GetMapping("/user/{id}/accounts")

@@ -84,12 +84,12 @@ public class UserServiceImpl implements UserService {
             bankAccount.setAccountNumber(accountNumber);
             bankAccount.setIBAN(iban);
             bankAccount.setBalance(1000000);
-//            bankAccount.setAccountType("CheckingAccount");
+            bankAccount.setAccountType("Girokonto");
             bankAccount.setUser(savedUser);
             bankAccount.setConfirmedByAdmin(true); // Mark bank account as confirmed by admin
             BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
 
-            savedUser.getBankAccount().add(savedBankAccount);
+            savedUser.getBankAccounts().add(savedBankAccount);
             savedUser.setRole(role);
             savedUser.setConfirmedByAdmin(true);
             userRepository.save(savedUser);
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
         User1 user= userRepository.findByEmail(loginRequest.getEmail());
 //        if (bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
         if(loginRequest.getPassword().equals(user.getPassword())){
-            return this.convertUserToUserDto(user,user.getBankAccount().get(0));
+            return this.convertUserToUserDto(user,user.getBankAccounts().get(0));
         }
         else return null;
         //POSSIBLE TOKEN IMPLEMENTATION
@@ -160,6 +160,7 @@ public class UserServiceImpl implements UserService {
         String accountNumber = generateAccountNumber();
         //Generate the IBAN number
         String iban = generateIBAN(userCreationRequest.getUserDto().getAddress().getZipCode(),accountNumber,userCreationRequest.getUserDto().getAddress().getCountry());
+//        BankAccount bankAccount=new BankAccount(); //  BankAccount(userdto.getAddress().getZipCode(),accountNumber,iban ,null ,0.0);
 
         BankAccount bankAccount;
         if ("Girokonto".equals(userCreationRequest.getAccountType())) {
@@ -168,6 +169,7 @@ public class UserServiceImpl implements UserService {
         } else if ("Sparkonto".equals(userCreationRequest.getAccountType())) {
             bankAccount = new SavingsAccount();
 
+            // Create SavingsAccount instance
         } else {
             throw new IllegalArgumentException("Invalid account type: " + userCreationRequest.getAccountType());
         }
@@ -182,7 +184,7 @@ public class UserServiceImpl implements UserService {
                 userCreationRequest.getUserDto().getPhoneNumber(), userCreationRequest.getUserDto().getRole(),
                 userCreationRequest.getUserDto().getAddress());
         // Add the saved bank account to the user's bank accounts list
-        user.getBankAccount().add(savedBankAccount);
+        user.getBankAccounts().add(savedBankAccount);
 //        user.setPassword(bCryptPasswordEncoder.encode(userdto.getPassword()));
         User1 savedUser = userRepository.save(user);
 
@@ -194,6 +196,8 @@ public class UserServiceImpl implements UserService {
         savedBankAccount.setIBAN(iban);
         savedBankAccount.setBalance(userCreationRequest.getBalance());
         savedBankAccount.setAccountType(userCreationRequest.getAccountType());
+        // Update the bank account entity with the user's ID
+        savedBankAccount.setUser(savedUser);
 
         // Save the updated bank account entity
         bankAccountRepository.save(savedBankAccount);
@@ -279,6 +283,7 @@ public class UserServiceImpl implements UserService {
 
     public UserDto convertUserToUserDto(User1 user,BankAccount bankAccount) {
         UserDto userDto= new UserDto();
+        userDto.setId(user.getId());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setEmail(user.getEmail());

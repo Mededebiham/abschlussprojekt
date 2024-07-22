@@ -57,6 +57,8 @@ const ClientProfil: React.FC = ({ }) => {
 
     useEffect(() => {
         if (selectedBankAccount) {
+            console.log("bank account selected")
+            console.log(selectedBankAccount);
             const fetchData = async () => {
                 try {
                     const bankAccountId = selectedBankAccount.id;
@@ -81,11 +83,14 @@ const ClientProfil: React.FC = ({ }) => {
         }
     }, [selectedBankAccount]);
 
+
     const handleBankAccountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = event.target.value;
         const selectedAccount = bankAccounts.find(account => account.id === selectedId);
         setSelectedBankAccount(selectedAccount || null);
     };
+
+
 
     const toggleDeposits = () => {
         setShowDeposits(!showDeposits);
@@ -121,25 +126,31 @@ const ClientProfil: React.FC = ({ }) => {
 
             <div className="flex justify-between mx-5 my-5">
                 <div className="flex mt-5">
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleDeposits}>Eingehende Umsätze</button>
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={togglePayouts}>Ausgehende Umsätze</button>
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleTransfers}>Alle Umsätze</button>
+                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleDeposits}>Eingehende Transaktionen</button>
+                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={togglePayouts}>Ausgehende Transaktionen</button>
+                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5" onClick={toggleTransfers}>Alle Transaktionen</button>
                     <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={toggleNewPayout}>✚ Überweisung</button>
                 </div>
             </div>
 
-            <div className="ml-5">
-                <label htmlFor="bankAccountSelect">Wählen Sie ein Bankkonto: </label>
-                <select id="bankAccountSelect" onChange={handleBankAccountChange}>
+            <div className="ml-5 bg-black">
+                <label className="bg-black" htmlFor="bankAccountSelect">Wählen Sie ein Bankkonto: </label>
+                <select id="bankAccountSelect" onChange={handleBankAccountChange} value={selectedBankAccount?.id.toString() || ''}>
                     {bankAccounts.map(account => (
-                        <option key={account.id} value={account.id}>
-                            {account.accountNumber} - {account.balance}€
+                        <option className="text-black bg-black" key={account.id} value={account.id.toString()}>
+                            {account.accountType}
                         </option>
                     ))}
                 </select>
             </div>
 
-            <div className="ml-5">Ihre Kontoübersicht: {selectedBankAccount?.balance}</div>
+            <div className="ml-5">
+                {selectedBankAccount ? (
+                    <div>Ihre Kontoübersicht: {selectedBankAccount.balance}</div>
+                ) : (
+                    <div>Kein Konto ausgesucht..</div>
+                )}
+            </div>
 
             <div className="flex justify-center mx-5 my-5">
                 {showDeposits && (
