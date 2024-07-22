@@ -7,7 +7,7 @@ const AccountCard = ({ account }) => {
     const navigate = useNavigate();
     const handleCardClick = () => {
         // Profile sayfasına yönlendirme
-        navigate("/ClientProfil");
+        navigate("/ClientProfil",{ state: { accountType: account.accountType, balance: account.balance } });
     };
     return (
         <div className="account-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
