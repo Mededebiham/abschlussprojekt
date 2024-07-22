@@ -21,6 +21,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class BankAccountServiceImpl implements BankAccountService {
+    @Override
+    public BankAccount getBankAccountByUserId(Long userId) {
+        return null;
+    }
 
     @Autowired
     BankAccountRepository bankAccountRepository;

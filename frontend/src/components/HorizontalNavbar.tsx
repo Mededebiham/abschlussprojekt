@@ -38,7 +38,7 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ isLoggedIn, user, l
                     {user?.role === "user" ? (
                         <>
                             <li className="mx-10 text-white"><a href="/accounts">Konten</a></li>
-                            <li className="mx-10 text-white"><a href="/ClientProfil">Profile</a></li>
+                            {/*<li className="mx-10 text-white"><a href="/ClientProfil">Profile</a></li>*/}
                         </>):
                         (<li className="mx-10 text-white"><a href="/AdminProfil">Profile</a></li>)
                     }

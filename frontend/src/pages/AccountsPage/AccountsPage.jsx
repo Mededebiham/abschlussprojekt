@@ -33,7 +33,7 @@ function AccountsPage() {
 
     const fetchAccounts = async (userId) => {
         try {
-            const response = await axios.get(`http://localhost:8088/bankAccount/user/1/accounts`);
+            const response = await axios.get(`http://localhost:8088/bankAccounts/user/1/accounts`);
             setAccounts(response.data);  // Use response.data directly
         } catch (error) {
             console.error('Error fetching accounts:', error);

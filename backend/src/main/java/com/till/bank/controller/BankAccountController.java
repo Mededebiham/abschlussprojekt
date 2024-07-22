@@ -70,7 +70,7 @@ public class BankAccountController {
 
     @GetMapping("/user/{id}/accounts")
     public ResponseEntity<List<BankAccountDtoForAccountsPage>> getAccountsByUserId(@PathVariable Long id) {
-        List<BankAccountDtoForAccountsPage> accounts = bankAccountService.getBankAccountsByUserId(id);
+        List<BankAccountDtoForAccountsPage> accounts = bankAccountService.getBankAccountsByUserIdWithBankAccountDtoForAccountsPage(id);
         System.out.println(accounts);
         return accounts != null ? ResponseEntity.ok(accounts) : ResponseEntity.notFound().build();
     }

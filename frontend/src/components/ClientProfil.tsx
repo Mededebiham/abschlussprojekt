@@ -122,7 +122,7 @@ const ClientProfil: React.FC = ({ }) => {
 
     return (
         <div className="text-white">
-            <h2 className="text-white font-bold my-5 ml-5">Willkommen, {user?.username}!</h2>
+            <h2 className="text-black font-bold my-5 ml-5">Willkommen, {user?.username}!</h2>
 
             <div className="flex justify-between mx-5 my-5">
                 <div className="flex mt-5">
@@ -133,16 +133,16 @@ const ClientProfil: React.FC = ({ }) => {
                 </div>
             </div>
 
-            <div className="ml-5 bg-black">
-                <label className="bg-black" htmlFor="bankAccountSelect">Wählen Sie ein Bankkonto: </label>
-                <select id="bankAccountSelect" onChange={handleBankAccountChange} value={selectedBankAccount?.id.toString() || ''}>
-                    {bankAccounts.map(account => (
-                        <option className="text-black bg-black" key={account.id} value={account.id.toString()}>
-                            {account.accountType}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            {/*<div className="ml-5 bg-black">*/}
+            {/*    /!*<label className="bg-black" htmlFor="bankAccountSelect">Wählen Sie ein Bankkonto: </label>*!/*/}
+            {/*    <select id="bankAccountSelect" onChange={handleBankAccountChange} value={selectedBankAccount?.id.toString() || ''}>*/}
+            {/*        {bankAccounts.map(account => (*/}
+            {/*            <option className="text-black bg-black" key={account.id} value={account.id.toString()}>*/}
+            {/*                {account.accountType}*/}
+            {/*            </option>*/}
+            {/*        ))}*/}
+            {/*    </select>*/}
+            {/*</div>*/}
 
             <div className="ml-5">
                 {selectedBankAccount ? (
