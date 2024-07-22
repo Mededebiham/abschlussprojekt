@@ -21,5 +21,5 @@ public interface BankAccountService {
 
     ResponseEntity<?> getBankAccountByAccNumbOrIBAN(BankAccountDto bankAccountDto);
 
-    BankAccount getBankAccountByUserId(Long userId);
+    List<BankAccount> getBankAccountsByUserId(Long userId);
 }

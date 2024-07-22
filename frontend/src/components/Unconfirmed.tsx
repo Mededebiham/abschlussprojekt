@@ -11,7 +11,7 @@ const Unconfirmed: React.FC = () => {
     };
 
     return (
-        <div className="text-white flex flex-col items-center justify-center h-screen">
+        <div className="text-blackflex flex-col items-center justify-center h-screen">
             <h1 className="text-3xl font-bold mb-5">Account Unconfirmed</h1>
             <p className="text-lg mb-5">Your account has not been confirmed by an admin yet. Please contact support for further assistance.</p>
             <button

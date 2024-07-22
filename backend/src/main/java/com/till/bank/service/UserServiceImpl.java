@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
             bankAccount.setConfirmedByAdmin(true); // Mark bank account as confirmed by admin
             BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
 
-            savedUser.getBankAccount().add(savedBankAccount);
+            savedUser.getBankAccounts().add(savedBankAccount);
             savedUser.setRole(role);
             savedUser.setConfirmedByAdmin(true);
             userRepository.save(savedUser);
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
         User1 user= userRepository.findByEmail(loginRequest.getEmail());
 //        if (bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
         if(loginRequest.getPassword().equals(user.getPassword())){
-            return this.convertUserToUserDto(user,user.getBankAccount().get(0));
+            return this.convertUserToUserDto(user,user.getBankAccounts().get(0));
         }
         else return null;
         //POSSIBLE TOKEN IMPLEMENTATION
@@ -184,7 +184,7 @@ public class UserServiceImpl implements UserService {
                 userCreationRequest.getUserDto().getPhoneNumber(), userCreationRequest.getUserDto().getRole(),
                 userCreationRequest.getUserDto().getAddress());
         // Add the saved bank account to the user's bank accounts list
-        user.getBankAccount().add(savedBankAccount);
+        user.getBankAccounts().add(savedBankAccount);
 //        user.setPassword(bCryptPasswordEncoder.encode(userdto.getPassword()));
         User1 savedUser = userRepository.save(user);
 
@@ -283,6 +283,7 @@ public class UserServiceImpl implements UserService {
 
     public UserDto convertUserToUserDto(User1 user,BankAccount bankAccount) {
         UserDto userDto= new UserDto();
+        userDto.setId(user.getId());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setEmail(user.getEmail());

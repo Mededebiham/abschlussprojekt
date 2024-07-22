@@ -1,15 +1,14 @@
 package com.till.bank.repository;
 
-import com.till.bank.entity.Address;
-import com.till.bank.entity.BankAccount;
-import com.till.bank.entity.CheckingAccount;
-import com.till.bank.entity.User1;
+import com.till.bank.entity.*;
 import com.till.bank.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -41,6 +40,57 @@ public class UserRepositoryTest {
     public void testFindById() {
         User1 user = userRepository.findById(1L).orElse(null);
         assertNotNull(user);
+    }
+    @Test
+    public void testFindBankAccounts(){
+        // Fetch the user from the repository
+// Create a new user
+        User1 user = new User1();
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setEmail("john.doe@example.com");
+        user.setPassword("password");
+        user.setPhoneNumber("1234567890");
+        user.setRole("USER");
+        user.setAddress(new Address(" Main St","1232", "City", "State", "12345"));
+
+
+// Save the user (this will also save the bank account due to cascade settings)
+        userRepository.save(user);
+// Create new bank accounts and associate them with the user
+        BankAccount account1 = new CheckingAccount();
+        account1.setBankId("123");
+        account1.setAccountNumber("456789");
+        account1.setIBAN("IL443314318865610");
+        account1.setUser(user);
+        account1.setBalance(1000.0);
+        account1.setAccountType("CheckingAccount");
+
+        BankAccount account2 = new SavingsAccount();
+        account2.setBankId("456");
+        account2.setAccountNumber("123456");
+        account2.setIBAN("IL443314318865611");
+        account2.setUser(user);
+        account2.setBalance(2000.0);
+        account2.setAccountType("SavingsAccount");
+
+// Add the new bank accounts to the user's bank accounts list
+        user.getBankAccounts().add(account1);
+        user.getBankAccounts().add(account2);
+
+// Save the user (this will also save the bank accounts due to cascade settings)
+        userRepository.save(user);
+        // Fetch the user and their bank accounts
+        User1 user2 = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found"));
+        List<BankAccount> bankAccounts = user2.getBankAccounts();
+
+        for (BankAccount account : bankAccounts) {
+            System.out.println("Bank Account ID: " + account.getId());
+            System.out.println("Bank Account Type: " + account.getAccountType());
+            System.out.println("Bank Account Balance: " + account.getBalance());
+        }
+        assertNotNull(user2);
+
     }
 
     @Test

@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserDto {
 
+    private Long id;
 
 
     @NotBlank(message = "First Name is mandatory")
