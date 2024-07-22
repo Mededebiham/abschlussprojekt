@@ -33,17 +33,6 @@ public class BankAccountDto {
         this.IBAN = IBAN;
     }
 
-    public BankAccountDto(Long id, String bankId, String accountNumber, String IBAN, String accountType, boolean confirmedByAdmin, User1 user, double balance) {
-        this.id = id;
-        this.bankId = bankId;
-        this.accountNumber = accountNumber;
-        this.IBAN = IBAN;
-        this.accountType = accountType;
-        this.confirmedByAdmin = confirmedByAdmin;
-        this.user = user;
-        this.balance = balance;
-    }
-
     public BankAccountDto(long l) {
         this.id=id;
     }

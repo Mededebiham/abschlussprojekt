@@ -18,19 +18,16 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/users")
-@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @CrossOrigin(origins = "*")
     @GetMapping
     public List<User1> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @CrossOrigin(origins = "*")
     @GetMapping("/{id}")
     public ResponseEntity<User1> getUserById(@PathVariable Long id) {
         User1 user = userService.getUserById(id);
@@ -39,14 +36,12 @@ public class UserController {
 
 
     //changed return type to userdto
-    @CrossOrigin(origins = "*")
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody UserCreationRequest userCreationRequest) {
         return new ResponseEntity<>(userService.createUser(userCreationRequest), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    @CrossOrigin(origins = "*")
     public ResponseEntity<UserDto> loginUser(@RequestBody LoginRequest loginRequest) {
         // Call your UserService method to handle the login request
         UserDto user = userService.login(loginRequest);
@@ -57,14 +52,12 @@ public class UserController {
         }
     }
 
-    @CrossOrigin(origins = "*")
     @PutMapping("/{id}")
     public ResponseEntity<User1> updateUser(@PathVariable Long id, @RequestBody UserDto userdto) {
         User1 updatedUser = userService.updateUser(id, userdto);
         return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
     }
 
-    @CrossOrigin(origins = "*")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
