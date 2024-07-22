@@ -9,6 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@DiscriminatorValue("Girokonto")
 public class CheckingAccount extends BankAccount {
 
 

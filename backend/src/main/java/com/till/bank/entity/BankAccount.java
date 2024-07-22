@@ -5,16 +5,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-
-import static jakarta.persistence.DiscriminatorType.STRING;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "account_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class BankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +32,21 @@ public abstract class BankAccount {
 
     private boolean confirmedByAdmin = false;
 
-    @Column(name = "account_type", nullable = false)
+    @Transient
     private String accountType;
+
+    @PostLoad
+    private void postLoad() {
+
+        this.accountType = getDiscriminatorValue();
+    }
+    private String getDiscriminatorValue() {
+        DiscriminatorValue annotation = getClass().getAnnotation(DiscriminatorValue.class);
+        if (annotation != null) {
+            return annotation.value();
+        }
+        return null;
+    }
 
     public BankAccount(String bankId, String accountNumber, String IBAN, User1 user, double balance) {
         this.bankId = bankId;
@@ -44,6 +54,15 @@ public abstract class BankAccount {
         this.IBAN = IBAN;
         this.user = user;
         this.balance = balance;
+
+    }
+    public BankAccount(String bankId, String accountNumber, String IBAN, User1 user, double balance, String accountType) {
+        this.bankId = bankId;
+        this.accountNumber = accountNumber;
+        this.IBAN = IBAN;
+        this.user = user;
+        this.balance = balance;
+        this.accountType = accountType;
 
     }
 
