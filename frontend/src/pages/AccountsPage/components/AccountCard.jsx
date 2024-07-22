@@ -9,17 +9,17 @@ const AccountCard = ({ account }) => {
                 <div className="account-detail">
                     <strong>Kontotyp: </strong>
                       <span>
-                       {account.type}
+                       {account.accountType}
                       </span>
 
                 </div>
                 <div className="account-detail">
-                    <strong>IBAN:</strong> {account.number}
+                    <strong>IBAN:</strong> {account.iban}
                 </div>
                 <div className="account-detail">
                     <strong>Kontoinhaber: </strong>
                     <span>
-                        {account.ownerName}
+                        {account.user.firstName + " " + account.user.lastName}
                     </span>
                 </div>
                 <div className="account-balance">

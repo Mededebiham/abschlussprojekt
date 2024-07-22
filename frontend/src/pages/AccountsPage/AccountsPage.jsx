@@ -1,61 +1,60 @@
-import React, {useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import AccountCard from "./components/AccountCard";
-import './style.css'
-import {useNavigate} from "react-router-dom";
+import './style.css';
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-
-export const accounts = [
-    {
-        id: 1,
-        type: 'Girokonto',
-        number: 'DE89123456789012345678',
-        balance: 1500.00,
-        lastTransaction: '01.07.2024 - Gehaltseingang',
-        income: 3000.00,
-        expense: 1500.00,
-        interestRate: null,
-        ownerName: "Yasin Ekinci"
-    },
-    {
-        id: 2,
-        type: 'Sparkonto',
-        number: 'DE89123456789012345678',
-        balance: 5000.00,
-        lastTransaction: '01.07.2024 - Zinsen',
-        income: 200.00,
-        expense: 0.00,
-        interestRate: '1,5%',
-        ownerName: "Yasin Ekinci"
-
-    },
-];
+import axios from "axios";
 
 function AccountsPage() {
     const navigate = useNavigate();
-    const userData = JSON.parse(Cookies.get('user') || '{}');
+    const [userData, setUserData] = useState(null);  // Initially set to null
+    const [accounts, setAccounts] = useState([]);
 
     useEffect(() => {
-
-        if (userData?.confirmedByAdmin === false) {
-            navigate('/Unconfirmed'); // Redirect to an unconfirmed user page
+        // Fetch user data from cookies
+        const user = Cookies.get('user');
+        if (user) {
+            const parsedUser = JSON.parse(user);
+            setUserData(parsedUser);
         } else {
-            console.log("do sth else")
+            console.error('User data is not available');
         }
-
     }, []);
 
+    useEffect(() => {
+        if (userData) {
+            if (userData.confirmedByAdmin === false) {
+                navigate('/Unconfirmed'); // Redirect to an unconfirmed user page
+            } else {
+                fetchAccounts(userData.id);
+            }
+        }
+    }, [userData]);
+
+    const fetchAccounts = async (userId) => {
+        try {
+            const response = await axios.get(`http://localhost:8088/bankAccount/user/1/accounts`);
+            setAccounts(response.data);  // Use response.data directly
+        } catch (error) {
+            console.error('Error fetching accounts:', error);
+        }
+    };
+
     return (
-
-            <div className="account-list-container">
-                <h1>Konten</h1>
-                <div className="underline"></div>
-                <div className="account-list">
-                    {accounts.map((account, index) => (
-                        <AccountCard key={index} account={account}/>
-                    ))}
-                </div>
+        <div className="account-list-container">
+            <h1>Konten</h1>
+            <div className="underline"></div>
+            <div className="account-list">
+                {accounts.length > 0 ? (
+                    accounts.map((account, index) => (
+                        <AccountCard key={index} account={account} />
+                    ))
+                ) : (
+                    <p>No accounts available</p>  // Optional: Show a message if no accounts
+                )}
             </div>
-
+        </div>
     );
 }
+
 export default AccountsPage;
