@@ -127,10 +127,6 @@ public class UserServiceImpl implements UserService {
         userCreationRequest.getUserDto().setRole("user");
         Address address = new Address(userCreationRequest.getUserDto().getAddress().getStreet(), userCreationRequest.getUserDto().getAddress().getStreetNumber(),
                 userCreationRequest.getUserDto().getAddress().getCity(), userCreationRequest.getUserDto().getAddress().getZipCode(), userCreationRequest.getUserDto().getAddress().getCountry());
-
-        // Save the Address entity
-        Address savedAddress = addressRepository.save(address);
-
         // Generate a six-digit account number
         String accountNumber = generateAccountNumber();
         //Generate the IBAN number
