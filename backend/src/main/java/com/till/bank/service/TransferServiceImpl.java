@@ -191,18 +191,21 @@ public class TransferServiceImpl implements TransferService {
         Path tempFile = tempDir.resolve(file.getOriginalFilename());
         file.transferTo(tempFile.toFile());
 
-        Tesseract tesseract = new Tesseract();
-        tesseract.setDatapath(Paths.get("src/main/resources/tessdata").toString());
 
-        return "DE9192838393";
-//        try {
-//            return tesseract.doOCR(tempFile.toFile());
-//        } catch (TesseractException e) {
-//            throw new IOException("Error processing file", e);
-//        } finally {
-//            Files.delete(tempFile);
-//            Files.delete(tempDir);
-//        }
+        Tesseract tesseract = new Tesseract();
+        // tesseract.setDatapath("C:\\Users\\MatsEngbers\\Desktop\\tessdata-main");
+       // tesseract.setLanguage("deu");
+
+
+        try {
+            System.out.println("Hallo");
+            return tesseract.doOCR(tempFile.toFile());
+        } catch (TesseractException e) {
+            throw new IOException("Error processing file", e);
+        } finally {
+            Files.delete(tempFile);
+            Files.delete(tempDir);
+        }
     }
 
     @Override
