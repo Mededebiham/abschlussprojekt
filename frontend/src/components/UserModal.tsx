@@ -1,91 +1,93 @@
 import React, { useState, useEffect } from 'react';
-import TransfersHistory from './TransfersHistory';
-import { Transfer } from '../store/types'; // Import the Transfer interface
 import axios from 'axios';
+import { UserTable, BankAccount } from '../store/types';
+import './css/UserModalStyle.css';  // Import the CSS file
 
 interface UserModalProps {
-    isOpen: boolean;
+    user: UserTable;
     onClose: () => void;
-    user: {
-        firstName: string;
-        lastName: string;
-        email: string;
-        address: {
-            street: string;
-            streetNumber: string;
-            city: string;
-            zipCode: string;
-            country: string;
-        };
-    } | null;
+    isOpen: boolean;
 }
 
-const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user }) => {
-    const [searchQueryTransfer, setSearchQueryTransfer] = useState('');
-    const [transfers, setTransfers] = useState<Transfer[]>([]);
-
-    const filteredTransfers = transfers.filter((transfer) =>
-        `${transfer.recipient} ${transfer.sender} ${transfer.reasonOfTransfer}`.toLowerCase().includes(searchQueryTransfer.toLowerCase())
-    );
+const UserModal: React.FC<UserModalProps> = ({ user, onClose, isOpen }) => {
+    const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
 
     useEffect(() => {
-        // Fetch all users and payouts from the backend
-        const fetchData = async () => {
-            try {
-                const transfersResponse = await axios.get('/api/payouts'); //get all transfers from user.id
+        if (isOpen) {
+            const fetchBankAccounts = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8088/bankAccounts/user/${user?.id}`);
+                    setBankAccounts(response.data);
+                    console.log(response.data)
+                } catch (error) {
+                    console.error('Error fetching bank accounts:', error);
+                }
+            };
 
-                setTransfers(transfersResponse.data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
+            fetchBankAccounts();
+        }
+    }, [user.id, isOpen]);
 
-        fetchData();
-    }, []); // Empty dependency array to fetch data only once when the component mounts
+    const handleActivate = async (accountId: number) => {
+        const accountToActivate = bankAccounts.find(account => Number(account.id) === accountId);
 
-    if (!isOpen || !user) return null;
+        if (!accountToActivate) {
+            console.error('Account not found:', accountId);
+            return;
+        }
+
+
+        try {
+            await axios.put(`http://localhost:8088/bankAccounts/activate/${accountId}`);
+            setBankAccounts((prevAccounts) =>
+                prevAccounts.map((account) =>
+                    Number(account.id) === accountId ? { ...account, confirmedByAdmin: true } : account
+                )
+            );
+        } catch (error) {
+            console.error('Error activating bank account:', error);
+        }
+    };
+
+
+    if (!isOpen) {
+        return null;
+    }
+
+    const handleModalClick = (e: React.MouseEvent) => {
+        // Prevent modal content click from closing the modal
+        e.stopPropagation();
+    };
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none bg-black bg-opacity-50">
-            {/* Popup container */}
-            <div className="relative w-auto max-w-md mx-auto my-6">
-                {/* Modal content */}
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden relative flex flex-col w-full">
-                    {/* Close button */}
-                    <span className="absolute top-0 right-0 p-4 cursor-pointer" onClick={onClose}>&times;</span>
-                    {/* Modal header */}
-                    <div className="p-5 border-b border-solid border-blueGray-200">
-                        <h2 className="text-lg font-semibold">User Details</h2>
-                    </div>
-                    {/* Modal body */}
-                    <div className="p-5">
-                        <p><strong>First Name:</strong> {user.firstName}</p>
-                        <p><strong>Last Name:</strong> {user.lastName}</p>
-                        <p><strong>Email:</strong> {user.email}</p>
-                        <p><strong>Address:</strong> {user.address.street} {user.address.streetNumber}, {user.address.city}, {user.address.zipCode}, {user.address.country}</p>
-                    </div>
-                    <div className="p-5 border-b border-solid border-blueGray-200">
-                        <h2 className="text-lg font-semibold">All User Transfers:</h2>
-                    </div>
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="Umsätze durchsuchen"
-                            value={searchQueryTransfer}
-                            onChange={(e) => setSearchQueryTransfer(e.target.value)}
-                        />
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={handleModalClick}>
+                <h2>User Details</h2>
+                <p><strong>First Name:</strong> {user.firstName}</p>
+                <p><strong>Last Name:</strong> {user.lastName}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Address:</strong> {user.address.street}, {user.address.streetNumber}, {user.address.city}, {user.address.zipCode}, {user.address.country}</p>
 
+                <h3>Bank Accounts</h3>
+                {bankAccounts.map(account => (
+                    <div key={account.id} className="account-details">
+                        <p><strong>Account Number:</strong> {account.accountNumber}</p>
+                        <p><strong>Account Type:</strong> {account.accountType}</p>
+                        <p><strong>Balance:</strong> {account.balance}</p>
+                        <p><strong>IBAN:</strong> {account.iban}</p>
+                        <p><strong>Confirmed By Admin:</strong> {account.confirmedByAdmin ? 'Yes' : 'No'}</p>
+                        {!account.confirmedByAdmin && (
+                            <button onClick={() => handleActivate(Number(account.id))} className="activate-button">
+                                Activate
+                            </button>
+                        )}
                     </div>
-                    <TransfersHistory transfers={filteredTransfers} userRole="admin"/>
-                    {/* button to show only payouts and only deposits */}
+                ))}
 
-                    {/* Modal footer */}
-                    <div className="p-5 border-t border-solid border-blueGray-200 flex justify-end">
-                        <button className="p-2 m-2 text-gray-600" onClick={onClose}>Close</button>
-                    </div>
-                </div>
+                <button onClick={onClose} className="cancel-button">Cancel</button>
             </div>
         </div>
     );
-}
+};
 
 export default UserModal;
