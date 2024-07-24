@@ -193,8 +193,11 @@ public class TransferServiceImpl implements TransferService {
 
 
         Tesseract tesseract = new Tesseract();
-        // tesseract.setDatapath("C:\\Users\\MatsEngbers\\Desktop\\tessdata-main");
-       // tesseract.setLanguage("deu");
+        tesseract.setDatapath("C:\\Users\\MatsEngbers\\IdeaProjects\\abschlussprojekt\\backend\\src\\main\\resources\\tessdata-main");
+        tesseract.setTessVariable("user_defined_dpi", "300");
+
+        tesseract.setLanguage("deu");
+
 
 
         try {
