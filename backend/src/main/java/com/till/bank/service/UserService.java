@@ -18,4 +18,5 @@ public interface UserService {
     UserDto login(LoginRequest loginRequest);
     void deleteUser(Long id);
 
+    User1 activateUser(Long id);
 }

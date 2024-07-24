@@ -99,6 +99,19 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
+    public BankAccount activateBankAccount(Long id) {
+        // Fetch the user by ID
+        BankAccount bankAccount = bankAccountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bank account not found with id: " + id));
+
+        // Set the confirmedByAdmin property to true
+        bankAccount.setConfirmedByAdmin(true);
+
+        // Save the updated user entity
+        return bankAccountRepository.save(bankAccount);
+    }
+
+    @Override
     public List<BankAccountDtoForAccountsPage> getBankAccountsByUserIdWithBankAccountDtoForAccountsPage(Long userId) {
         List<BankAccount> accounts = bankAccountRepository.findByUserId(userId).orElseThrow();
         System.out.println("account service " + accounts);
