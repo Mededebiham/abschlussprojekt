@@ -29,6 +29,8 @@ const NewPayout: React.FC = () => {
   const [recipientNotImportTheName, setRecipientNotImportTheName] = useState('');
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [iban, setIban] = useState<string>('');
+
 
 
   useEffect(() => {
@@ -151,15 +153,17 @@ const NewPayout: React.FC = () => {
       formData.append('file', selectedImage);
 
       try {
-        const response = await fetch('/api/transfer/upload', {
+        const response = await fetch('http://localhost:8080/transfers/upload', { // Anpassung der URL
           method: 'POST',
           body: formData,
         });
 
+        const data = await response.text(); // Anpassung an den neuen Antworttyp
         if (response.ok) {
-          alert('File uploaded successfully');
+          setIban(data);
         } else {
-          alert('File upload failed');
+          console.error('File upload failed:', data);
+          alert(`File upload failed: ${data}`);
         }
       } catch (error) {
         console.error('Error uploading file:', error);
@@ -167,6 +171,7 @@ const NewPayout: React.FC = () => {
       }
     }
   };
+
 
   return (
       <div className="container">
@@ -194,7 +199,25 @@ const NewPayout: React.FC = () => {
               <div>
                 <p>Ausgewählte Datei: {selectedImage.name}</p>
                 <img src={URL.createObjectURL(selectedImage)} alt="Preview" width="100" />
-                <button onClick={handleSubmit}>Upload</button>
+                <button
+                    onClick={handleSubmit}
+                    style={{
+                      backgroundColor: 'red',
+                      color: 'white',
+                      border: 'none',
+                      padding: '10px 20px',
+                      cursor: 'pointer',
+                      marginTop: '10px' // Optional, um etwas Platz zu schaffen
+                    }}
+                >
+                  Hochladen
+                </button>
+              </div>
+          )}
+          {iban && (
+              <div>
+                <label>Extrahierte IBAN:</label>
+                <input type="text" value={iban} readOnly />
               </div>
           )}
         </div>
