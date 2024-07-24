@@ -66,14 +66,17 @@ public class UserServiceImpl implements UserService {
 
     @PostConstruct
     public void createInitialUsers() {
+        if(userRepository.count()==0){
         createUserIfNotExists("medede@example.com", "Medede", "Tchala", "password", "1234567890", "admin","Street1", "1", "City", "12345", "Deutschland");
         createUserIfNotExists("tillman@example.com", "Tillman", "Tillman", "password", "1234567890", "admin","Street2", "2", "City", "12345", "Deutschland");
         createUserIfNotExists("yasin@example.com", "Yasin", "Yasin", "password", "1234567890", "admin","Street3", "3", "City", "12345", "Deutschland");
         createUserIfNotExists("mats@example.com", "Mats", "Mats", "password", "1234567890", "admin","Street4", "4", "City", "12345", "Deutschland");
     }
+        }
 
     private void createUserIfNotExists(String email, String firstName, String lastName, String password, String phoneNumber, String role,String street,String streetNumber,String city, String zipcode, String country) {
-        if (!userRepository.existsByEmail(email)&&userRepository.count() <= 4) {
+
+
             Address address = new Address(street, streetNumber, city, zipcode, country);
             User1 user = new User1(firstName, lastName, email, password, phoneNumber, role, address);
             User1 savedUser = userRepository.save(user);
@@ -93,7 +96,7 @@ public class UserServiceImpl implements UserService {
             savedUser.setRole(role);
             savedUser.setConfirmedByAdmin(true);
             userRepository.save(savedUser);
-        }
+
     }
     @Override
     public List<User1> getAllUsers() {
@@ -113,35 +116,7 @@ public class UserServiceImpl implements UserService {
             return this.convertUserToUserDto(user,user.getBankAccounts().get(0));
         }
         else return null;
-        //POSSIBLE TOKEN IMPLEMENTATION
-//        if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-//            try {
-//                long expirationTimeMillis = System.currentTimeMillis() + 3600 * 1000; // 1 hour from now
-//                Date expirationDate = new Date(expirationTimeMillis);
-//
-//                String token = Jwts.builder()
-//                        .setSubject(user.getFirstName())
-//                        .claim("firstName", user.getFirstName())
-//                        .claim("id", user.getId())
-//                        .claim("role", user.getRole())
-//                        .setExpiration(expirationDate)
-//                        .signWith(SignatureAlgorithm.HS512, secretKey)
-//                        .compact();
-//                LoginToken loginToken
-//                        = new LoginToken(user, token);
-//
-//                loginTokenRepository.save(loginToken);
-//
-//                return token;
-//            } catch (Exception e) {
-//                // Log the exception
-//                e.printStackTrace();
-//                // Handle the exception as needed
-//            }
-//        } else {
-//            return null;
-//        }
-//        return null;
+
     }
     @Override
     public UserDto createUser(UserCreationRequest userCreationRequest) {
@@ -152,10 +127,6 @@ public class UserServiceImpl implements UserService {
         userCreationRequest.getUserDto().setRole("user");
         Address address = new Address(userCreationRequest.getUserDto().getAddress().getStreet(), userCreationRequest.getUserDto().getAddress().getStreetNumber(),
                 userCreationRequest.getUserDto().getAddress().getCity(), userCreationRequest.getUserDto().getAddress().getZipCode(), userCreationRequest.getUserDto().getAddress().getCountry());
-
-        // Save the Address entity
-        Address savedAddress = addressRepository.save(address);
-
         // Generate a six-digit account number
         String accountNumber = generateAccountNumber();
         //Generate the IBAN number
