@@ -153,7 +153,7 @@ const NewPayout: React.FC = () => {
       formData.append('file', selectedImage);
 
       try {
-        const response = await fetch('http://localhost:8080/transfers/upload', { // Anpassung der URL
+        const response = await fetch('http://localhost:8088/transfers/upload', { // Anpassung der URL
           method: 'POST',
           body: formData,
         });
@@ -197,8 +197,8 @@ const NewPayout: React.FC = () => {
           />
           {selectedImage && (
               <div>
-                <p>Ausgewählte Datei: {selectedImage.name}</p>
-                <img src={URL.createObjectURL(selectedImage)} alt="Preview" width="100" />
+                <p style={{color: 'black'}}>{selectedImage.name}</p>
+                <img src={URL.createObjectURL(selectedImage)} alt="Preview" width="100"/>
                 <button
                     onClick={handleSubmit}
                     style={{
@@ -216,7 +216,7 @@ const NewPayout: React.FC = () => {
           )}
           {iban && (
               <div>
-                <label>Extrahierte IBAN:</label>
+                <label style={{color: 'black'}}>Extrahierte IBAN:</label>
                 <input type="text" value={iban} readOnly />
               </div>
           )}
