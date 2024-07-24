@@ -100,7 +100,7 @@ const NewPayout: React.FC = () => {
 
   const handleBankAccountClick = async () => {
     try {
-      const response: AxiosResponse<BankAccount> = await axios.get('http://localhost:8088/bankAccount/accountNumbOrIBAN', {
+      const response: AxiosResponse<BankAccount> = await axios.get('http://localhost:8088/bankAccounts/accountNumbOrIBAN', {
         params: {
           bankId: bankData.bankId,
           accountNumber: bankData.accountNumber,
@@ -130,33 +130,49 @@ const NewPayout: React.FC = () => {
   };
 
   return (
-      <div className="container">
+      <div className="container text-black">
         <div className={`input ${showInput1 ? 'show' : ''}`}>
           <p className="text-black font-bold">Empfänger</p>
-          <input type="text" placeholder="Empfänger" name="recipient" value={recipientNotImportTheName} onChange={(e) => setRecipientNotImportTheName(e.target.value)} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input type="text" placeholder="Empfänger" name="recipient" value={recipientNotImportTheName}
+                 onChange={(e) => setRecipientNotImportTheName(e.target.value)}
+                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
           <p className="text-black font-bold">IBAN</p>
-          <input type="text" placeholder="IBAN" name="iban" value={bankData.iban} onChange={handleBankChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input type="text" placeholder="IBAN" name="iban" value={bankData.iban} onChange={handleBankChange}
+                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
           <p className="text-black font-bold">Oder BIC und Kontonummer</p>
-          <input type="text" placeholder="BIC" name="bankId" value={bankData.bankId} onChange={handleBankChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-          <input type="text" placeholder="Kontonummer" name="accountNumber" value={bankData.accountNumber} onChange={handleBankChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input type="text" placeholder="BIC" name="bankId" value={bankData.bankId} onChange={handleBankChange}
+                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+          <input type="text" placeholder="Kontonummer" name="accountNumber" value={bankData.accountNumber}
+                 onChange={handleBankChange}
+                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         </div>
 
         <div className={`input ${showInput2 ? 'show' : ''}`}>
           <p className="text-black font-bold">How much money do you want to send?</p>
-          <input type="text" placeholder="Type here" name="sum" value={formData.sum} onChange={handleChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input type="text" placeholder="Type here" name="sum" value={formData.sum} onChange={handleChange}
+                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         </div>
 
         <div className={`input ${showInput3 ? 'show' : ''}`}>
           <p className="text-black font-bold">What is the reason of your transaction?</p>
-          <input type="text" placeholder="Type here" name="reasonOfTransfer" value={formData.reasonOfTransfer} onChange={handleChange} className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input type="text" placeholder="Type here" name="reasonOfTransfer" value={formData.reasonOfTransfer}
+                 onChange={handleChange}
+                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
         </div>
 
         <div className={`input ${showInput6 ? 'show' : ''}`}>
-          <button onClick={finishTransaction}>Send the money</button>
+          <div className="summary-card">
+            <p><strong>Empfänger:</strong> {recipientNotImportTheName}</p>
+            <p><strong>IBAN:</strong> {bankData.iban}</p>
+            <p><strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}</p>
+            <p><strong>Betrag:</strong> {formData.sum} EUR</p>
+          </div>
+          <button  onClick={finishTransaction}>Geld senden</button>
         </div>
 
         {showInput1 &&
-            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
+            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur
+              Überprüfung</button>
         }
         {(showInput2 || showInput3) &&
             <button onClick={handleButtonClick}>Next</button>
