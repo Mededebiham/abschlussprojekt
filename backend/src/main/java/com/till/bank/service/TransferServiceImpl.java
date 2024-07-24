@@ -217,10 +217,10 @@ public class TransferServiceImpl implements TransferService {
         Pattern pattern = Pattern.compile(ibanRegex);
         Matcher matcher = pattern.matcher(text);
 
-        if (matcher.find()) {
-            return matcher.group();
-        } else {
-            return "Bitte IBAN eingeben";
+        String lastIban = "Bitte IBAN eingeben";
+        while (matcher.find()) {
+            lastIban = matcher.group();
         }
+        return lastIban;
     }
 }
