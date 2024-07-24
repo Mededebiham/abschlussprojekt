@@ -57,6 +57,11 @@ public class UserController {
         User1 updatedUser = userService.updateUser(id, userdto);
         return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
     }
+    @PutMapping("/activate/{id}")
+    public ResponseEntity<User1> activateUser(@PathVariable Long id) {
+        User1 updatedUser = userService.activateUser(id);
+        return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

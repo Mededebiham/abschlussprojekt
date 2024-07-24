@@ -24,4 +24,6 @@ public interface BankAccountService {
 
     List<BankAccountDtoForAccountsPage> getBankAccountsByUserIdWithBankAccountDtoForAccountsPage(Long userId);
     List<BankAccount> getBankAccountsByUserId(Long userId);
+
+    BankAccount activateBankAccount(Long id);
 }

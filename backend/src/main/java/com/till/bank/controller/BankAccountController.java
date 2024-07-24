@@ -113,6 +113,11 @@ public class BankAccountController {
         BankAccount updatedBankAccount = bankAccountService.updateBankAccount(id, bankAccountDto);
         return new ResponseEntity<>(updatedBankAccount, HttpStatus.OK);
     }
+    @PutMapping("/activate/{id}")
+    public ResponseEntity<BankAccount> activateBankAccount(@PathVariable Long id) {
+        BankAccount updatedBankAccount = bankAccountService.activateBankAccount(id);
+        return new ResponseEntity<>(updatedBankAccount, HttpStatus.OK);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBankAccount(@PathVariable Long id) {

@@ -194,6 +194,20 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    public User1 activateUser(Long id) {
+        // Fetch the user by ID
+        User1 user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        // Set the confirmedByAdmin property to true
+        user.setConfirmedByAdmin(true);
+
+        // Save the updated user entity
+        return userRepository.save(user);
+    }
+
+
 
     public String generateAccountNumber() {
         Random random = new Random();

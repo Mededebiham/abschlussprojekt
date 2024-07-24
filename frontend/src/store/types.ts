@@ -46,18 +46,27 @@ export interface RootState {
   user: User | null;
 }
 export interface UserTable {
+  id: number | null;
+  confirmedByAdmin: boolean;
   firstName: string;
   lastName: string;
   email: string;
-  birthdate: Date;
-  address: {
-    street: string;
-    streetNumber: string;
-    city: string;
-    zipCode: string;
-    country: string;
-  };
+  password?: string; // Optional since not always used
+  phoneNumber?: string; // Optional
+  role?: string; // Optional
+  birthdate?: Date; // Optional if not in the Java entity
+  address: Address;
+  bankAccounts: BankAccount[];
 }
+export interface Address {
+  id: number; // Assuming Address has an ID
+  street: string;
+  streetNumber: string;
+  city: string;
+  zipCode: string;
+  country: string;
+}
+
 export interface UserForBankAccount {
   firstName: string;
   lastName: string;
@@ -75,6 +84,7 @@ export interface BankAccount {
   user: UserForBankAccount;
   balance: number;
   accountType:string;
+  confirmedByAdmin:boolean;
 }
 
 export interface Transfer {
