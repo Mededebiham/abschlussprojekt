@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { Transfer, User, BankAccount, BankAPI } from '../store/types';
 
-
-
 const NewPayout: React.FC = () => {
   const [showInput1, setShowInput1] = useState(true);
   const [showInput2, setShowInput2] = useState(false);
@@ -52,17 +50,7 @@ const NewPayout: React.FC = () => {
           accountType: account.accountType
         }
       }));
-      console.log("Form Data3:", JSON.stringify(formData, null, 2));
-      // getBankAccountOfUser(userData.id)
-      //     .then((bankAccount) => {
-      //       setFormData((prevData) => ({
-      //         ...prevData,
-      //         sender: bankAccount,
-      //       }));
-      //     })
-      //     .catch((error) => {
-      //       console.error('Error fetching bank account:', error);
-      //     });
+
 
       if (userData?.confirmedByAdmin === false) {
         navigate('/Unconfirmed');
@@ -114,54 +102,25 @@ const NewPayout: React.FC = () => {
     return null;
   };
 
-
   const handleBankAccountClick = async () => {
     try {
-      const response: AxiosResponse<{ user: { bankAccounts: BankAccount[] } }> = await axios.get('http://localhost:8088/bankAccounts/accountNumbOrIBAN', {
+      const response: AxiosResponse<BankAccount> = await axios.get('http://localhost:8088/bankAccounts/accountNumbOrIBAN', {
         params: {
           bankId: bankData.bankId,
           accountNumber: bankData.accountNumber,
           IBAN: bankData.iban
         }
       });
-
-      console.log(response);
-
-      // Check if the response has the expected structure
-      if (response.data && response.data.user && Array.isArray(response.data.user.bankAccounts)) {
-        const matchingAccount = response.data.user.bankAccounts.find((account: BankAccount) => account.iban === bankData.iban);
-
-        if (matchingAccount) {
-          setFormData((prevData) => ({
-            ...prevData,
-            recipient: matchingAccount,
-          }));
-          console.log("Form Data2:", JSON.stringify(formData, null, 2));
-          handleButtonClick();
-        } else {
-          console.error('No matching account found');
-        }
-      } else {
-        console.error('Unexpected response structure', response.data);
+      setFormData((prevData) => ({
+        ...prevData,
+        recipient: response.data,
+      }));
+      if (response) {
+        handleButtonClick();
       }
     } catch (error) {
       console.error('Request failed:', error);
     }
-
-
-
-
-    //
-    //   setFormData((prevData) => ({
-    //     ...prevData,
-    //     recipient: response.data,
-    //   }));
-    //   if (response) {
-    //     handleButtonClick();
-    //   }
-    // } catch (error) {
-    //   console.error('Request failed:', error);
-    // }
   };
 
   const finishTransaction = async () => {
@@ -169,7 +128,6 @@ const NewPayout: React.FC = () => {
     try {
       console.log("Form Data:", JSON.stringify(formData, null, 2));
       const response = await axios.post('http://localhost:8088/transfers', formData);
-      console.log(response.data);
       window.location.reload();
     } catch (error) {
       console.error('Transaction failed:', error);
