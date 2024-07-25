@@ -6,8 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const AccountCard = ({ account }) => {
     const navigate = useNavigate();
     const handleCardClick = () => {
-        // Profile sayfasına yönlendirme
-        navigate("/ClientProfil",{ state: { accountType: account.accountType, balance: account.balance } });
+        navigate("/ClientProfil");
     };
     return (
         <div className="account-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>

@@ -7,11 +7,10 @@ import axios from "axios";
 
 function AccountsPage() {
     const navigate = useNavigate();
-    const [userData, setUserData] = useState(null);  // Initially set to null
+    const [userData, setUserData] = useState(null);
     const [accounts, setAccounts] = useState([]);
 
     useEffect(() => {
-        // Fetch user data from cookies
         const user = Cookies.get('user');
         if (user) {
             const parsedUser = JSON.parse(user);
@@ -24,7 +23,7 @@ function AccountsPage() {
     useEffect(() => {
         if (userData) {
             if (userData.confirmedByAdmin === false) {
-                navigate('/Unconfirmed'); // Redirect to an unconfirmed user page
+                navigate('/Unconfirmed');
             } else {
                 fetchAccounts(userData.id);
             }
@@ -34,7 +33,8 @@ function AccountsPage() {
     const fetchAccounts = async (userId) => {
         try {
             const response = await axios.get(`http://localhost:8088/bankAccounts/user/${userId}/accounts`);
-            setAccounts(response.data);  // Use response.data directly
+            console.log(response.data)
+            setAccounts(response.data);
         } catch (error) {
             console.error('Error fetching accounts:', error);
         }
