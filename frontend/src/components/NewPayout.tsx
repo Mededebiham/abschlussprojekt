@@ -102,7 +102,7 @@ const NewPayout: React.FC = () => {
 
   const handleBankAccountClick = async () => {
     try {
-      const response: AxiosResponse<BankAccount> = await axios.get('http://localhost:8088/bankAccount/accountNumbOrIBAN', {
+      const response: AxiosResponse<BankAccount> = await axios.get('http://localhost:8088/bankAccounts/accountNumbOrIBAN', {
         params: {
           bankId: bankData.bankId,
           accountNumber: bankData.accountNumber,
@@ -278,7 +278,7 @@ const NewPayout: React.FC = () => {
         </div>
 
         <div className={`input ${showInput6 ? 'show' : ''}`}>
-          <button onClick={finishTransaction}>Send the money</button>
+          <button className="text-black" onClick={finishTransaction}>Send the money</button>
         </div>
 
         {showInput1 && (
@@ -289,6 +289,12 @@ const NewPayout: React.FC = () => {
         {(showInput2 || showInput3) && (
             <button onClick={handleButtonClick}>Next</button>
         )}
+        {showInput1 &&
+            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
+        }
+        {(showInput2 || showInput3) &&
+            <button className="text-black" onClick={handleButtonClick}>Next</button>
+        }
       </div>
   );
 };

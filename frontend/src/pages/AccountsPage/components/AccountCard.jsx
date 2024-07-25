@@ -2,10 +2,13 @@
 import React from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const AccountCard = ({ account }) => {
     const navigate = useNavigate();
     const handleCardClick = () => {
+        Cookies.set('choosenAccount', account);
+
         // Profile sayfasına yönlendirme
         navigate("/ClientProfil",{ state: { accountType: account.accountType, balance: account.balance } });
     };
