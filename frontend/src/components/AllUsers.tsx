@@ -11,10 +11,12 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
     const [searchQueryUser, setSearchQueryUser] = useState('');
     const [choosenUser, setChoosenUser] = useState<UserTable | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [showUnconfirmedOnly, setShowUnconfirmedOnly] = useState(false);
     const usersPerPage = 5;
 
     const filteredUsers = users.filter((user) =>
-        `${user.firstName} ${user.lastName} ${user.email}`.toLowerCase().includes(searchQueryUser.toLowerCase())
+        `${user.firstName} ${user.lastName} ${user.email}`.toLowerCase().includes(searchQueryUser.toLowerCase()) &&
+        (!showUnconfirmedOnly || !user.confirmedByAdmin)
     );
 
     const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
@@ -60,6 +62,12 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
                     onChange={(e) => setSearchQueryUser(e.target.value)}
                     className="my-4 rounded text-black"
                 />
+                <button
+                    onClick={() => setShowUnconfirmedOnly((prev) => !prev)}
+                    className="mb-4 rounded bg-blue-500 text-white py-2 px-4"
+                >
+                    {showUnconfirmedOnly ? 'Show All Users' : 'Show Unconfirmed Users'}
+                </button>
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
                     <tr>
@@ -72,7 +80,7 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
                     </thead>
                     <tbody>
                     {currentUsers.map((user, index) => (
-                        <tr key={index} className="border-b border-gray-200 dark:border-gray-700"
+                        <tr key={index} className="border-b border-gray-200 dark:border-gray-700 cursor-pointer"
                             onClick={() => handleUserClick(user)}>
                             <th scope="row"
                                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
