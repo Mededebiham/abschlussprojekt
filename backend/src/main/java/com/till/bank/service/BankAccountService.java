@@ -26,4 +26,6 @@ public interface BankAccountService {
     List<BankAccount> getBankAccountsByUserId(Long userId);
 
     BankAccount activateBankAccount(Long id);
+
+    BankAccount cancelBankAccount(Long id);
 }
