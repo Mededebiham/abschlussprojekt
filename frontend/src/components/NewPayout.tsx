@@ -315,6 +315,7 @@ const NewPayout: React.FC = () => {
             <button className="text-black" onClick={handleButtonClick}>Next</button>
           )}
       </div>
+      </div>
   );
 };
 
