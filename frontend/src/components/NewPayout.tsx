@@ -280,21 +280,12 @@ const NewPayout: React.FC = () => {
         <div className={`input ${showInput6 ? 'show' : ''}`}>
           <button className="text-black" onClick={finishTransaction}>Send the money</button>
         </div>
-
         {showInput1 && (
-            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>
-              Zur Überprüfung
-            </button>
+            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
         )}
         {(showInput2 || showInput3) && (
-            <button onClick={handleButtonClick}>Next</button>
-        )}
-        {showInput1 &&
-            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
-        }
-        {(showInput2 || showInput3) &&
             <button className="text-black" onClick={handleButtonClick}>Next</button>
-        }
+          )}
       </div>
   );
 };
