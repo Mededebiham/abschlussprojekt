@@ -7,10 +7,12 @@ import Cookies from 'js-cookie';
 const AccountCard = ({ account }) => {
     const navigate = useNavigate();
     const handleCardClick = () => {
-        Cookies.set('choosenAccount', account);
+        const accountString = JSON.stringify(account);
 
-        // Profile sayfasına yönlendirme
-        navigate("/ClientProfil",{ state: { accountType: account.accountType, balance: account.balance } });
+        Cookies.set('account', accountString, { expires: 7 });
+
+
+        navigate("/ClientProfil");
     };
     return (
         <div className="account-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
