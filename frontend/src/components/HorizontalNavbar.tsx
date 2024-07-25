@@ -6,16 +6,27 @@ import './css/HorizontalNavbar.css';
 import Cookies from 'js-cookie';
 
 interface HorizontalNavbarProps {
-  isLoggedIn: boolean;
-  user: User | null;
+
   logout: () => void; // Pass the logout function as a prop
 }
 
-const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ isLoggedIn, user, logout }) => {
-  
+const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ logout }) => {
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
     // This effect will run whenever isLoggedIn or user changes
-  }, [isLoggedIn, user]); // Specify the dependencies here
+     // window.location.reload();
+      console.log("show me "+isLoggedIn);
+
+  }, [isLoggedIn]); // Specify the dependencies here
+
+    //initial useeffect
+    useEffect(()=>{
+      setIsLoggedIn(Cookies.get('isloggedin') === 'true');
+      setUser(JSON.parse(Cookies.get('user') || 'null'));
+
+    },[])
 
   const handleLogout = () => {
     console.log('Logout button clicked');
@@ -31,7 +42,7 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ isLoggedIn, user, l
             {user !== null && <li className="mx-10 text-white">Willkommen {user?.username}!</li>}
             <li className="mr-5 text-white"><a href="/">Home</a></li>
             <li className="mx-10 text-white"><a href="/About">Über uns</a></li>
-            <li className="mx-10 text-white"><a href="/Produkt">Unsere Produkt</a></li>
+            <li className="mx-10 text-white"><a href="/Produkt">Unsere Produkte</a></li>
 
             {isLoggedIn ? (
                 <>
@@ -40,7 +51,7 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ isLoggedIn, user, l
                             <li className="mx-10 text-white"><a href="/accounts">Konten</a></li>
                             {/*<li className="mx-10 text-white"><a href="/ClientProfil">Profile</a></li>*/}
                         </>):
-                        (<li className="mx-10 text-white"><a href="/AdminProfil">Profile</a></li>)
+                        (<li className="mx-10 text-white"><a href="/AdminProfil">Profil</a></li>)
                     }
                     <li className="mx-10 text-white" onClick={handleLogout}><a href="#">Abmelden</a></li>
                 </>

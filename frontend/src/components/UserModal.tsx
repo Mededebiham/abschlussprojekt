@@ -36,7 +36,6 @@ const UserModal: React.FC<UserModalProps> = ({ user, onClose, isOpen }) => {
             return;
         }
 
-
         try {
             await axios.put(`http://localhost:8088/bankAccounts/activate/${accountId}`);
             setBankAccounts((prevAccounts) =>
@@ -49,6 +48,25 @@ const UserModal: React.FC<UserModalProps> = ({ user, onClose, isOpen }) => {
         }
     };
 
+    const handleCancel = async (accountId: number) => {
+        const accountToCancel = bankAccounts.find(account => Number(account.id) === accountId);
+
+        if (!accountToCancel) {
+            console.error('Account not found:', accountId);
+            return;
+        }
+
+        try {
+            await axios.put(`http://localhost:8088/bankAccounts/cancel/${accountId}`);
+            setBankAccounts((prevAccounts) =>
+                prevAccounts.map((account) =>
+                    Number(account.id) === accountId ? { ...account, confirmedByAdmin: false } : account
+                )
+            );
+        } catch (error) {
+            console.error('Error canceling bank account:', error);
+        }
+    };
 
     if (!isOpen) {
         return null;
@@ -76,15 +94,19 @@ const UserModal: React.FC<UserModalProps> = ({ user, onClose, isOpen }) => {
                         <p><strong>Balance:</strong> {account.balance}</p>
                         <p><strong>IBAN:</strong> {account.iban}</p>
                         <p><strong>Confirmed By Admin:</strong> {account.confirmedByAdmin ? 'Yes' : 'No'}</p>
-                        {!account.confirmedByAdmin && (
+                        {!account.confirmedByAdmin ? (
                             <button onClick={() => handleActivate(Number(account.id))} className="activate-button">
-                                Activate
+                                Aktivieren
+                            </button>
+                        ) : (
+                            <button onClick={() => handleCancel(Number(account.id))} className="cancel-button">
+                                Konto deaktivieren
                             </button>
                         )}
                     </div>
                 ))}
 
-                <button onClick={onClose} className="cancel-button">Cancel</button>
+                <button onClick={onClose} className="close-button">Close</button>
             </div>
         </div>
     );
