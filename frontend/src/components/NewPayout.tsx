@@ -47,7 +47,8 @@ const NewPayout: React.FC = () => {
           bankId: '',
           balance:account.balance,
           user: userData,
-          accountType: account.accountType
+          accountType: account.accountType,
+          confirmedByAdmin:false
         }
       }));
 
