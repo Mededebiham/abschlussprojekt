@@ -4,6 +4,7 @@ import {User} from "../store/types";
 import Cookies from "js-cookie";
 import { login, LoginAction  } from '../store/reducers';
 import {useNavigate} from "react-router-dom";
+import { useUser } from '../store/UserContext';
 
 interface RegisterFormProps {
   onSubmit?: (formData: createUser) => void;
@@ -51,6 +52,7 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
   const [errorApi, setErrorApi] = useState('');
   const navigate = useNavigate();
   const [accountType, setAccountType] = useState('');
+  const { user, setUser } = useUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -120,16 +122,15 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       const { firstName, id, role,confirmedByAdmin } = response.data; // Assuming response.data contains user data
 
       // Create a User object
-      const user: User =
+      const user1: User =
           { username: firstName, id, role,confirmedByAdmin };
 
       // Dispatch the login action with user data
       Cookies.set('isloggedin', 'true');
-      Cookies.set('user', JSON.stringify(user));
-      login(user);
+      Cookies.set('user', JSON.stringify(user1));
+      login(user1);
+      setUser(response.data);
 
-      // Dispatch login success action with the user data
-      //loginSuccess(user);
       navigate("/");
     } catch (error) {
       console.error('Error creating user:', error);
