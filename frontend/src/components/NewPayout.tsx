@@ -132,6 +132,7 @@ const NewPayout: React.FC = () => {
       console.log("Form Data:", JSON.stringify(formData, null, 2));
       const response = await axios.post('http://localhost:8088/transfers', formData);
       window.location.reload();
+      navigate('/confirm-transaction', { state: { transferId: response.data.id } });
     } catch (error) {
       console.error('Transaction failed:', error);
     }
@@ -232,9 +233,7 @@ const NewPayout: React.FC = () => {
               onChange={(e) => setRecipientNotImportTheName(e.target.value)}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <input type="text" placeholder="Empfänger" name="recipient" value={recipientNotImportTheName}
-                 onChange={(e) => setRecipientNotImportTheName(e.target.value)}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
           <p className="text-black font-bold">IBAN</p>
           <input
               type="text"
@@ -244,8 +243,7 @@ const NewPayout: React.FC = () => {
               onChange={handleBankChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <input type="text" placeholder="IBAN" name="iban" value={bankData.iban} onChange={handleBankChange}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
           <p className="text-black font-bold">Oder BIC und Kontonummer</p>
           <input
               type="text"
@@ -263,11 +261,7 @@ const NewPayout: React.FC = () => {
               onChange={handleBankChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <input type="text" placeholder="BIC" name="bankId" value={bankData.bankId} onChange={handleBankChange}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
-          <input type="text" placeholder="Kontonummer" name="accountNumber" value={bankData.accountNumber}
-                 onChange={handleBankChange}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
         </div>
 
         <div className={`input ${showInput2 ? 'show' : ''}`}>
@@ -280,8 +274,7 @@ const NewPayout: React.FC = () => {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <input type="text" placeholder="Type here" name="sum" value={formData.sum} onChange={handleChange}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
         </div>
 
         <div className={`input ${showInput3 ? 'show' : ''}`}>
@@ -294,9 +287,7 @@ const NewPayout: React.FC = () => {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <input type="text" placeholder="Type here" name="reasonOfTransfer" value={formData.reasonOfTransfer}
-                 onChange={handleChange}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+
         </div>
 
         <div className={`input ${showInput6 ? 'show' : ''}`}>
@@ -306,7 +297,7 @@ const NewPayout: React.FC = () => {
             <p><strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}</p>
             <p><strong>Betrag:</strong> {formData.sum} EUR</p>
           </div>
-          <button  onClick={finishTransaction}>Geld senden</button>
+          <button  className="text-black" onClick={finishTransaction}>Geld senden</button>
         </div>
         {showInput1 && (
             <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
