@@ -223,4 +223,49 @@ public class TransferServiceImpl implements TransferService {
         }
         return lastIban;
     }
+
+    @Override
+    public String empfaengerExtractor(String text) {
+        String regex = "(\\b\\w+\\b\\s+\\b\\w+\\b\\s+(?:GmbH|UG|AG|GbR|OHG|KG|GmbH & Co\\. KG|eG))|(\\b\\w+\\b\\s+(?:GmbH|UG|AG|GbR|OHG|KG|GmbH & Co\\. KG|eG))";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+
+        if (matcher.find()) {
+            return matcher.group();
+        } else {
+            return "Empfänger bitte hier eingeben";
+        }
+    }
+
+    @Override
+    public String betragExtractor(String text) {
+        String regexWithEuro = "(?:€\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})?|\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})?€)";
+        String regexWithoutEuro = "\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})?";
+
+        Pattern patternWithEuro = Pattern.compile(regexWithEuro);
+        Pattern patternWithoutEuro = Pattern.compile(regexWithoutEuro);
+
+        Matcher matcherWithEuro = patternWithEuro.matcher(text);
+        Matcher matcherWithoutEuro = patternWithoutEuro.matcher(text);
+
+        String lastFoundNumber = null;
+
+        while (matcherWithEuro.find()) {
+            lastFoundNumber = matcherWithEuro.group();
+        }
+
+        if (lastFoundNumber == null) {
+            while (matcherWithoutEuro.find()) {
+                lastFoundNumber = matcherWithoutEuro.group();
+            }
+        }
+
+        if (lastFoundNumber != null) {
+            return lastFoundNumber;
+        } else {
+            return "Rechnungsbetrag bitte hier eingeben";
+        }
+    }
+
 }

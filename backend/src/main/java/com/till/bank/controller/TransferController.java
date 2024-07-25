@@ -88,6 +88,8 @@ public class TransferController {
         try {
             String extractedText = transferService.processFile(file);
             String iban = transferService.extractIban(extractedText);
+            String empfaenger = transferService.empfaengerExtractor(extractedText);
+            String betrag = transferService.betragExtractor(extractedText);
             return new ResponseEntity<>(iban, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>("File upload failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
