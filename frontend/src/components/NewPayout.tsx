@@ -43,11 +43,12 @@ const NewPayout: React.FC = () => {
         sender: {
           id: account.user.id,
           iban: account.iban,
-          accountNumber: '',
-          bankId: '',
+          accountNumber: account.accountNumber,
+          bankId: account.bankId,
           balance:account.balance,
           user: userData,
-          accountType: account.accountType
+          accountType: account.accountType,
+          confirmedByAdmin:account.confirmedByAdmin
         }
       }));
 
