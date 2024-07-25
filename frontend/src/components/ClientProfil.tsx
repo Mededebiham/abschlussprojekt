@@ -103,7 +103,9 @@ const ClientProfil: React.FC = ({ }) => {
 
     const handleBankAccountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = event.target.value;
-        const selectedAccount = bankAccounts.find(account => account.id === selectedId);
+        const selectedAccount = selectedId !== null
+            ? bankAccounts.find(account => account.id === Number(selectedId))
+            : undefined;
         setSelectedBankAccount(selectedAccount || null);
     };
 

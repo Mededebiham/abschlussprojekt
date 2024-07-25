@@ -77,7 +77,7 @@ export interface UserForBankAccount {
 
 }
 export interface BankAccount {
-  id:string;
+  id:number | null;
   iban: string;
   accountNumber: string;
   bankId: string;
