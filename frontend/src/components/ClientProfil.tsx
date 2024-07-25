@@ -27,7 +27,10 @@ const ClientProfil: React.FC = ({}) => {
     const [greeting, setGreeting] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
-    const { account } = location.state || {};
+    // const { account } = location.state || {};
+
+    const account = JSON.parse(Cookies.get('account') || '{}');
+
 
     useEffect(() => {
         // Retrieve parameters from cookies
@@ -57,6 +60,8 @@ const ClientProfil: React.FC = ({}) => {
             }
         }
     }, []);
+
+
     useEffect(() => {
         const currentHour = new Date().getHours();
         let greetingMessage = '';
@@ -191,7 +196,7 @@ const ClientProfil: React.FC = ({}) => {
                 {showNewPayout && (
                     <div>
                         <h3>Überweisung</h3>
-                        <NewPayout accountType={account.accountType} balance={account.balance} iban={account.iban} id={account.user.id} />
+                        <NewPayout />
                     </div>
                 )}
             </div>

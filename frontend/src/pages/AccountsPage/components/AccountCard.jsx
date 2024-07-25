@@ -2,10 +2,16 @@
 import React from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const AccountCard = ({ account }) => {
     const navigate = useNavigate();
     const handleCardClick = () => {
+        const accountString = JSON.stringify(account);
+
+        Cookies.set('account', accountString, { expires: 7 });
+
+
         navigate("/ClientProfil");
     };
     return (

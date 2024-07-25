@@ -5,14 +5,9 @@ import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { Transfer, User, BankAccount, BankAPI } from '../store/types';
 
-interface NewPayoutProps {
-  accountType: string;
-  balance: number;
-  iban: string;
-  id: string
-}
 
-const NewPayout: React.FC<NewPayoutProps> = ({ accountType, balance, iban,id }) => {
+
+const NewPayout: React.FC = () => {
   const [showInput1, setShowInput1] = useState(true);
   const [showInput2, setShowInput2] = useState(false);
   const [showInput3, setShowInput3] = useState(false);
@@ -39,6 +34,7 @@ const NewPayout: React.FC<NewPayoutProps> = ({ accountType, balance, iban,id }) 
   useEffect(() => {
     const loggedIn = Cookies.get('isloggedin') === 'true';
     const userData = JSON.parse(Cookies.get('user') || '{}');
+    const account = JSON.parse(Cookies.get('account') || '{}');
 
     if (!loggedIn || !userData) {
       navigate('/SignIn');
@@ -47,13 +43,13 @@ const NewPayout: React.FC<NewPayoutProps> = ({ accountType, balance, iban,id }) 
       setFormData((prevData) => ({
         ...prevData,
         sender: {
-          id: id,
-          iban,
+          id: account.user.id,
+          iban: account.iban,
           accountNumber: '',
           bankId: '',
-          balance,
+          balance:account.balance,
           user: userData,
-          accountType
+          accountType: account.accountType
         }
       }));
       console.log("Form Data3:", JSON.stringify(formData, null, 2));
@@ -72,7 +68,7 @@ const NewPayout: React.FC<NewPayoutProps> = ({ accountType, balance, iban,id }) 
         navigate('/Unconfirmed');
       }
     }
-  }, [navigate, accountType, balance, iban]);
+  }, [navigate]);
 
   const handleButtonClick = () => {
     if (showInput1) {
