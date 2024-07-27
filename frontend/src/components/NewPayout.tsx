@@ -4,12 +4,20 @@ import axios, { AxiosResponse } from 'axios';
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { Transfer, User, BankAccount, BankAPI } from '../store/types';
+import { auth } from '../firebaseConfig.js'; // Import initialized auth
+import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from 'firebase/auth';
+
+
+
+import 'react-phone-input-2/lib/style.css';
 
 const NewPayout: React.FC = () => {
   const [showInput1, setShowInput1] = useState(true);
   const [showInput2, setShowInput2] = useState(false);
   const [showInput3, setShowInput3] = useState(false);
   const [showInput6, setShowInput6] = useState(false);
+  const [showOTP, setShowOTP] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
   const [input1Disabled, setInput1Disabled] = useState(true);
   const [formData, setFormData] = useState<Transfer>({
     id: null,
@@ -27,6 +35,8 @@ const NewPayout: React.FC = () => {
   });
   const [user, setUser] = useState<User | null>(null);
   const [recipientNotImportTheName, setRecipientNotImportTheName] = useState('');
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [verificationCode, setVerificationCode] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,7 +61,6 @@ const NewPayout: React.FC = () => {
           confirmedByAdmin:false
         }
       }));
-
 
       if (userData?.confirmedByAdmin === false) {
         navigate('/Unconfirmed');
@@ -125,15 +134,67 @@ const NewPayout: React.FC = () => {
   };
 
   const finishTransaction = async () => {
-
-    try {
-      console.log("Form Data:", JSON.stringify(formData, null, 2));
-      const response = await axios.post('http://localhost:8088/transfers', formData);
-      window.location.reload();
-    } catch (error) {
-      console.error('Transaction failed:', error);
+    if (!confirmationResult) {
+      sendVerificationCode();
+    } else {
+      try {
+        await confirmationResult.confirm(verificationCode);
+        console.log("Form Data:", JSON.stringify(formData, null, 2));
+        const response = await axios.post('http://localhost:8088/transfers', formData);
+        window.location.reload();
+      } catch (error) {
+        console.error('Transaction failed:', error);
+      }
     }
   };
+
+  const sendVerificationCode =  () => {
+    const hardcodedPhoneNumber = "+491638853560"; // Hardcoded phone number
+    // const hardcodedPhoneNumber = "+4915753035923"; // Hardcoded phone number
+    // const hardcodedPhoneNumber = "+491234565555"; // Hardcoded phone number
+    console.log("tel " + hardcodedPhoneNumber)
+    // Create RecaptchaVerifier instance
+    const appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'normal', // Can be 'invisible' or 'normal'
+      callback: (response: any) => {
+        // reCAPTCHA solved - proceed with phone number sign-in
+        console.log("appVerifier " + appVerifier)
+         signInWithPhoneNumber(auth, hardcodedPhoneNumber, appVerifier)
+            .then((confirmationResult) => {
+              setConfirmationResult(confirmationResult);
+              setShowVerification(true);
+            })
+            .catch((error) => {
+              if (error.code === 'auth/too-many-requests') {
+                console.error("Too many requests. Please try again later.");
+              } else {
+                console.error("SMS not sent", error);
+              }
+            });
+      },
+      'expired-callback': () => {
+        console.log("reCAPTCHA expired. Please try again.");
+      }
+    });
+
+    // Render the reCAPTCHA
+    appVerifier.render().then(() => {
+      console.log("reCAPTCHA rendered.");
+    }).catch((error) => {
+      console.error("Error rendering reCAPTCHA", error);
+    });
+  };
+
+  // const sendVerificationCode = async () =>{
+  //   try{
+  //     const recaptcha = new RecaptchaVerifier(auth,"recaptcha-container",{})
+  //     const confirmation = await signInWithPhoneNumber(auth, "+491638853560", recaptcha)
+  //     console.log(confirmation)
+  //   }catch (err){
+  //     console.log(err)
+  //   }
+  // }
+
 
   return (
       <div className="container text-black">
@@ -173,8 +234,10 @@ const NewPayout: React.FC = () => {
             <p><strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}</p>
             <p><strong>Betrag:</strong> {formData.sum} EUR</p>
           </div>
-          <button  onClick={finishTransaction}>Geld senden</button>
+          <button onClick={finishTransaction}>Geld senden</button>
         </div>
+
+
 
         {showInput1 &&
             <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur
@@ -183,6 +246,8 @@ const NewPayout: React.FC = () => {
         {(showInput2 || showInput3) &&
             <button onClick={handleButtonClick}>Next</button>
         }
+
+        <div id="recaptcha-container"></div>
       </div>
   );
 };
