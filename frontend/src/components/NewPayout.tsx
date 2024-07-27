@@ -1,4 +1,3 @@
-// NewPayout.tsx
 import React, { useState, useEffect } from 'react';
 import './css/NewPayout.css'; // Import CSS file for styles
 import axios, { AxiosResponse } from 'axios';
@@ -35,6 +34,8 @@ const NewPayout: React.FC = () => {
   const [recipientNotImportTheName, setRecipientNotImportTheName] = useState('');
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [iban, setIban] = useState<string>('');
 
   useEffect(() => {
     const loggedIn = Cookies.get('isloggedin') === 'true';
@@ -50,12 +51,12 @@ const NewPayout: React.FC = () => {
         sender: {
           id: account.user.id,
           iban: account.iban,
-          accountNumber: '',
-          bankId: '',
-          balance: account.balance,
+          accountNumber: account.accountNumber,
+          bankId: account.bankId,
+          balance:account.balance,
           user: userData,
           accountType: account.accountType,
-          confirmedByAdmin: false
+          confirmedByAdmin:account.confirmedByAdmin
         }
       }));
 
@@ -137,13 +138,97 @@ const NewPayout: React.FC = () => {
       try {
         const response = await axios.post('http://localhost:8088/transfers', formData);
         window.location.reload();
+        navigate('/confirm-transaction', { state: { transferId: response.data.id } });
       } catch (error) {
         console.error('Transaction failed:', error);
       }
     }
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedImage(event.target.files[0]);
+    }
+  };
+
+  const handleUploadClick = () => {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (selectedImage) {
+      const formData = new FormData();
+      formData.append('file', selectedImage);
+
+      try {
+        const response = await fetch('http://localhost:8088/transfers/upload', { // Anpassung der URL
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.text(); // Anpassung an den neuen Antworttyp
+        if (response.ok) {
+          setIban(data);
+          setBankData((prevData) => ({
+            ...prevData,
+            iban: data, // hier: aktualisiere die IBAN im Zustand
+          }));
+        } else {
+          console.error('File upload failed:', data);
+          alert(`File upload failed: ${data}`);
+        }
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Error uploading file');
+      }
+    }
+  };
+
   return (
+      <div className="container">
+        <div>
+          <button
+              onClick={handleUploadClick}
+              style={{
+                backgroundColor: 'red',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                cursor: 'pointer'
+              }}
+          >
+            🧾 Rechnung hochladen
+          </button>
+          <input
+              type="file"
+              id="fileInput"
+              style={{ display: 'none' }}
+              accept="image/*"
+              onChange={handleImageChange}
+          />
+          {selectedImage && (
+              <div>
+                <p style={{ color: 'black' }}>{selectedImage.name}</p>
+                <img src={URL.createObjectURL(selectedImage)} alt="Preview" width="100" />
+                <button
+                    onClick={handleSubmit}
+                    style={{
+                      backgroundColor: 'red',
+                      color: 'white',
+                      border: 'none',
+                      padding: '10px 20px',
+                      cursor: 'pointer',
+                      marginTop: '10px' // Optional, um etwas Platz zu schaffen
+                    }}
+                >
+                  Hochladen
+                </button>
+              </div>
+          )}
+        </div>
       <div className="container text-black">
         <div className={`input ${showInput1 ? 'show' : ''}`}>
           <p className="text-black font-bold">Empfänger</p>
@@ -155,15 +240,17 @@ const NewPayout: React.FC = () => {
               onChange={(e) => setRecipientNotImportTheName(e.target.value)}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+
           <p className="text-black font-bold">IBAN</p>
           <input
               type="text"
               placeholder="IBAN"
               name="iban"
-              value={bankData.iban}
+              value={bankData.iban} // hier: benutze den aktualisierten Zustand
               onChange={handleBankChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+
           <p className="text-black font-bold">Oder BIC und Kontonummer</p>
           <input
               type="text"
@@ -181,6 +268,7 @@ const NewPayout: React.FC = () => {
               onChange={handleBankChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+
         </div>
 
         <div className={`input ${showInput2 ? 'show' : ''}`}>
@@ -193,6 +281,7 @@ const NewPayout: React.FC = () => {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+
         </div>
 
         <div className={`input ${showInput3 ? 'show' : ''}`}>
@@ -205,6 +294,7 @@ const NewPayout: React.FC = () => {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+
         </div>
 
         <div className={`input ${showInput6 ? 'show' : ''}`}>
@@ -222,8 +312,16 @@ const NewPayout: React.FC = () => {
               <strong>Betrag:</strong> {formData.sum} EUR
             </p>
           </div>
+          <button  className="text-black" onClick={finishTransaction}>Geld senden</button>
           <button onClick={finishTransaction}>Geld senden</button>
         </div>
+        {showInput1 && (
+            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
+        )}
+        {(showInput2 || showInput3) && (
+            <button className="text-black" onClick={handleButtonClick}>Next</button>
+          )}
+      </div>
 
         {showInput1 && (
             <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>
