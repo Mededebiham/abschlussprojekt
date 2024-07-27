@@ -1,19 +1,20 @@
+// NewPayout.tsx
 import React, { useState, useEffect } from 'react';
 import './css/NewPayout.css'; // Import CSS file for styles
 import axios, { AxiosResponse } from 'axios';
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { Transfer, User, BankAccount, BankAPI } from '../store/types';
-import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from 'firebase/auth'
 import { sendVerificationCode } from '../phoneAuth'; // Import the function from phoneAuth.js
+import OTPVerification from './OTPVerification'; // Import OTPVerification component
 import 'react-phone-input-2/lib/style.css';
+import {  ConfirmationResult } from 'firebase/auth'
 
 const NewPayout: React.FC = () => {
   const [showInput1, setShowInput1] = useState(true);
   const [showInput2, setShowInput2] = useState(false);
   const [showInput3, setShowInput3] = useState(false);
   const [showInput6, setShowInput6] = useState(false);
-  const [showOTP, setShowOTP] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const [input1Disabled, setInput1Disabled] = useState(true);
   const [formData, setFormData] = useState<Transfer>({
@@ -33,7 +34,6 @@ const NewPayout: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [recipientNotImportTheName, setRecipientNotImportTheName] = useState('');
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-  const [verificationCode, setVerificationCode] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -135,8 +135,6 @@ const NewPayout: React.FC = () => {
       sendVerificationCode("+491638853560", setConfirmationResult, setShowVerification);
     } else {
       try {
-        await confirmationResult.confirm(verificationCode);
-        console.log("Form Data:", JSON.stringify(formData, null, 2));
         const response = await axios.post('http://localhost:8088/transfers', formData);
         window.location.reload();
       } catch (error) {
@@ -149,74 +147,102 @@ const NewPayout: React.FC = () => {
       <div className="container text-black">
         <div className={`input ${showInput1 ? 'show' : ''}`}>
           <p className="text-black font-bold">Empfänger</p>
-          <input type="text" placeholder="Empfänger" name="recipient" value={recipientNotImportTheName}
-                 onChange={(e) => setRecipientNotImportTheName(e.target.value)}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input
+              type="text"
+              placeholder="Empfänger"
+              name="recipient"
+              value={recipientNotImportTheName}
+              onChange={(e) => setRecipientNotImportTheName(e.target.value)}
+              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
           <p className="text-black font-bold">IBAN</p>
-          <input type="text" placeholder="IBAN" name="iban" value={bankData.iban} onChange={handleBankChange}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input
+              type="text"
+              placeholder="IBAN"
+              name="iban"
+              value={bankData.iban}
+              onChange={handleBankChange}
+              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
           <p className="text-black font-bold">Oder BIC und Kontonummer</p>
-          <input type="text" placeholder="BIC" name="bankId" value={bankData.bankId} onChange={handleBankChange}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-          <input type="text" placeholder="Kontonummer" name="accountNumber" value={bankData.accountNumber}
-                 onChange={handleBankChange}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input
+              type="text"
+              placeholder="BIC"
+              name="bankId"
+              value={bankData.bankId}
+              onChange={handleBankChange}
+              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          <input
+              type="text"
+              placeholder="Kontonummer"
+              name="accountNumber"
+              value={bankData.accountNumber}
+              onChange={handleBankChange}
+              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
         </div>
 
         <div className={`input ${showInput2 ? 'show' : ''}`}>
           <p className="text-black font-bold">How much money do you want to send?</p>
-          <input type="text" placeholder="Type here" name="sum" value={formData.sum} onChange={handleChange}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input
+              type="text"
+              placeholder="Type here"
+              name="sum"
+              value={formData.sum}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
         </div>
 
         <div className={`input ${showInput3 ? 'show' : ''}`}>
           <p className="text-black font-bold">What is the reason of your transaction?</p>
-          <input type="text" placeholder="Type here" name="reasonOfTransfer" value={formData.reasonOfTransfer}
-                 onChange={handleChange}
-                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input
+              type="text"
+              placeholder="Type here"
+              name="reasonOfTransfer"
+              value={formData.reasonOfTransfer}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
         </div>
 
         <div className={`input ${showInput6 ? 'show' : ''}`}>
           <div className="summary-card">
-            <p><strong>Empfänger:</strong> {recipientNotImportTheName}</p>
-            <p><strong>IBAN:</strong> {bankData.iban}</p>
-            <p><strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}</p>
-            <p><strong>Betrag:</strong> {formData.sum} EUR</p>
+            <p>
+              <strong>Empfänger:</strong> {recipientNotImportTheName}
+            </p>
+            <p>
+              <strong>IBAN:</strong> {bankData.iban}
+            </p>
+            <p>
+              <strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}
+            </p>
+            <p>
+              <strong>Betrag:</strong> {formData.sum} EUR
+            </p>
           </div>
           <button onClick={finishTransaction}>Geld senden</button>
         </div>
 
-        {showInput1 &&
-            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur
-              Überprüfung</button>
-        }
-        {(showInput2 || showInput3) &&
-            <button onClick={handleButtonClick}>Next</button>
-        }
+        {showInput1 && (
+            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>
+              Zur Überprüfung
+            </button>
+        )}
+        {(showInput2 || showInput3) && <button onClick={handleButtonClick}>Next</button>}
 
         <div id="recaptcha-container"></div>
 
         {showVerification && (
-            <div className="otp-verification">
-              <p>Enter your OTP</p>
-              <div className="otp-inputs">
-                {Array.from({ length: 6 }).map((_, index) => (
-                    <input
-                        key={index}
-                        type="text"
-                        maxLength={1}
-                        value={verificationCode[index] || ''}
-                        onChange={(e) => {
-                          const newCode = verificationCode.split('');
-                          newCode[index] = e.target.value;
-                          setVerificationCode(newCode.join(''));
-                        }}
-                        className="otp-input"
-                    />
-                ))}
-              </div>
-              <button onClick={finishTransaction}>Verify OTP</button>
-            </div>
+            <OTPVerification
+                confirmationResult={confirmationResult}
+                onVerify={() => {
+                  console.log('OTP verified');
+                  setShowVerification(false);
+                  finishTransaction();
+                }}
+            />
         )}
       </div>
   );
