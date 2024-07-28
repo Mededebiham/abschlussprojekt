@@ -9,10 +9,11 @@ import TransfersHistory from './TransfersHistory';
 import { Transfer, BankAccount } from "../store/types";
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import {useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./css/ClientProfil.css";
+import konto from "../konto.png";
 
 const ClientProfil: React.FC = ({}) => {
-    // State variables to manage component visibility
     const [showDeposits, setShowDeposits] = useState(false);
     const [showPayouts, setShowPayouts] = useState(false);
     const [showTransfers, setShowTransfers] = useState(false);
@@ -27,13 +28,9 @@ const ClientProfil: React.FC = ({}) => {
     const [greeting, setGreeting] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
-    // const { account } = location.state || {};
-
     const account = JSON.parse(Cookies.get('account') || '{}');
 
-
     useEffect(() => {
-        // Retrieve parameters from cookies
         const loggedIn = Cookies.get('isloggedin') === 'true';
         const userData = JSON.parse(Cookies.get('user') || '{}');
 
@@ -50,7 +47,7 @@ const ClientProfil: React.FC = ({}) => {
                     try {
                         const response = await axios.get(`http://localhost:8088/bankAccounts/user/${userData?.id}`);
                         setBankAccounts(response.data);
-                        setSelectedBankAccount(response.data[0]); // Set the first bank account as default
+                        setSelectedBankAccount(response.data[0]);
                     } catch (error) {
                         console.error('Error fetching bank accounts:', error);
                     }
@@ -60,7 +57,6 @@ const ClientProfil: React.FC = ({}) => {
             }
         }
     }, []);
-
 
     useEffect(() => {
         const currentHour = new Date().getHours();
@@ -79,21 +75,16 @@ const ClientProfil: React.FC = ({}) => {
 
     useEffect(() => {
         if (selectedBankAccount) {
-            console.log("bank account selected")
-            console.log(selectedBankAccount);
             const fetchData = async () => {
                 try {
                     const bankAccountId = selectedBankAccount.id;
 
-                    // Get all transfers for the selected bank account
                     const usersTransferResponse = await axios.get(`http://localhost:8088/transfers/bankAccount/transfers/${bankAccountId}`);
                     setTransfers(usersTransferResponse.data);
 
-                    // Get all deposits for the selected bank account
                     const usersDepositsResponse = await axios.get(`http://localhost:8088/transfers/bankAccount/deposits/${bankAccountId}`);
                     setDeposits(usersDepositsResponse.data);
 
-                    // Get all payouts for the selected bank account
                     const usersPayoutsResponse = await axios.get(`http://localhost:8088/transfers/bankAccount/payouts/${bankAccountId}`);
                     setPayouts(usersPayoutsResponse.data);
                 } catch (error) {
@@ -105,7 +96,6 @@ const ClientProfil: React.FC = ({}) => {
         }
     }, [selectedBankAccount]);
 
-
     const handleBankAccountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = event.target.value;
         const selectedAccount = selectedId !== null
@@ -113,8 +103,6 @@ const ClientProfil: React.FC = ({}) => {
             : undefined;
         setSelectedBankAccount(selectedAccount || null);
     };
-
-
 
     const toggleDeposits = () => {
         setShowDeposits(!showDeposits);
@@ -145,34 +133,48 @@ const ClientProfil: React.FC = ({}) => {
     };
 
     return (
-        <div className="text-white">
-            <div className="ml-5">
-                {account.accountType && (
-                    <div className="text-black">
-                        <strong>Kontotyp: </strong>{account.accountType}
-                        <strong>IBAN: </strong>{account.iban}
+        <div className="client-profile-container text-white">
+            <div className="client-profile-card">
+                <div className="client-profile-info">
+                    <div className="client-profile-info-left">
+                        <div className="client-profile-bank-icon">
+                            <img src={konto} alt="Bank Icon" />
+                        </div>
+                        <div className="client-profile-account-details">
+                            {account.accountType && (
+                                <div className="client-profile-account-type">
+                                    <strong>{account.accountType}</strong>
+                                </div>
+                            )}
+                            {account.iban && (
+                                <div className="client-profile-iban">
+                                    <strong>{account.iban}</strong>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                )}
-                {account.balance !== undefined && (
-                    <div className="text-black">
-                        <strong>{greeting}, Ihr Gesamtsaldo ist: </strong>€{account.balance.toFixed(2)}
+                    <div className="client-profile-info-center">
+                        {user && (
+                            <div className="client-profile-owner">
+                                <strong>{account.user.firstName + " " + account.user.lastName}</strong>
+                            </div>
+                        )}
                     </div>
-                )}
+                    <div className="client-profile-info-right">
+                        {account.balance !== undefined && (
+                            <div className="client-profile-balance">
+                                <strong>€{account.balance.toFixed(2)}</strong>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
-            <div className="flex justify-between mx-5 my-5">
+            <div className="client-profile-buttons flex justify-between mx-5 my-5">
                 <div className="flex mt-5">
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5"
-                            onClick={toggleDeposits}>Eingehende Transaktionen
-                    </button>
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5"
-                            onClick={togglePayouts}>Ausgehende Transaktionen
-                    </button>
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5"
-                            onClick={toggleTransfers}>Alle Transaktionen
-                    </button>
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            onClick={toggleNewPayout}>✚ Überweisung
-                    </button>
+                    <button className="client-profile-btn-red mr-5" onClick={toggleDeposits}>Eingehende Transaktionen</button>
+                    <button className="client-profile-btn-red mr-5" onClick={togglePayouts}>Ausgehende Transaktionen</button>
+                    <button className="client-profile-btn-red mr-5" onClick={toggleTransfers}>Alle Transaktionen</button>
+                    <button className="client-profile-btn-red" onClick={toggleNewPayout}>✚ Überweisung</button>
                 </div>
             </div>
 
@@ -180,19 +182,19 @@ const ClientProfil: React.FC = ({}) => {
                 {showDeposits && (
                     <div>
                         <h3>Eingehende Umsätze</h3>
-                        <DepositsHistory transfers={deposits}/>
+                        <DepositsHistory transfers={deposits} />
                     </div>
                 )}
                 {showPayouts && (
                     <div>
                         <h3>Ausgehende Umsätze</h3>
-                        <PayoutsHistory transfers={payouts}/>
+                        <PayoutsHistory transfers={payouts} />
                     </div>
                 )}
                 {showTransfers && (
                     <div>
                         <h3>Alle Umsätze</h3>
-                        <TransfersHistory transfers={transfers} userRole={user?.role}/>
+                        <TransfersHistory transfers={transfers} userRole={user?.role} />
                     </div>
                 )}
                 {showNewPayout && (
