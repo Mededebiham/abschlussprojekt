@@ -124,3 +124,10 @@
     max-width: 100px;
     margin-bottom: 10px;
 }
+
+.error-message {
+    color: red !important;
+    font-size: 0.875rem !important; /* Küçük yazı boyutu */
+    margin-top: 0.5rem !important;
+    font-style: italic;
+}

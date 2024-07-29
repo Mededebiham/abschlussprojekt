@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import './css/NewPayout.css'; // Import CSS file for styles
+import './css/NewPayout.css';
 import axios, { AxiosResponse } from 'axios';
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { Transfer, User, BankAccount, BankAPI } from '../store/types';
-import { sendVerificationCode } from '../phoneAuth'; // Import the function from phoneAuth.js
-import OTPVerification from './OTPVerification'; // Import OTPVerification component
+import { sendVerificationCode } from '../phoneAuth';
+import OTPVerification from './OTPVerification';
 import 'react-phone-input-2/lib/style.css';
 import { ConfirmationResult } from 'firebase/auth';
 
@@ -36,7 +36,10 @@ const NewPayout: React.FC = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [iban, setIban] = useState<string>('');
+  const [ibanError, setIbanError] = useState<string>('');
+  const [sumError, setSumError] = useState<string>('');
   let userPhone;
+
   useEffect(() => {
     const loggedIn = Cookies.get('isloggedin') === 'true';
     const userData = JSON.parse(Cookies.get('user') || '{}');
@@ -71,6 +74,13 @@ const NewPayout: React.FC = () => {
       setShowInput1(false);
       setShowInput2(true);
     } else if (showInput2) {
+      const sum = parseFloat(formData.sum.toString()); // Sum değerini sayıya çevir
+      if (isNaN(sum) || sum < 20) {
+        setSumError('Beträge unter 20€ sind nicht zulässig');
+        return; // Eğer hata varsa işlemi durdur
+      } else {
+        setSumError('');
+      }
       setShowInput2(false);
       setShowInput3(true);
     } else if (showInput3) {
@@ -85,6 +95,14 @@ const NewPayout: React.FC = () => {
       ...prevData,
       [name]: value,
     }));
+    if (name === 'sum') {
+      const sum = parseFloat(value);
+      if (isNaN(sum) || sum < 20) {
+        setSumError('Beträge unter 20€ sind nicht zulässig');
+      } else {
+        setSumError('');
+      }
+    }
   };
 
   const handleBankChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -95,6 +113,18 @@ const NewPayout: React.FC = () => {
     }));
     if ((name === 'iban' && value !== '') || (name === 'accountNumber' && value !== '' && bankData.bankId !== '') || (name === 'bankId' && value !== '' && bankData.accountNumber !== '')) {
       setInput1Disabled(false);
+    }
+    if (name === 'iban') {
+      setIbanError(''); // IBAN değiştirildiğinde hata mesajını temizle
+    }
+  };
+
+  const validateIban = (iban: string) => {
+    // Burada IBAN doğrulama mantığını ekleyebilirsiniz. Basit bir kontrol örneği:
+    if (iban.length < 15 && iban.length > 0) {
+      setIbanError('Ungültige IBAN');
+    } else {
+      setIbanError('');
     }
   };
 
@@ -111,6 +141,9 @@ const NewPayout: React.FC = () => {
   };
 
   const handleBankAccountClick = async () => {
+    validateIban(bankData.iban); // IBAN doğrulamasını kontrol et
+    if (ibanError) return; // Eğer hata varsa işlemi durdur
+
     try {
       const response: AxiosResponse<BankAccount> = await axios.get('http://localhost:8088/bankAccounts/accountNumbOrIBAN', {
         params: {
@@ -223,8 +256,12 @@ const NewPayout: React.FC = () => {
                 name="iban"
                 value={bankData.iban}
                 onChange={handleBankChange}
+                onBlur={(e) => validateIban(e.target.value)} // Inputtan ayrıldığında IBAN doğrulama
                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
+            {ibanError && (
+                <p className="error-message">{ibanError}</p>
+            )}
 
             <p className="text-black font-bold">Oder BIC und Kontonummer</p>
             <input
@@ -260,7 +297,7 @@ const NewPayout: React.FC = () => {
           </div>
 
           <div className={`new-payout-input ${showInput2 ? 'show' : ''}`}>
-            <p className="text-black font-bold">How much money do you want to send?</p>
+            <p className="text-black font-bold">Wie viel Geld möchten Sie schicken?</p>
             <input
                 type="text"
                 placeholder="Type here"
@@ -269,10 +306,13 @@ const NewPayout: React.FC = () => {
                 onChange={handleChange}
                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
+            {sumError && (
+                <p className="error-message">{sumError}</p>
+            )}
           </div>
 
           <div className={`new-payout-input ${showInput3 ? 'show' : ''}`}>
-            <p className="text-black font-bold">What is the reason of your transaction?</p>
+            <p className="text-black font-bold">Was ist der Grund für Ihre Transaktion?</p>
             <input
                 type="text"
                 placeholder="Type here"
