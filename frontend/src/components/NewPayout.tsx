@@ -30,6 +30,8 @@ const NewPayout: React.FC = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [iban, setIban] = useState<string>('');
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
     const loggedIn = Cookies.get('isloggedin') === 'true';
@@ -47,19 +49,27 @@ const NewPayout: React.FC = () => {
           iban: account.iban,
           accountNumber: account.accountNumber,
           bankId: account.bankId,
-          balance:account.balance,
+          balance: account.balance,
           user: userData,
           accountType: account.accountType,
-          confirmedByAdmin:account.confirmedByAdmin
+          confirmedByAdmin: account.confirmedByAdmin
         }
       }));
-
 
       if (userData?.confirmedByAdmin === false) {
         navigate('/Unconfirmed');
       }
     }
   }, [navigate]);
+
+  useEffect(() => {
+    if (isCameraOpen && cameraStream) {
+      const video = document.getElementById('video') as HTMLVideoElement;
+      if (video) {
+        video.srcObject = cameraStream;
+      }
+    }
+  }, [isCameraOpen, cameraStream]);
 
   const handleButtonClick = () => {
     if (showInput1) {
@@ -127,7 +137,6 @@ const NewPayout: React.FC = () => {
   };
 
   const finishTransaction = async () => {
-
     try {
       console.log("Form Data:", JSON.stringify(formData, null, 2));
       const response = await axios.post('http://localhost:8088/transfers', formData);
@@ -157,26 +166,63 @@ const NewPayout: React.FC = () => {
       formData.append('file', selectedImage);
 
       try {
-        const response = await fetch('http://localhost:8088/transfers/upload', { // Anpassung der URL
+        const response = await fetch('http://localhost:8088/transfers/upload', {
           method: 'POST',
           body: formData,
         });
 
-        const data = await response.text(); // Anpassung an den neuen Antworttyp
+        const data = await response.json();
         if (response.ok) {
-          setIban(data);
+          setIban(data.iban);
           setBankData((prevData) => ({
             ...prevData,
-            iban: data, // hier: aktualisiere die IBAN im Zustand
+            iban: data.iban,
           }));
+          setFormData((prevData) => ({
+            ...prevData,
+            sum: parseFloat(data.betrag),
+          }));
+          setRecipientNotImportTheName(data.empfaenger);
         } else {
-          console.error('File upload failed:', data);
-          alert(`File upload failed: ${data}`);
+          console.error('File upload failed:', data.error);
+          alert(`File upload failed: ${data.error}`);
         }
       } catch (error) {
         console.error('Error uploading file:', error);
         alert('Error uploading file');
       }
+    }
+  };
+
+  const openCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      setCameraStream(stream);
+      setIsCameraOpen(true);
+    } catch (error) {
+      console.error('Error opening camera:', error);
+      alert('Error opening camera');
+    }
+  };
+
+  const capturePhoto = () => {
+    const video = document.getElementById('video') as HTMLVideoElement;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d');
+    if (context) {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+          setSelectedImage(file);
+          setIsCameraOpen(false);
+          if (cameraStream) {
+            cameraStream.getTracks().forEach((track) => track.stop());
+          }
+        }
+      }, 'image/jpeg');
     }
   };
 
@@ -202,6 +248,32 @@ const NewPayout: React.FC = () => {
               accept="image/*"
               onChange={handleImageChange}
           />
+          <button
+              onClick={openCamera}
+              style={{
+                backgroundColor: 'red',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                cursor: 'pointer',
+                marginLeft: '10px'
+              }}
+          >
+            📸 Foto aufnehmen
+          </button>
+          {isCameraOpen && (
+              <div>
+                <video id="video" autoPlay style={{ width: '100%' }}></video>
+                <button onClick={capturePhoto} style={{
+                  backgroundColor: 'red',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  cursor: 'pointer',
+                  marginTop: '10px'
+                }}>Foto aufnehmen</button>
+              </div>
+          )}
           {selectedImage && (
               <div>
                 <p style={{ color: 'black' }}>{selectedImage.name}</p>
@@ -214,7 +286,7 @@ const NewPayout: React.FC = () => {
                       border: 'none',
                       padding: '10px 20px',
                       cursor: 'pointer',
-                      marginTop: '10px' // Optional, um etwas Platz zu schaffen
+                      marginTop: '10px'
                     }}
                 >
                   Hochladen
@@ -222,7 +294,6 @@ const NewPayout: React.FC = () => {
               </div>
           )}
         </div>
-      <div className="container text-black">
         <div className={`input ${showInput1 ? 'show' : ''}`}>
           <p className="text-black font-bold">Empfänger</p>
           <input
@@ -261,11 +332,10 @@ const NewPayout: React.FC = () => {
               onChange={handleBankChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-
         </div>
 
         <div className={`input ${showInput2 ? 'show' : ''}`}>
-          <p className="text-black font-bold">How much money do you want to send?</p>
+          <p className="text-black font-bold">Wie viel Geld möchten Sie senden?</p>
           <input
               type="text"
               placeholder="Type here"
@@ -274,11 +344,10 @@ const NewPayout: React.FC = () => {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-
         </div>
 
         <div className={`input ${showInput3 ? 'show' : ''}`}>
-          <p className="text-black font-bold">What is the reason of your transaction?</p>
+          <p className="text-black font-bold">Was ist der Verwendungszweck der Überweisung?</p>
           <input
               type="text"
               placeholder="Type here"
@@ -287,7 +356,6 @@ const NewPayout: React.FC = () => {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-
         </div>
 
         <div className={`input ${showInput6 ? 'show' : ''}`}>
@@ -297,17 +365,17 @@ const NewPayout: React.FC = () => {
             <p><strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}</p>
             <p><strong>Betrag:</strong> {formData.sum} EUR</p>
           </div>
-          <button  className="text-black" onClick={finishTransaction}>Geld senden</button>
+          <button className="text-black" onClick={finishTransaction}>Geld senden</button>
         </div>
         {showInput1 && (
             <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
         )}
         {(showInput2 || showInput3) && (
-            <button className="text-black" onClick={handleButtonClick}>Next</button>
-          )}
-      </div>
+            <button className="text-black" onClick={handleButtonClick}>Weiter</button>
+        )}
       </div>
   );
+
 };
 
 export default NewPayout;

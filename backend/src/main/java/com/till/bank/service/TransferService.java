@@ -35,4 +35,8 @@ public interface TransferService {
     String processFile(MultipartFile file) throws IOException;
 
     String extractIban(String extractedText);
+
+    String empfaengerExtractor(String extractedText);
+
+    String betragExtractor(String extractedBetrag);
 }
