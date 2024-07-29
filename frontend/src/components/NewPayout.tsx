@@ -7,7 +7,7 @@ import { Transfer, User, BankAccount, BankAPI } from '../store/types';
 import { sendVerificationCode } from '../phoneAuth'; // Import the function from phoneAuth.js
 import OTPVerification from './OTPVerification'; // Import OTPVerification component
 import 'react-phone-input-2/lib/style.css';
-import {  ConfirmationResult } from 'firebase/auth'
+import { ConfirmationResult } from 'firebase/auth';
 
 const NewPayout: React.FC = () => {
   const [showInput1, setShowInput1] = useState(true);
@@ -36,12 +36,12 @@ const NewPayout: React.FC = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [iban, setIban] = useState<string>('');
-
+  let userPhone;
   useEffect(() => {
     const loggedIn = Cookies.get('isloggedin') === 'true';
     const userData = JSON.parse(Cookies.get('user') || '{}');
     const account = JSON.parse(Cookies.get('account') || '{}');
-
+    userPhone = account.user.userPhone;
     if (!loggedIn || !userData) {
       navigate('/SignIn');
     } else {
@@ -53,10 +53,10 @@ const NewPayout: React.FC = () => {
           iban: account.iban,
           accountNumber: account.accountNumber,
           bankId: account.bankId,
-          balance:account.balance,
+          balance: account.balance,
           user: userData,
           accountType: account.accountType,
-          confirmedByAdmin:account.confirmedByAdmin
+          confirmedByAdmin: account.confirmedByAdmin
         }
       }));
 
@@ -133,7 +133,7 @@ const NewPayout: React.FC = () => {
 
   const finishTransaction = async () => {
     if (!confirmationResult) {
-      sendVerificationCode("+491638853560", setConfirmationResult, setShowVerification);
+      sendVerificationCode("+491543332211", setConfirmationResult, setShowVerification);
     } else {
       try {
         const response = await axios.post('http://localhost:8088/transfers', formData);
@@ -164,17 +164,17 @@ const NewPayout: React.FC = () => {
       formData.append('file', selectedImage);
 
       try {
-        const response = await fetch('http://localhost:8088/transfers/upload', { // Anpassung der URL
+        const response = await fetch('http://localhost:8088/transfers/upload', {
           method: 'POST',
           body: formData,
         });
 
-        const data = await response.text(); // Anpassung an den neuen Antworttyp
+        const data = await response.text();
         if (response.ok) {
           setIban(data);
           setBankData((prevData) => ({
             ...prevData,
-            iban: data, // hier: aktualisiere die IBAN im Zustand
+            iban: data,
           }));
         } else {
           console.error('File upload failed:', data);
@@ -188,147 +188,125 @@ const NewPayout: React.FC = () => {
   };
 
   return (
-      <div className="container">
+      <div className="new-payout-container">
+        <div className="new-payout-title">Überweisung</div>
         <div>
-          <button
-              onClick={handleUploadClick}
-              style={{
-                backgroundColor: 'red',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                cursor: 'pointer'
-              }}
-          >
-            🧾 Rechnung hochladen
-          </button>
-          <input
-              type="file"
-              id="fileInput"
-              style={{ display: 'none' }}
-              accept="image/*"
-              onChange={handleImageChange}
-          />
           {selectedImage && (
-              <div>
-                <p style={{ color: 'black' }}>{selectedImage.name}</p>
-                <img src={URL.createObjectURL(selectedImage)} alt="Preview" width="100" />
+              <div className="new-payout-image-preview">
+                <p>{selectedImage.name}</p>
+                <img src={URL.createObjectURL(selectedImage)} alt="Preview" />
                 <button
                     onClick={handleSubmit}
-                    style={{
-                      backgroundColor: 'red',
-                      color: 'white',
-                      border: 'none',
-                      padding: '10px 20px',
-                      cursor: 'pointer',
-                      marginTop: '10px' // Optional, um etwas Platz zu schaffen
-                    }}
+                    className="new-payout-file-upload-button"
                 >
                   Hochladen
                 </button>
               </div>
           )}
         </div>
-      <div className="container text-black">
-        <div className={`input ${showInput1 ? 'show' : ''}`}>
-          <p className="text-black font-bold">Empfänger</p>
-          <input
-              type="text"
-              placeholder="Empfänger"
-              name="recipient"
-              value={recipientNotImportTheName}
-              onChange={(e) => setRecipientNotImportTheName(e.target.value)}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
+        <div className="new-payout-form-container text-black">
+          <div className={`new-payout-input ${showInput1 ? 'show' : ''}`}>
+            <p className="text-black font-bold">Empfänger</p>
+            <input
+                type="text"
+                placeholder="Empfänger"
+                name="recipient"
+                value={recipientNotImportTheName}
+                onChange={(e) => setRecipientNotImportTheName(e.target.value)}
+                className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
 
-          <p className="text-black font-bold">IBAN</p>
-          <input
-              type="text"
-              placeholder="IBAN"
-              name="iban"
-              value={bankData.iban} // hier: benutze den aktualisierten Zustand
-              onChange={handleBankChange}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
+            <p className="text-black font-bold">IBAN</p>
+            <input
+                type="text"
+                placeholder="IBAN"
+                name="iban"
+                value={bankData.iban}
+                onChange={handleBankChange}
+                className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
 
-          <p className="text-black font-bold">Oder BIC und Kontonummer</p>
-          <input
-              type="text"
-              placeholder="BIC"
-              name="bankId"
-              value={bankData.bankId}
-              onChange={handleBankChange}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-          <input
-              type="text"
-              placeholder="Kontonummer"
-              name="accountNumber"
-              value={bankData.accountNumber}
-              onChange={handleBankChange}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-
-        </div>
-
-        <div className={`input ${showInput2 ? 'show' : ''}`}>
-          <p className="text-black font-bold">How much money do you want to send?</p>
-          <input
-              type="text"
-              placeholder="Type here"
-              name="sum"
-              value={formData.sum}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-
-        </div>
-
-        <div className={`input ${showInput3 ? 'show' : ''}`}>
-          <p className="text-black font-bold">What is the reason of your transaction?</p>
-          <input
-              type="text"
-              placeholder="Type here"
-              name="reasonOfTransfer"
-              value={formData.reasonOfTransfer}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-
-        </div>
-
-        <div className={`input ${showInput6 ? 'show' : ''}`}>
-          <div className="summary-card">
-            <p>
-              <strong>Empfänger:</strong> {recipientNotImportTheName}
-            </p>
-            <p>
-              <strong>IBAN:</strong> {bankData.iban}
-            </p>
-            <p>
-              <strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}
-            </p>
-            <p>
-              <strong>Betrag:</strong> {formData.sum} EUR
-            </p>
+            <p className="text-black font-bold">Oder BIC und Kontonummer</p>
+            <input
+                type="text"
+                placeholder="BIC"
+                name="bankId"
+                value={bankData.bankId}
+                onChange={handleBankChange}
+                className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            <input
+                type="text"
+                placeholder="Kontonummer"
+                name="accountNumber"
+                value={bankData.accountNumber}
+                onChange={handleBankChange}
+                className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            <div>
+              <button
+                  onClick={handleUploadClick}
+                  className="new-payout-file-upload-button"
+              >
+                🧾 Rechnung hochladen
+              </button>
+              <input
+                  type="file"
+                  id="fileInput"
+                  accept="image/*"
+                  onChange={handleImageChange}
+              />
+            </div>
           </div>
-          <button  className="text-black" onClick={finishTransaction}>Geld senden</button>
-          <button onClick={finishTransaction}>Geld senden</button>
-        </div>
-        {showInput1 && (
-            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
-        )}
-        {(showInput2 || showInput3) && (
-            <button className="text-black" onClick={handleButtonClick}>Next</button>
-          )}
-      </div>
 
-        {showInput1 && (
-            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>
-              Zur Überprüfung
-            </button>
-        )}
-        {(showInput2 || showInput3) && <button onClick={handleButtonClick}>Next</button>}
+          <div className={`new-payout-input ${showInput2 ? 'show' : ''}`}>
+            <p className="text-black font-bold">How much money do you want to send?</p>
+            <input
+                type="text"
+                placeholder="Type here"
+                name="sum"
+                value={formData.sum}
+                onChange={handleChange}
+                className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+
+          <div className={`new-payout-input ${showInput3 ? 'show' : ''}`}>
+            <p className="text-black font-bold">What is the reason of your transaction?</p>
+            <input
+                type="text"
+                placeholder="Type here"
+                name="reasonOfTransfer"
+                value={formData.reasonOfTransfer}
+                onChange={handleChange}
+                className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+
+          <div className={`new-payout-input ${showInput6 ? 'show' : ''}`}>
+            <div className="new-payout-summary-card">
+              <p>
+                <strong>Empfänger:</strong> {recipientNotImportTheName}
+              </p>
+              <p>
+                <strong>IBAN:</strong> {bankData.iban}
+              </p>
+              <p>
+                <strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}
+              </p>
+              <p>
+                <strong>Betrag:</strong> {formData.sum} EUR
+              </p>
+            </div>
+            <button className="new-payout-button text-black" onClick={finishTransaction}>Geld senden</button>
+          </div>
+          {showInput1 && (
+              <button className="new-payout-button text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
+          )}
+          {(showInput2 || showInput3) && (
+              <button className="new-payout-button text-black" onClick={handleButtonClick}>Next</button>
+          )}
+        </div>
 
         <div id="recaptcha-container"></div>
 

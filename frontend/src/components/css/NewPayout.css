@@ -1,16 +1,126 @@
-.container {
+/* NewPayout.css */
+
+.new-payout-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  
-  .input {
+    justify-content: center;
+    padding: 20px;
+    background-color: #2c2c2c; /* Dark grey background for the container */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-height: fit-content; /* Minimum height for the container */
+    width: 100%;
+    max-width: fit-content;
+    margin: auto;
+}
+
+.new-payout-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.new-payout-input {
     display: none;
-    transition: opacity 0.5s ease;
-  }
-  
-  .input.show {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.new-payout-input.show {
     display: block;
-    opacity: 1;
-  }
-  
+}
+
+.new-payout-input p {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white; /* Text color */
+}
+
+.new-payout-input input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #fff;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.new-payout-input input:focus {
+    border-color: #007bff;
+}
+
+.new-payout-summary-card {
+    background-color: #444; /* Slightly darker grey for the summary card */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    color: white; /* Text color */
+}
+
+.new-payout-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 10px 0; /* Margin for spacing between buttons */
+}
+
+.new-payout-button:hover {
+    background-color: #0056b3;
+}
+
+.new-payout-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.new-payout-button.text-black {
+    background-color: #e74c3c;
+}
+
+.new-payout-button.text-black:hover {
+    background-color: #c0392b;
+}
+
+#fileInput {
+    display: none;
+}
+
+.new-payout-file-upload-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.new-payout-file-upload-button:hover {
+    background-color: darkred;
+}
+
+.new-payout-image-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.new-payout-image-preview p {
+    color: white; /* Text color */
+}
+
+.new-payout-image-preview img {
+    max-width: 100px;
+    margin-bottom: 10px;
+}

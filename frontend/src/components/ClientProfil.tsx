@@ -199,7 +199,6 @@ const ClientProfil: React.FC = ({}) => {
                 )}
                 {showNewPayout && (
                     <div>
-                        <h3>Überweisung</h3>
                         <NewPayout />
                     </div>
                 )}

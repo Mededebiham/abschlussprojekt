@@ -37,7 +37,7 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ confirmationResult, o
     return (
         <div className="otp-verification-container">
             <BsFillShieldLockFill size={50} className="lock-icon" />
-            <p>Enter your OTP</p>
+            <p>Geben Sie den Code ein</p>
             <div className="otp-inputs">
                 {Array.from({ length: 6 }).map((_, index) => (
                     <input
@@ -51,7 +51,7 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ confirmationResult, o
                     />
                 ))}
             </div>
-            <button onClick={handleVerifyOTP} className="verify-button">Verify OTP</button>
+            <button onClick={handleVerifyOTP} className="verify-button">Überprüfen</button>
         </div>
     );
 };
