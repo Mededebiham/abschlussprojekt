@@ -34,21 +34,26 @@ const NewPayout: React.FC = () => {
   useEffect(() => {
     const loggedIn = Cookies.get('isloggedin') === 'true';
     const userData = JSON.parse(Cookies.get('user') || '{}');
+    const account = JSON.parse(Cookies.get('account') || '{}');
 
     if (!loggedIn || !userData) {
       navigate('/SignIn');
     } else {
       setUser(userData);
-      getBankAccountOfUser(userData.id)
-          .then((bankAccount) => {
-            setFormData((prevData) => ({
-              ...prevData,
-              sender: bankAccount,
-            }));
-          })
-          .catch((error) => {
-            console.error('Error fetching bank account:', error);
-          });
+      setFormData((prevData) => ({
+        ...prevData,
+        sender: {
+          id: account.user.id,
+          iban: account.iban,
+          accountNumber: account.accountNumber,
+          bankId: account.bankId,
+          balance:account.balance,
+          user: userData,
+          accountType: account.accountType,
+          confirmedByAdmin:account.confirmedByAdmin
+        }
+      }));
+
 
       if (userData?.confirmedByAdmin === false) {
         navigate('/Unconfirmed');
@@ -102,7 +107,7 @@ const NewPayout: React.FC = () => {
 
   const handleBankAccountClick = async () => {
     try {
-      const response: AxiosResponse<BankAccount> = await axios.get('http://localhost:8088/bankAccount/accountNumbOrIBAN', {
+      const response: AxiosResponse<BankAccount> = await axios.get('http://localhost:8088/bankAccounts/accountNumbOrIBAN', {
         params: {
           bankId: bankData.bankId,
           accountNumber: bankData.accountNumber,
@@ -122,10 +127,12 @@ const NewPayout: React.FC = () => {
   };
 
   const finishTransaction = async () => {
+
     try {
+      console.log("Form Data:", JSON.stringify(formData, null, 2));
       const response = await axios.post('http://localhost:8088/transfers', formData);
-      console.log(response.data);
       window.location.reload();
+      navigate('/confirm-transaction', { state: { transferId: response.data.id } });
     } catch (error) {
       console.error('Transaction failed:', error);
     }
@@ -215,6 +222,7 @@ const NewPayout: React.FC = () => {
               </div>
           )}
         </div>
+      <div className="container text-black">
         <div className={`input ${showInput1 ? 'show' : ''}`}>
           <p className="text-black font-bold">Empfänger</p>
           <input
@@ -225,6 +233,7 @@ const NewPayout: React.FC = () => {
               onChange={(e) => setRecipientNotImportTheName(e.target.value)}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+
           <p className="text-black font-bold">IBAN</p>
           <input
               type="text"
@@ -234,6 +243,7 @@ const NewPayout: React.FC = () => {
               onChange={handleBankChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+
           <p className="text-black font-bold">Oder BIC und Kontonummer</p>
           <input
               type="text"
@@ -251,6 +261,7 @@ const NewPayout: React.FC = () => {
               onChange={handleBankChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+
         </div>
 
         <div className={`input ${showInput2 ? 'show' : ''}`}>
@@ -263,6 +274,7 @@ const NewPayout: React.FC = () => {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+
         </div>
 
         <div className={`input ${showInput3 ? 'show' : ''}`}>
@@ -275,20 +287,25 @@ const NewPayout: React.FC = () => {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+
         </div>
 
         <div className={`input ${showInput6 ? 'show' : ''}`}>
-          <button onClick={finishTransaction}>Send the money</button>
+          <div className="summary-card">
+            <p><strong>Empfänger:</strong> {recipientNotImportTheName}</p>
+            <p><strong>IBAN:</strong> {bankData.iban}</p>
+            <p><strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}</p>
+            <p><strong>Betrag:</strong> {formData.sum} EUR</p>
+          </div>
+          <button  className="text-black" onClick={finishTransaction}>Geld senden</button>
         </div>
-
         {showInput1 && (
-            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>
-              Zur Überprüfung
-            </button>
+            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
         )}
         {(showInput2 || showInput3) && (
-            <button onClick={handleButtonClick}>Next</button>
-        )}
+            <button className="text-black" onClick={handleButtonClick}>Next</button>
+          )}
+      </div>
       </div>
   );
 };

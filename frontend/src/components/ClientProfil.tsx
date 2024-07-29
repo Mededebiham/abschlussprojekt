@@ -11,7 +11,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import {useLocation, useNavigate} from "react-router-dom";
 
-const ClientProfil: React.FC = ({ }) => {
+const ClientProfil: React.FC = ({}) => {
     // State variables to manage component visibility
     const [showDeposits, setShowDeposits] = useState(false);
     const [showPayouts, setShowPayouts] = useState(false);
@@ -27,7 +27,10 @@ const ClientProfil: React.FC = ({ }) => {
     const [greeting, setGreeting] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
-    const { accountType, balance } = location.state || {};
+    // const { account } = location.state || {};
+
+    const account = JSON.parse(Cookies.get('account') || '{}');
+
 
     useEffect(() => {
         // Retrieve parameters from cookies
@@ -41,7 +44,7 @@ const ClientProfil: React.FC = ({ }) => {
             navigate('/SignIn');
         } else {
             if (userData?.confirmedByAdmin === false) {
-                navigate('/unconfirmed'); // Redirect to an unconfirmed user page
+                navigate('/unconfirmed');
             } else {
                 const fetchBankAccounts = async () => {
                     try {
@@ -57,6 +60,8 @@ const ClientProfil: React.FC = ({ }) => {
             }
         }
     }, []);
+
+
     useEffect(() => {
         const currentHour = new Date().getHours();
         let greetingMessage = '';
@@ -103,7 +108,9 @@ const ClientProfil: React.FC = ({ }) => {
 
     const handleBankAccountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = event.target.value;
-        const selectedAccount = bankAccounts.find(account => account.id === selectedId);
+        const selectedAccount = selectedId !== null
+            ? bankAccounts.find(account => account.id === Number(selectedId))
+            : undefined;
         setSelectedBankAccount(selectedAccount || null);
     };
 
@@ -140,14 +147,15 @@ const ClientProfil: React.FC = ({ }) => {
     return (
         <div className="text-white">
             <div className="ml-5">
-                {accountType && (
+                {account.accountType && (
                     <div className="text-black">
-                        <strong>Kontotyp: </strong>{accountType}
+                        <strong>Kontotyp: </strong>{account.accountType}
+                        <strong>IBAN: </strong>{account.iban}
                     </div>
                 )}
-                {balance !== undefined && (
+                {account.balance !== undefined && (
                     <div className="text-black">
-                        <strong>{greeting}, Ihr Gesamtsaldo ist: </strong>€{balance.toFixed(2)}
+                        <strong>{greeting}, Ihr Gesamtsaldo ist: </strong>€{account.balance.toFixed(2)}
                     </div>
                 )}
             </div>
@@ -190,7 +198,7 @@ const ClientProfil: React.FC = ({ }) => {
                 {showNewPayout && (
                     <div>
                         <h3>Überweisung</h3>
-                        <NewPayout/>
+                        <NewPayout />
                     </div>
                 )}
             </div>

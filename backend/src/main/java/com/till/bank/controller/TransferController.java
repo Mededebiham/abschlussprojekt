@@ -9,15 +9,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/transfers")
 @CrossOrigin(origins = "http://localhost:3000")
 public class TransferController {
-
+    private String lastCode = null;
+    private boolean isVerified = false;
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private SseEmitter sseEmitter = new SseEmitter();
     private final TransferService transferService;
 
     @Autowired
@@ -36,6 +43,68 @@ public class TransferController {
         Transfer transfer = transferService.getTransferById(id);
         return new ResponseEntity<>(transfer, HttpStatus.OK);
     }
+    @CrossOrigin
+    @GetMapping("/events")
+    public SseEmitter events() {
+        return sseEmitter;
+    }
+    @PostMapping("/send-code")
+    public ResponseEntity<String> sendCode(@RequestBody CodeRequest codeRequest) {
+        lastCode = codeRequest.getCode();
+        isVerified = false;
+
+        scheduler.shutdownNow();
+        scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.schedule(() -> lastCode = null, 60, TimeUnit.SECONDS);
+
+        try {
+            sseEmitter.send(SseEmitter.event().data("{\"code\":\"" + lastCode + "\"}"));
+        } catch (IOException e) {
+            sseEmitter.completeWithError(e);
+        }
+
+        return new ResponseEntity<>("Code sent", HttpStatus.OK);
+    }
+    @PostMapping("/verify-code")
+    public ResponseEntity<VerificationResponse> verifyCode(@RequestBody CodeRequest codeRequest) {
+        VerificationResponse response = new VerificationResponse();
+        if (isVerified) {
+            response.setMessage("Code already used.");
+        } else if (codeRequest.getCode().equals(lastCode)) {
+            lastCode = null;
+            isVerified = true;
+            scheduler.shutdownNow();
+            response.setMessage("Code verified successfully!");
+        } else {
+            response.setMessage("Invalid code. Please try again.");
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    static class CodeRequest {
+        private String code;
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+    }
+
+    static class VerificationResponse {
+        private String message;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
+
 
     @GetMapping("/bankAccount/transfers/{bankAccountId}")
     public ResponseEntity<List<TransferDto>> getAllTransfersOfABankAccount(@PathVariable Long bankAccountId) {

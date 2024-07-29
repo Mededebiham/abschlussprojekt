@@ -2,12 +2,17 @@
 import React from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const AccountCard = ({ account }) => {
     const navigate = useNavigate();
     const handleCardClick = () => {
-        // Profile sayfasına yönlendirme
-        navigate("/ClientProfil",{ state: { accountType: account.accountType, balance: account.balance } });
+        const accountString = JSON.stringify(account);
+
+        Cookies.set('account', accountString, { expires: 7 });
+
+
+        navigate("/ClientProfil");
     };
     return (
         <div className="account-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
