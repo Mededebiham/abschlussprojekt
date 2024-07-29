@@ -38,6 +38,7 @@ const NewPayout: React.FC = () => {
   const [iban, setIban] = useState<string>('');
   const [ibanError, setIbanError] = useState<string>('');
   const [sumError, setSumError] = useState<string>('');
+  const [recipientError, setRecipientError] = useState<string>('');
   let userPhone;
 
   useEffect(() => {
@@ -71,6 +72,10 @@ const NewPayout: React.FC = () => {
 
   const handleButtonClick = () => {
     if (showInput1) {
+      if (bankData.iban && !recipientNotImportTheName) {
+        setRecipientError('Empfänger darf nicht leer sein, wenn IBAN angegeben ist');
+        return;
+      }
       setShowInput1(false);
       setShowInput2(true);
     } else if (showInput2) {
@@ -90,6 +95,7 @@ const NewPayout: React.FC = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+   console.log("handleChace dw")
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -103,6 +109,11 @@ const NewPayout: React.FC = () => {
         setSumError('');
       }
     }
+    if (name === 'recipient') {
+      setRecipientNotImportTheName(value);
+      setRecipientError('');
+      console.log("Recipient changed:", value);
+    }
   };
 
   const handleBankChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -115,12 +126,11 @@ const NewPayout: React.FC = () => {
       setInput1Disabled(false);
     }
     if (name === 'iban') {
-      setIbanError(''); // IBAN değiştirildiğinde hata mesajını temizle
+      setIbanError('');
     }
   };
 
   const validateIban = (iban: string) => {
-    // Burada IBAN doğrulama mantığını ekleyebilirsiniz. Basit bir kontrol örneği:
     if (iban.length < 15 && iban.length > 0) {
       setIbanError('Ungültige IBAN');
     } else {
@@ -141,8 +151,8 @@ const NewPayout: React.FC = () => {
   };
 
   const handleBankAccountClick = async () => {
-    validateIban(bankData.iban); // IBAN doğrulamasını kontrol et
-    if (ibanError) return; // Eğer hata varsa işlemi durdur
+    validateIban(bankData.iban);
+    if (ibanError) return;
 
     try {
       const response: AxiosResponse<BankAccount> = await axios.get('http://localhost:8088/bankAccounts/accountNumbOrIBAN', {
@@ -245,9 +255,15 @@ const NewPayout: React.FC = () => {
                 placeholder="Empfänger"
                 name="recipient"
                 value={recipientNotImportTheName}
-                onChange={(e) => setRecipientNotImportTheName(e.target.value)}
+                onChange={(e) => {
+              setRecipientNotImportTheName(e.target.value);
+              handleChange(e);
+              }}
                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
+            {recipientError && (
+                <p className="error-message">{recipientError}</p>
+            )}
 
             <p className="text-black font-bold">IBAN</p>
             <input
