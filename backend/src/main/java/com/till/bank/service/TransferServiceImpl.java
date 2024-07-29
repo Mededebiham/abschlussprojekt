@@ -262,10 +262,25 @@ public class TransferServiceImpl implements TransferService {
         }
 
         if (lastFoundNumber != null) {
-            return lastFoundNumber;
+            // Entferne unerwünschte Zeichen und konvertiere das Format
+            String cleanedNumber = lastFoundNumber.replaceAll("[^\\d,\\.]", ""); // Entferne alles außer Ziffern, Kommas und Punkten
+            cleanedNumber = cleanedNumber.replace(",", "."); // Ersetze Kommas durch Punkte
+
+            // Entferne Tausendertrennzeichen
+            if (cleanedNumber.contains(".")) {
+                int lastIndex = cleanedNumber.lastIndexOf(".");
+                String integerPart = cleanedNumber.substring(0, lastIndex).replaceAll("\\.", "");
+                String decimalPart = cleanedNumber.substring(lastIndex);
+                cleanedNumber = integerPart + decimalPart;
+            } else {
+                cleanedNumber = cleanedNumber.replaceAll("\\.", "");
+            }
+
+            return cleanedNumber;
         } else {
             return "Rechnungsbetrag bitte hier eingeben";
         }
     }
+
 
 }
