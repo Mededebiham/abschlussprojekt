@@ -375,6 +375,7 @@ const NewPayout: React.FC = () => {
         )}
       </div>
   );
+
 };
 
 export default NewPayout;
