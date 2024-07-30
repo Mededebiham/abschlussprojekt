@@ -10,4 +10,6 @@ import java.util.List;
 public interface TransferRepository extends JpaRepository<Transfer, Long> {
     List<Transfer> findBySender_Id(Long senderId);
     List<Transfer> findByRecipient_Id(Long recipientId);
+
+    List<Transfer> findByRecipientIdOrSenderId(Long id, Long id1);
 }
