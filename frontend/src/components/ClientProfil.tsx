@@ -12,6 +12,8 @@ import Cookies from 'js-cookie';
 import { useLocation, useNavigate } from "react-router-dom";
 import "./css/ClientProfil.css";
 import konto from "../konto.png";
+import AccountBalanceChart from './AccountBalanceChart';
+
 
 const ClientProfil: React.FC = ({}) => {
     const [showDeposits, setShowDeposits] = useState(false);
@@ -169,6 +171,7 @@ const ClientProfil: React.FC = ({}) => {
                     </div>
                 </div>
             </div>
+            <AccountBalanceChart iban={account.iban} />
             <div className="client-profile-buttons flex justify-between mx-5 my-5">
                 <div className="flex mt-5">
                     <button className="client-profile-btn-red mr-5" onClick={toggleDeposits}>Eingehende Transaktionen</button>
