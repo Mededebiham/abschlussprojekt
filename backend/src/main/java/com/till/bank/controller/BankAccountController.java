@@ -1,15 +1,11 @@
 package com.till.bank.controller;
 
 
-import com.till.bank.dto.BalanceChartEntryDto;
 import com.till.bank.dto.BankAccountDto;
 import com.till.bank.dto.BankAccountDtoForAccountsPage;
 import com.till.bank.entity.BankAccount;
-import com.till.bank.service.BalanceChartService;
 import com.till.bank.service.BankAccountService;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +21,11 @@ public class BankAccountController {
 
 
     private final BankAccountService bankAccountService;
-    private final BalanceChartService balanceChartService;
+
 
     @Autowired
-    public BankAccountController(BankAccountService bankAccountService, BalanceChartService balanceChartService) {
+    public BankAccountController(BankAccountService bankAccountService) {
         this.bankAccountService = bankAccountService;
-        this.balanceChartService = balanceChartService;
     }
 
     @GetMapping
@@ -136,9 +131,6 @@ public class BankAccountController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/balance-history")
-    public List<BalanceChartEntryDto> getBalanceHistory(@RequestParam String iban) {
-        return balanceChartService.getBalanceHistory(iban);
-    }
+
 
 }

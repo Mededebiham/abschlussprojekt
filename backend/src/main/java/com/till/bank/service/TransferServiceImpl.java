@@ -2,8 +2,10 @@ package com.till.bank.service;
 
 import com.till.bank.dto.BankAccountDto;
 import com.till.bank.dto.TransferDto;
+import com.till.bank.entity.Balance;
 import com.till.bank.entity.BankAccount;
 import com.till.bank.entity.Transfer;
+import com.till.bank.repository.BalanceRepository;
 import com.till.bank.repository.BankAccountRepository;
 import com.till.bank.repository.TransferRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -35,12 +37,15 @@ public class TransferServiceImpl implements TransferService {
 
     private final TransferRepository transferRepository;
     private final BankAccountRepository bankAccountRepository;
+    private final BalanceRepository balanceRepository;
 
     @Autowired
     public TransferServiceImpl(TransferRepository transferRepository,
-                               BankAccountRepository bankAccountRepository) {
+                               BankAccountRepository bankAccountRepository,
+                               BalanceRepository balanceRepository) { // Balance repository eklendi
         this.transferRepository = transferRepository;
         this.bankAccountRepository = bankAccountRepository;
+        this.balanceRepository = balanceRepository; // Balance repository eklendi
     }
 
     @Override
@@ -110,7 +115,8 @@ public class TransferServiceImpl implements TransferService {
         }
         Optional<BankAccount> bankAccountRecipient = bankAccountRepository.findById(transferDto.getRecipient().getId());
         Optional<BankAccount> bankAccountSender = bankAccountRepository.findById(transferDto.getSender().getId());
-
+        System.out.println("bankAccountRecipient "  + bankAccountRecipient);
+        System.out.println("bankAccountSender "  + bankAccountSender);
         Transfer transfer = new Transfer();
         transfer.setReasonOfTransfer(transferDto.getReasonOfTransfer());
         transfer.setAuthorized(false);
@@ -126,6 +132,22 @@ public class TransferServiceImpl implements TransferService {
 
             bankAccountSender.orElseThrow().setBalance(bankAccountSender.orElseThrow().getBalance() - transferDto.getSum());
             bankAccountRepository.save(bankAccountSender.orElseThrow());
+
+
+            Balance recipientBalance = new Balance(
+                    bankAccountRecipient.orElseThrow().getIBAN(),
+                    transferDto.getDate(),
+                    bankAccountRecipient.orElseThrow().getBalance()
+            );
+            balanceRepository.save(recipientBalance);
+
+            Balance senderBalance = new Balance(
+                    bankAccountSender.orElseThrow().getIBAN(),
+                    transferDto.getDate(),
+                    bankAccountSender.orElseThrow().getBalance()
+            );
+            balanceRepository.save(senderBalance);
+
 
             return transferRepository.save(transfer);
         });
