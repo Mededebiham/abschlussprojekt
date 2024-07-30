@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { Transfer, User, BankAccount, BankAPI } from '../store/types';
 
 const NewPayout: React.FC = () => {
+  // Existing state variables
   const [showInput1, setShowInput1] = useState(true);
   const [showInput2, setShowInput2] = useState(false);
   const [showInput3, setShowInput3] = useState(false);
@@ -30,8 +31,12 @@ const NewPayout: React.FC = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [iban, setIban] = useState<string>('');
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [isConfirm, setIsConfirm] = useState<boolean>(false);
+  const [inputCode, setInputCode] = useState<string>('');
+  const [verificationResult, setVerificationResult] = useState<string>('');
+  const [generatedCode, setGeneratedCode] = useState<string>('');
+  const [attempts, setAttempts] = useState<number>(0); // State for tracking attempts
+  const maxAttempts = 3; // Maximum number of allowed attempts
 
   useEffect(() => {
     const loggedIn = Cookies.get('isloggedin') === 'true';
@@ -61,15 +66,6 @@ const NewPayout: React.FC = () => {
       }
     }
   }, [navigate]);
-
-  useEffect(() => {
-    if (isCameraOpen && cameraStream) {
-      const video = document.getElementById('video') as HTMLVideoElement;
-      if (video) {
-        video.srcObject = cameraStream;
-      }
-    }
-  }, [isCameraOpen, cameraStream]);
 
   const handleButtonClick = () => {
     if (showInput1) {
@@ -147,6 +143,49 @@ const NewPayout: React.FC = () => {
     }
   };
 
+  const confirmCode = async () => {
+    setIsConfirm(true);
+  };
+
+  const generateCode = () => {
+    const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedCode(newCode);
+    sendCode(newCode);
+  };
+
+  const sendCode = async (code: string) => {
+    try {
+      await axios.post('http://localhost:5000/send-code', { code });
+      setVerificationResult('Code sent! Please enter the code to verify.');
+    } catch (error) {
+      console.error('Error sending code:', error);
+      setVerificationResult('Error sending code.');
+    }
+  };
+
+  const verifyCode = async () => {
+    try {
+      if (attempts >= maxAttempts) {
+        setVerificationResult('Maximum number of attempts reached.');
+        return;
+      }
+
+      const response = await axios.post('http://localhost:5000/verify-code', { code: inputCode });
+      if (response.data.success) {
+        setVerificationResult('Code verified successfully!');
+        await finishTransaction();
+        navigate("/ClientProfil");
+      } else {
+        setAttempts(prev => prev + 1); // Increment the attempt counter
+        setVerificationResult(`Invalid code. Attempts left: ${maxAttempts - attempts - 1}`);
+      }
+    } catch (error) {
+      console.error('Error verifying code:', error);
+      setAttempts(prev => prev + 1); // Increment the attempt counter
+      setVerificationResult(`Error verifying code. Attempts left: ${maxAttempts - attempts - 1}`);
+    }
+  };
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setSelectedImage(event.target.files[0]);
@@ -171,21 +210,17 @@ const NewPayout: React.FC = () => {
           body: formData,
         });
 
-        const data = await response.json();
+        const data = await response.text();
         if (response.ok) {
-          setIban(data.iban);
+          setIban(data);
           setBankData((prevData) => ({
             ...prevData,
-            iban: data.iban,
+            iban: data,
           }));
-          setFormData((prevData) => ({
-            ...prevData,
-            sum: parseFloat(data.betrag),
-          }));
-          setRecipientNotImportTheName(data.empfaenger);
+          setIsConfirm(true);
         } else {
-          console.error('File upload failed:', data.error);
-          alert(`File upload failed: ${data.error}`);
+          console.error('File upload failed:', data);
+          alert(`File upload failed: ${data}`);
         }
       } catch (error) {
         console.error('Error uploading file:', error);
@@ -194,188 +229,157 @@ const NewPayout: React.FC = () => {
     }
   };
 
-  const openCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      setCameraStream(stream);
-      setIsCameraOpen(true);
-    } catch (error) {
-      console.error('Error opening camera:', error);
-      alert('Error opening camera');
-    }
-  };
-
-  const capturePhoto = () => {
-    const video = document.getElementById('video') as HTMLVideoElement;
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const context = canvas.getContext('2d');
-    if (context) {
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
-          setSelectedImage(file);
-          setIsCameraOpen(false);
-          if (cameraStream) {
-            cameraStream.getTracks().forEach((track) => track.stop());
-          }
-        }
-      }, 'image/jpeg');
-    }
-  };
-
   return (
       <div className="container">
-        <div>
-          <button
-              onClick={handleUploadClick}
-              style={{
-                backgroundColor: 'red',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                cursor: 'pointer'
-              }}
-          >
-            🧾 Rechnung hochladen
-          </button>
-          <input
-              type="file"
-              id="fileInput"
-              style={{ display: 'none' }}
-              accept="image/*"
-              onChange={handleImageChange}
-          />
-          <button
-              onClick={openCamera}
-              style={{
-                backgroundColor: 'red',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                cursor: 'pointer',
-                marginLeft: '10px'
-              }}
-          >
-            📸 Foto aufnehmen
-          </button>
-          {isCameraOpen && (
+        {!isConfirm ? (
+            <>
               <div>
-                <video id="video" autoPlay style={{ width: '100%' }}></video>
-                <button onClick={capturePhoto} style={{
-                  backgroundColor: 'red',
-                  color: 'white',
-                  border: 'none',
-                  padding: '10px 20px',
-                  cursor: 'pointer',
-                  marginTop: '10px'
-                }}>Foto aufnehmen</button>
-              </div>
-          )}
-          {selectedImage && (
-              <div>
-                <p style={{ color: 'black' }}>{selectedImage.name}</p>
-                <img src={URL.createObjectURL(selectedImage)} alt="Preview" width="100" />
                 <button
-                    onClick={handleSubmit}
+                    onClick={handleUploadClick}
                     style={{
                       backgroundColor: 'red',
                       color: 'white',
                       border: 'none',
                       padding: '10px 20px',
-                      cursor: 'pointer',
-                      marginTop: '10px'
+                      cursor: 'pointer'
                     }}
                 >
-                  Hochladen
+                  🧾 Rechnung hochladen
                 </button>
+                <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: 'none' }}
+                    accept="image/*"
+                    onChange={handleImageChange}
+                />
+                {selectedImage && (
+                    <div>
+                      <p style={{ color: 'black' }}>{selectedImage.name}</p>
+                      <img src={URL.createObjectURL(selectedImage)} alt="Preview" width="100" />
+                      <button
+                          onClick={handleSubmit}
+                          style={{
+                            backgroundColor: 'red',
+                            color: 'white',
+                            border: 'none',
+                            padding: '10px 20px',
+                            cursor: 'pointer',
+                            marginTop: '10px'
+                          }}
+                      >
+                        Hochladen
+                      </button>
+                    </div>
+                )}
               </div>
-          )}
-        </div>
-        <div className={`input ${showInput1 ? 'show' : ''}`}>
-          <p className="text-black font-bold">Empfänger</p>
-          <input
-              type="text"
-              placeholder="Empfänger"
-              name="recipient"
-              value={recipientNotImportTheName}
-              onChange={(e) => setRecipientNotImportTheName(e.target.value)}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
+              <div className="container text-black">
+                <div className={`input ${showInput1 ? 'show' : ''}`}>
+                  <p className="text-black font-bold">Empfänger</p>
+                  <input
+                      type="text"
+                      placeholder="Empfänger"
+                      name="recipient"
+                      value={recipientNotImportTheName}
+                      onChange={(e) => setRecipientNotImportTheName(e.target.value)}
+                      className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
 
-          <p className="text-black font-bold">IBAN</p>
-          <input
-              type="text"
-              placeholder="IBAN"
-              name="iban"
-              value={bankData.iban} // hier: benutze den aktualisierten Zustand
-              onChange={handleBankChange}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
+                  <p className="text-black font-bold">IBAN</p>
+                  <input
+                      type="text"
+                      placeholder="IBAN"
+                      name="iban"
+                      value={bankData.iban}
+                      onChange={handleBankChange}
+                      className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
 
-          <p className="text-black font-bold">Oder BIC und Kontonummer</p>
-          <input
-              type="text"
-              placeholder="BIC"
-              name="bankId"
-              value={bankData.bankId}
-              onChange={handleBankChange}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-          <input
-              type="text"
-              placeholder="Kontonummer"
-              name="accountNumber"
-              value={bankData.accountNumber}
-              onChange={handleBankChange}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
+                  <p className="text-black font-bold">Oder BIC und Kontonummer</p>
+                  <input
+                      type="text"
+                      placeholder="BIC"
+                      name="bankId"
+                      value={bankData.bankId}
+                      onChange={handleBankChange}
+                      className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  <input
+                      type="text"
+                      placeholder="Kontonummer"
+                      name="accountNumber"
+                      value={bankData.accountNumber}
+                      onChange={handleBankChange}
+                      className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
 
-        <div className={`input ${showInput2 ? 'show' : ''}`}>
-          <p className="text-black font-bold">Wie viel Geld möchten Sie senden?</p>
-          <input
-              type="text"
-              placeholder="Type here"
-              name="sum"
-              value={formData.sum}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
+                <div className={`input ${showInput2 ? 'show' : ''}`}>
+                  <p className="text-black font-bold">How much money do you want to send?</p>
+                  <input
+                      type="text"
+                      placeholder="Type here"
+                      name="sum"
+                      value={formData.sum}
+                      onChange={handleChange}
+                      className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
 
-        <div className={`input ${showInput3 ? 'show' : ''}`}>
-          <p className="text-black font-bold">Was ist der Verwendungszweck der Überweisung?</p>
-          <input
-              type="text"
-              placeholder="Type here"
-              name="reasonOfTransfer"
-              value={formData.reasonOfTransfer}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
+                <div className={`input ${showInput3 ? 'show' : ''}`}>
+                  <p className="text-black font-bold">What is the reason of your transaction?</p>
+                  <input
+                      type="text"
+                      placeholder="Type here"
+                      name="reasonOfTransfer"
+                      value={formData.reasonOfTransfer}
+                      onChange={handleChange}
+                      className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
 
-        <div className={`input ${showInput6 ? 'show' : ''}`}>
-          <div className="summary-card">
-            <p><strong>Empfänger:</strong> {recipientNotImportTheName}</p>
-            <p><strong>IBAN:</strong> {bankData.iban}</p>
-            <p><strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}</p>
-            <p><strong>Betrag:</strong> {formData.sum} EUR</p>
-          </div>
-          <button className="text-black" onClick={finishTransaction}>Geld senden</button>
-        </div>
-        {showInput1 && (
-            <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
-        )}
-        {(showInput2 || showInput3) && (
-            <button className="text-black" onClick={handleButtonClick}>Weiter</button>
+                <div className={`input ${showInput6 ? 'show' : ''}`}>
+                  <div className="summary-card">
+                    <p><strong>Empfänger:</strong> {recipientNotImportTheName}</p>
+                    <p><strong>IBAN:</strong> {bankData.iban}</p>
+                    <p><strong>Grund der Überweisung:</strong> {formData.reasonOfTransfer}</p>
+                    <p><strong>Betrag:</strong> {formData.sum} EUR</p>
+                  </div>
+                  <button className="text-black" onClick={confirmCode}>Geld senden</button>
+                </div>
+                {showInput1 && (
+                    <button className="text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
+                )}
+                {(showInput2 || showInput3) && (
+                    <button className="text-black" onClick={handleButtonClick}>Next</button>
+                )}
+              </div>
+            </>
+        ) : (
+            <div>
+              <h1>Registration</h1>
+              <p>
+                <button className="text-black spacing" onClick={generateCode}>Generate & Send Code</button>
+              </p>
+              <div>
+                <input className="text-black"
+                       type="text"
+                       value={inputCode}
+                       onChange={(e) => setInputCode(e.target.value)}
+                       placeholder="Enter code"
+                />
+                <button className="text-black" onClick={verifyCode}>Verify Code</button>
+              </div>
+              {verificationResult && (
+                  <p style={{ color: verificationResult.startsWith('Code verified') ? 'green' : 'red' }}>
+                    {verificationResult}
+                  </p>
+              )}
+              <p>Attempts left: {maxAttempts - attempts}</p> {/* Display remaining attempts */}
+            </div>
         )}
       </div>
   );
-
 };
 
 export default NewPayout;
