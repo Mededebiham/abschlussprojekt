@@ -3,6 +3,8 @@ import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import axios from 'axios';
 import { ChartData, ChartOptions } from 'chart.js';
+import { format, parseISO } from 'date-fns';
+import "./css/AccountBalanceChart.css";
 
 // Chart.js bileşenlerini ve ölçeklerini kaydedin
 Chart.register(...registerables);
@@ -13,7 +15,7 @@ interface AccountBalanceChartProps {
 
 interface BalanceEntry {
     date: string;
-    balance: number;
+    balanceAmount: number;
 }
 
 const AccountBalanceChart: React.FC<AccountBalanceChartProps> = ({ iban }) => {
@@ -26,13 +28,15 @@ const AccountBalanceChart: React.FC<AccountBalanceChartProps> = ({ iban }) => {
     useEffect(() => {
         const fetchBalanceData = async () => {
             try {
-                const response = await axios.get<BalanceEntry[]>(`http://localhost:8088/bankAccounts/balance-history`, {
+                const response = await axios.get<BalanceEntry[]>(`http://localhost:8088/balances`, {
                     params: { iban }
                 });
                 const balanceData = response.data;
 
-                const dates = balanceData.map((entry) => entry.date);
-                const balances = balanceData.map((entry) => entry.balance);
+                console.log(balanceData);
+
+                const dates = balanceData.map((entry) => format(parseISO(entry.date), 'dd-MM-yyyy'));
+                const balances = balanceData.map((entry) => entry.balanceAmount);
 
                 setChartData({
                     labels: dates,
@@ -41,8 +45,8 @@ const AccountBalanceChart: React.FC<AccountBalanceChartProps> = ({ iban }) => {
                             label: 'Kontostand',
                             data: balances,
                             fill: false,
-                            backgroundColor: 'rgba(75,192,192,0.6)',
-                            borderColor: 'rgba(75,192,192,1)',
+                            backgroundColor: 'rgba(192,192,192,0.6)', // Açık gri
+                            borderColor: 'rgba(192,192,192,1)', // Açık gri
                         },
                     ],
                 });
@@ -61,15 +65,36 @@ const AccountBalanceChart: React.FC<AccountBalanceChartProps> = ({ iban }) => {
         responsive: true,
         scales: {
             x: {
+                grid: {
+                    color: 'rgba(192,192,192,0.5)' // X ekseni grid çizgilerini gri yap
+                },
                 title: {
                     display: true,
-                    text: 'Datum'
+                    text: 'Datum',
+                    color: 'white', // Yazı rengini beyaz yap
+                },
+                ticks: {
+                    color: 'white' // X ekseni yazı rengini beyaz yap
                 }
             },
             y: {
+                grid: {
+                    color: 'rgba(192,192,192,0.5)' // Y ekseni grid çizgilerini gri yap
+                },
                 title: {
                     display: true,
-                    text: 'Kontostand'
+                    text: 'Kontostand',
+                    color: 'white', // Yazı rengini beyaz yap
+                },
+                ticks: {
+                    color: 'white' // Y ekseni yazı rengini beyaz yap
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: 'white' // Legend yazı rengini beyaz yap
                 }
             }
         }
@@ -80,9 +105,11 @@ const AccountBalanceChart: React.FC<AccountBalanceChartProps> = ({ iban }) => {
     }
 
     return (
-        <div className="account-balance-chart">
-            <h2>Kontostand Verlauf</h2>
-            <Line data={chartData} options={options} />
+        <div className="chart-card">
+            <div className="account-balance-chart">
+                <h2 style={{ color: 'white' }}>Kontostand Verlauf</h2>
+                <Line data={chartData} options={options} />
+            </div>
         </div>
     );
 };
