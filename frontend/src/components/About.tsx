@@ -16,8 +16,9 @@ const profiles = [
   {
     id: 2,
     name: 'Tillmann Leiner',
-    description: 'Bitte hier eine Beschreibung zu dir und eventuell ein Bild von dir hochladen',
-    imageUrl: 'https://avatars.githubusercontent.com/u/96163637?v=4',
+    description: 'Hallo. Ich bin Tillmann einer der glorreichen Vier, die an diesem tollen Projekt gearbeitet haben.' +
+        'Für Verbesserungsvorschläge und Fehlermeldungen bin ich immer gerne zu haben.',
+    imageUrl: 'https://avatars.githubusercontent.com/u/96163637?s=400&u=23367306c1fb98dabed974437941f821f534034b&v=4',
   },
   {
     id: 3,

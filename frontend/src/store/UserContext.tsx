@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { UserTable } from '../store/types'; // Adjust the import path as needed
+import { UserTable } from '../store/types';
 
 interface UserContextType {
     user: UserTable | null;
