@@ -27,7 +27,7 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ logout }) => {
     return (
         <nav className="bg-red-600 h-33 py-3 flex justify-between">
             <div className="flex items-center">
-                <img src="/piggy-bank.png" alt="Piggy Bank Icon" className="w-10 h-10 mr-4 ml-1" />
+                <img src="/img.png" alt="Piggy Bank Icon" className="w-10 h-10 mr-4 ml-1" />
             </div>
             <ul className="flex list-none m-0 p-0">
                 {user !== null && <li className="mx-10 text-white">Willkommen {user?.firstName}!</li>}
