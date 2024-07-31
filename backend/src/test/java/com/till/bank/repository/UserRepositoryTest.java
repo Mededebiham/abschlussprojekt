@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 @DataJpaTest
 public class UserRepositoryTest {
 
-    @Autowired
+    //@Autowired
     private UserRepository userRepository;
 
     @Test
@@ -38,7 +38,7 @@ public class UserRepositoryTest {
     }
     @Test
     public void testFindById() {
-        User1 user = userRepository.findById(1L).orElse(null);
+        User1 user = userRepository.findById("1").orElse(null);
         assertNotNull(user);
     }
     @Test
@@ -81,7 +81,7 @@ public class UserRepositoryTest {
 // Save the user (this will also save the bank accounts due to cascade settings)
         userRepository.save(user);
         // Fetch the user and their bank accounts
-        User1 user2 = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found"));
+        User1 user2 = userRepository.findById("1").orElseThrow(() -> new RuntimeException("User not found"));
         List<BankAccount> bankAccounts = user2.getBankAccounts();
 
         for (BankAccount account : bankAccounts) {
@@ -98,7 +98,7 @@ public class UserRepositoryTest {
         // Mocking the behavior of UserRepository
         Address address = new Address("123 Main St", "Apt 101", "City", "12345", "Country");
 
-        BankAccount bankAccount = new CheckingAccount("Bank1", "1234567890", "IBAN123", null, 1000.0); // Set user to null for now
+        BankAccount bankAccount = new CheckingAccount(); // Set user to null for now
 
         User1 user = new User1("First", "Last", "test@example.com", "password", "0584874474", "user", address, bankAccount);
 

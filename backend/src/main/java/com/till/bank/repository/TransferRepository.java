@@ -1,13 +1,13 @@
 package com.till.bank.repository;
 
 import com.till.bank.entity.Transfer;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface TransferRepository extends JpaRepository<Transfer, Long> {
-    List<Transfer> findBySender_Id(Long senderId);
-    List<Transfer> findByRecipient_Id(Long recipientId);
+public interface TransferRepository extends MongoRepository<Transfer, String> {
+    List<Transfer> findBySender_Id(String senderId);
+    List<Transfer> findByRecipient_Id(String recipientId);
 }

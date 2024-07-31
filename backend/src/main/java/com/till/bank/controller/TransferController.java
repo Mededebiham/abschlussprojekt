@@ -42,7 +42,7 @@ public class TransferController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Transfer> getTransferById(@PathVariable Long id) {
+    public ResponseEntity<Transfer> getTransferById(@PathVariable String id) {
         Transfer transfer = transferService.getTransferById(id);
         return new ResponseEntity<>(transfer, HttpStatus.OK);
     }
@@ -110,19 +110,19 @@ public class TransferController {
 
 
     @GetMapping("/bankAccount/transfers/{bankAccountId}")
-    public ResponseEntity<List<TransferDto>> getAllTransfersOfABankAccount(@PathVariable Long bankAccountId) {
+    public ResponseEntity<List<TransferDto>> getAllTransfersOfABankAccount(@PathVariable String bankAccountId) {
         List<TransferDto> transfers = transferService.getAllTransfersOfABankAccount(bankAccountId);
         return new ResponseEntity<>(transfers, HttpStatus.OK);
     }
 
     @GetMapping("/bankAccount/deposits/{bankAccountId}")
-    public ResponseEntity<List<TransferDto>> getAllDepositsOfABankAccount(@PathVariable Long bankAccountId) {
+    public ResponseEntity<List<TransferDto>> getAllDepositsOfABankAccount(@PathVariable String bankAccountId) {
         List<TransferDto> transfers = transferService.getAllDepositsOfABankAccount(bankAccountId);
         return new ResponseEntity<>(transfers, HttpStatus.OK);
     }
 
     @GetMapping("/bankAccount/payouts/{bankAccountId}")
-    public ResponseEntity<List<TransferDto>> getAllPayoutsOfABankAccount(@PathVariable Long bankAccountId) {
+    public ResponseEntity<List<TransferDto>> getAllPayoutsOfABankAccount(@PathVariable String bankAccountId) {
         List<TransferDto> transfers = transferService.getAllPayoutsOfABankAccount(bankAccountId);
         return new ResponseEntity<>(transfers, HttpStatus.OK);
     }
@@ -144,13 +144,13 @@ public class TransferController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Transfer> updateTransfer(@PathVariable Long id, @RequestBody TransferDto transferDto) {
+    public ResponseEntity<Transfer> updateTransfer(@PathVariable String id, @RequestBody TransferDto transferDto) {
         Transfer updatedTransfer = transferService.updateTransfer(id, transferDto);
         return new ResponseEntity<>(updatedTransfer, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTransfer(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTransfer(@PathVariable String id) {
         transferService.deleteTransfer(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

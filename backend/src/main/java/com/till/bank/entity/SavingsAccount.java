@@ -1,7 +1,7 @@
 package com.till.bank.entity;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,12 +9,13 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Entity
-@DiscriminatorValue("Sparkonto")
-public class SavingsAccount extends BankAccount{
+@Document(collection = "savings_accounts")
+public class SavingsAccount extends BankAccount {
+
+
     private BigDecimal interestRate;
 
-
+    // Default constructor
     public SavingsAccount() {
         super();
     }
@@ -23,7 +24,4 @@ public class SavingsAccount extends BankAccount{
         super(bankId, accountNumber, IBAN, user, balance);
         this.interestRate = interestRate;
     }
-
-
-
 }

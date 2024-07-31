@@ -3,7 +3,6 @@ package com.till.bank.service;
 import com.till.bank.dto.BankAccountDto;
 import com.till.bank.dto.BankAccountDtoForAccountsPage;
 import com.till.bank.entity.BankAccount;
-import com.till.bank.entity.Transfer;
 import com.till.bank.entity.User1;
 import com.till.bank.repository.BankAccountRepository;
 import com.till.bank.repository.UserRepository;
@@ -21,64 +20,71 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class BankAccountServiceImpl implements BankAccountService {
-    @Override
-    public BankAccount getBankAccountByUserId(Long userId) {
-        return null;
-    }
 
     @Autowired
     BankAccountRepository bankAccountRepository;
+
     @Autowired
     private UserRepository userRepository;
 
     @Override
     public List<BankAccount> getAllBankAccounts() {
-
         return bankAccountRepository.findAll();
     }
 
     @Override
-    public BankAccount getBankAccountById(Long id) {
-        Optional<BankAccount> bankAccount=bankAccountRepository.findById(id);
-        if(bankAccount != null){
-            return bankAccount.get();
-        }else {
+    public BankAccount getBankAccountById(String id) {
+        return bankAccountRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public BankAccount createBankAccount(BankAccountDto bankAccountDto) {
+        BankAccount bankAccount = new BankAccount(
+                bankAccountDto.getBankId(),
+                bankAccountDto.getAccountNumber(),
+                bankAccountDto.getIBAN(),
+                bankAccountDto.getUser(),
+                bankAccountDto.getBalance(),
+                bankAccountDto.getAccountType()
+        );
+        return bankAccountRepository.save(bankAccount);
+    }
+
+    @Override
+    public BankAccount updateBankAccount(String id, BankAccountDto bankAccountDto) {
+        BankAccount existingBankAccount = getBankAccountById(id);
+        if (existingBankAccount != null) {
+            existingBankAccount.setBankId(bankAccountDto.getBankId());
+            existingBankAccount.setAccountNumber(bankAccountDto.getAccountNumber());
+            existingBankAccount.setIBAN(bankAccountDto.getIBAN());
+            existingBankAccount.setUser(bankAccountDto.getUser());
+            existingBankAccount.setBalance(bankAccountDto.getBalance());
+            existingBankAccount.setAccountType(bankAccountDto.getAccountType());
+            existingBankAccount.setConfirmedByAdmin(bankAccountDto.isConfirmedByAdmin());
+            return bankAccountRepository.save(existingBankAccount);
+        } else {
             return null;
         }
     }
 
     @Override
-    public BankAccount createBankAccount(BankAccountDto bankAccountDto) {
-        return null;
-    }
-
-    @Override
-    public BankAccount updateBankAccount(Long id, BankAccountDto bankAccountDto) {
-        return null;
-    }
-
-    @Override
-    public void deleteBankAccount(Long id) {
-
+    public void deleteBankAccount(String id) {
+        bankAccountRepository.deleteById(id);
     }
 
     @Override
     public ResponseEntity<?> getBankAccountByAccNumbOrIBAN(BankAccountDto bankAccountDto) {
         try {
             BankAccount bankAccount;
-            if(bankAccountDto.getIBAN() != ""){
-                 bankAccount = bankAccountRepository.findByIBAN(bankAccountDto.getIBAN());
-
-            }else{
-                 bankAccount = bankAccountRepository.findByAccountNumber(bankAccountDto.getAccountNumber());
-                if(!bankAccount.getBankId().equals(bankAccountDto.getBankId())){
+            if (!bankAccountDto.getIBAN().isEmpty()) {
+                bankAccount = bankAccountRepository.findByIBAN(bankAccountDto.getIBAN());
+            } else {
+                bankAccount = bankAccountRepository.findByAccountNumber(bankAccountDto.getAccountNumber());
+                if (!bankAccount.getBankId().equals(bankAccountDto.getBankId())) {
                     return ResponseEntity.notFound().build();
                 }
             }
             if (bankAccount != null) {
-                // Fetch associated user data
-                User1 user = bankAccount.getUser(); // Fetch user data based on the relationship defined in BankAccount entity
-
                 return ResponseEntity.ok(bankAccount);
             } else {
                 return ResponseEntity.notFound().build();
@@ -89,7 +95,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public List<BankAccount> getBankAccountsByUserId(Long userId) {
+    public List<BankAccount> getBankAccountsByUserId(String userId) {
         Optional<User1> user = userRepository.findById(userId);
         if (user.isPresent()) {
             return bankAccountRepository.findByUser_Id(userId);
@@ -99,43 +105,36 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public BankAccount activateBankAccount(Long id) {
-        // Fetch the user by ID
+    public BankAccount activateBankAccount(String id) {
         BankAccount bankAccount = bankAccountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bank account not found with id: " + id));
-
-        // Set the confirmedByAdmin property to true
         bankAccount.setConfirmedByAdmin(true);
-
-        // Save the updated user entity
         return bankAccountRepository.save(bankAccount);
     }
 
     @Override
-    public BankAccount cancelBankAccount(Long id) {
-        // Fetch the user by ID
+    public BankAccount cancelBankAccount(String id) {
         BankAccount bankAccount = bankAccountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bank account not found with id: " + id));
-
-        // Set the confirmedByAdmin property to true
         bankAccount.setConfirmedByAdmin(false);
-
-        // Save the updated user entity
         return bankAccountRepository.save(bankAccount);
     }
 
     @Override
-    public List<BankAccountDtoForAccountsPage> getBankAccountsByUserIdWithBankAccountDtoForAccountsPage(Long userId) {
+    public List<BankAccountDtoForAccountsPage> getBankAccountsByUserIdWithBankAccountDtoForAccountsPage(String userId) {
         List<BankAccount> accounts = bankAccountRepository.findByUserId(userId).orElseThrow();
-        System.out.println("account service " + accounts);
         return accounts.stream()
                 .map(account -> new BankAccountDtoForAccountsPage(
                         account.getAccountType(),
                         account.getIBAN(),
                         account.getUser(),
-                        account.getBalance() // Assume accountType is available in BankAccount entity
+                        account.getBalance()
                 ))
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public BankAccount getBankAccountByUserId(String userId) {
+        return bankAccountRepository.findByUserId(userId).orElseThrow().stream().findFirst().orElse(null);
+    }
 }

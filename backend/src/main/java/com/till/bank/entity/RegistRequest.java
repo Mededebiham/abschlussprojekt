@@ -1,12 +1,13 @@
 package com.till.bank.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.*;
 
 import java.util.Date;
 
-@Entity
+@Document(collection = "registRequests")
 @Data
 @Setter
 @Getter
@@ -14,21 +15,15 @@ import java.util.Date;
 @AllArgsConstructor
 public class RegistRequest {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private String id;
     private Date date;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonIgnore
+    @DBRef
     private User1 user;
 
     private boolean isApproved;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bank_account_id", referencedColumnName = "id")
-    @JsonIgnore
+    @DBRef
     private BankAccount bankAccount;
 
     public RegistRequest(Date date, User1 savedUser, BankAccount savedBankAccount) {

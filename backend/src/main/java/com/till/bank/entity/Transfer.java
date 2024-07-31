@@ -1,31 +1,24 @@
 package com.till.bank.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
-import jakarta.validation.constraints.NotBlank;
 
-@Entity
+@Document(collection = "transfers")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transfer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
     private BankAccount sender;
 
-    @ManyToOne
-    @JoinColumn(name = "recipient_id")
     private BankAccount recipient;
 
     private Date date;
@@ -36,13 +29,10 @@ public class Transfer {
 
     private boolean isAuthorized;
 
-    // Getters and setters
-    // Constructors
-    // Other methods
     @Override
     public String toString() {
         return "Transfer{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", recipient=" + recipient +
                 ", sender=" + sender +
                 ", date=" + date +

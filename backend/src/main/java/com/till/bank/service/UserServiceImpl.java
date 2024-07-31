@@ -1,23 +1,26 @@
 package com.till.bank.service;
 
-
 import com.till.bank.dto.LoginRequest;
 import com.till.bank.dto.UserCreationRequest;
 import com.till.bank.dto.UserDto;
-import com.till.bank.entity.*;
+import com.till.bank.entity.Address;
+import com.till.bank.entity.BankAccount;
+import com.till.bank.entity.CheckingAccount;
+import com.till.bank.entity.SavingsAccount;
+import com.till.bank.entity.User1;
 import com.till.bank.error.EmailAlreadyExistsException;
 import com.till.bank.repository.AddressRepository;
 import com.till.bank.repository.BankAccountRepository;
 import com.till.bank.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.*;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,23 +29,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.json.JSONObject;
-import org.springframework.web.client.RestTemplate;
-
-
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private Environment env;
 
     @Autowired
     private AddressRepository addressRepository;
@@ -53,71 +45,61 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RegistRequestService registRequestService;
 
-
-    //commented because I had problems with the new version of spring boot 3.2.2 to include security
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-
-
-
-
     private static final String REST_COUNTRIES_URL = "https://restcountries.com/v3.1/name/";
 
     @PostConstruct
     public void createInitialUsers() {
         if(userRepository.count()==0){
-        createUserIfNotExists("medede@example.com", "Medede", "Tchala", "password", "1234567890", "admin","Street1", "1", "City", "12345", "Deutschland");
-        createUserIfNotExists("tillman@example.com", "Tillman", "Tillman", "password", "1234567890", "admin","Street2", "2", "City", "12345", "Deutschland");
-        createUserIfNotExists("yasin@example.com", "Yasin", "Yasin", "password", "1234567890", "admin","Street3", "3", "City", "12345", "Deutschland");
-        createUserIfNotExists("mats@example.com", "Mats", "Mats", "password", "1234567890", "admin","Street4", "4", "City", "12345", "Deutschland");
-    }
+            createUserIfNotExists("medede@example.com", "Medede", "Tchala", "password", "1234567890", "admin","Street1", "1", "City", "12345", "Deutschland");
+            createUserIfNotExists("tillman@example.com", "Tillman", "Tillman", "password", "1234567890", "admin","Street2", "2", "City", "12345", "Deutschland");
+            createUserIfNotExists("yasin@example.com", "Yasin", "Yasin", "password", "1234567890", "admin","Street3", "3", "City", "12345", "Deutschland");
+            createUserIfNotExists("mats@example.com", "Mats", "Mats", "password", "1234567890", "admin","Street4", "4", "City", "12345", "Deutschland");
         }
-
-    private void createUserIfNotExists(String email, String firstName, String lastName, String password, String phoneNumber, String role,String street,String streetNumber,String city, String zipcode, String country) {
-
-
-            Address address = new Address(street, streetNumber, city, zipcode, country);
-            User1 user = new User1(firstName, lastName, email, password, phoneNumber, role, address);
-            User1 savedUser = userRepository.save(user);
-            String accountNumber = generateAccountNumber();
-            String iban = generateIBAN(address.getZipCode(), accountNumber, address.getCountry());
-            BankAccount bankAccount = new CheckingAccount();
-            bankAccount.setBankId(address.getZipCode());
-            bankAccount.setAccountNumber(accountNumber);
-            bankAccount.setIBAN(iban);
-            bankAccount.setBalance(1000000);
-            bankAccount.setAccountType("Girokonto");
-            bankAccount.setUser(savedUser);
-            bankAccount.setConfirmedByAdmin(true); // Mark bank account as confirmed by admin
-            BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
-
-            savedUser.getBankAccounts().add(savedBankAccount);
-            savedUser.setRole(role);
-            savedUser.setConfirmedByAdmin(true);
-            userRepository.save(savedUser);
-
     }
+
+    private void createUserIfNotExists(String email, String firstName, String lastName, String password, String phoneNumber, String role, String street, String streetNumber, String city, String zipcode, String country) {
+        Address address = addressRepository.save(new Address(street, streetNumber, city, zipcode, country));
+        User1 user = new User1(firstName, lastName, email, password, phoneNumber, role, address);
+        User1 savedUser = userRepository.save(user);
+
+        String accountNumber = generateAccountNumber();
+        String iban = generateIBAN(address.getZipCode(), accountNumber, address.getCountry());
+        BankAccount bankAccount = "Girokonto".equals(user.getRole()) ? new CheckingAccount() : new SavingsAccount();
+        bankAccount.setBankId(address.getZipCode());
+        bankAccount.setAccountNumber(accountNumber);
+        bankAccount.setIBAN(iban);
+        bankAccount.setBalance(1000000);
+        bankAccount.setAccountType("Girokonto");
+        bankAccount.setUser(savedUser);
+        bankAccount.setConfirmedByAdmin(true); // Mark bank account as confirmed by admin
+        BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
+
+        savedUser.getBankAccounts().add(savedBankAccount);
+        savedUser.setRole(role);
+        savedUser.setConfirmedByAdmin(true);
+        userRepository.save(savedUser);
+    }
+
     @Override
     public List<User1> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public User1 getUserById(Long id) {
-        Optional<User1> userOptional = userRepository.findById(id);
-        return userOptional.orElse(null);
+    public User1 getUserById(String id) {
+        return userRepository.findById(id).orElse(null);
     }
 
+    @Override
     public UserDto login(LoginRequest loginRequest) {
-        User1 user= userRepository.findByEmail(loginRequest.getEmail());
-//        if (bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-        if(loginRequest.getPassword().equals(user.getPassword())){
-            return this.convertUserToUserDto(user,user.getBankAccounts().get(0));
+        User1 user = userRepository.findByEmail(loginRequest.getEmail());
+        if (user != null && loginRequest.getPassword().equals(user.getPassword())) {
+            return convertUserToUserDto(user, user.getBankAccounts().get(0));
+        } else {
+            return null;
         }
-        else return null;
-
     }
+
     @Override
     public UserDto createUser(UserCreationRequest userCreationRequest) {
         log.info(userCreationRequest.toString());
@@ -125,22 +107,15 @@ public class UserServiceImpl implements UserService {
             throw new EmailAlreadyExistsException("Email already exists: " + userCreationRequest.getUserDto().getEmail());
         }
         userCreationRequest.getUserDto().setRole("user");
-        Address address = new Address(userCreationRequest.getUserDto().getAddress().getStreet(), userCreationRequest.getUserDto().getAddress().getStreetNumber(),
-                userCreationRequest.getUserDto().getAddress().getCity(), userCreationRequest.getUserDto().getAddress().getZipCode(), userCreationRequest.getUserDto().getAddress().getCountry());
-        // Generate a six-digit account number
+        Address address=addressRepository.save( userCreationRequest.getUserDto().getAddress());
         String accountNumber = generateAccountNumber();
-        //Generate the IBAN number
-        String iban = generateIBAN(userCreationRequest.getUserDto().getAddress().getZipCode(),accountNumber,userCreationRequest.getUserDto().getAddress().getCountry());
-//        BankAccount bankAccount=new BankAccount(); //  BankAccount(userdto.getAddress().getZipCode(),accountNumber,iban ,null ,0.0);
-
+        String iban = generateIBAN(address.getZipCode(), accountNumber, address.getCountry());
         BankAccount bankAccount;
+
         if ("Girokonto".equals(userCreationRequest.getAccountType())) {
             bankAccount = new CheckingAccount();
-
         } else if ("Sparkonto".equals(userCreationRequest.getAccountType())) {
             bankAccount = new SavingsAccount();
-
-            // Create SavingsAccount instance
         } else {
             throw new IllegalArgumentException("Invalid account type: " + userCreationRequest.getAccountType());
         }
@@ -149,84 +124,76 @@ public class UserServiceImpl implements UserService {
         BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
 
 
-        //User1 user= this.convertUserDtoToUser(userCreationRequest.getUserDto(),savedBankAccount);
-        User1 user= new User1(userCreationRequest.getUserDto().getFirstName(),userCreationRequest.getUserDto().getLastName(),
-                userCreationRequest.getUserDto().getEmail(),userCreationRequest.getUserDto().getPassword(),
-                userCreationRequest.getUserDto().getPhoneNumber(), userCreationRequest.getUserDto().getRole(),
-                userCreationRequest.getUserDto().getAddress());
-        // Add the saved bank account to the user's bank accounts list
+        User1 user = new User1(userCreationRequest.getUserDto().getFirstName(),
+                userCreationRequest.getUserDto().getLastName(),
+                userCreationRequest.getUserDto().getEmail(),
+                userCreationRequest.getUserDto().getPassword(),
+                userCreationRequest.getUserDto().getPhoneNumber(),
+                userCreationRequest.getUserDto().getRole(),
+                address);
+
         user.getBankAccounts().add(savedBankAccount);
-//        user.setPassword(bCryptPasswordEncoder.encode(userdto.getPassword()));
         User1 savedUser = userRepository.save(user);
 
-
         savedBankAccount.setUser(savedUser);
-        savedBankAccount.setBankId(userCreationRequest.getUserDto().getAddress().getZipCode());
+        savedBankAccount.setBankId(address.getZipCode());
         savedBankAccount.setAccountNumber(accountNumber);
-        savedBankAccount.setAccountType(userCreationRequest.getAccountType());
         savedBankAccount.setIBAN(iban);
         savedBankAccount.setBalance(userCreationRequest.getBalance());
         savedBankAccount.setAccountType(userCreationRequest.getAccountType());
-        // Update the bank account entity with the user's ID
-        savedBankAccount.setUser(savedUser);
-
-        // Save the updated bank account entity
         bankAccountRepository.save(savedBankAccount);
 
-        //now create a new registrequest in order for the admin to see what he has to approve
-        registRequestService.createRegistRequest(new RegistRequest(new Date(),savedUser,savedBankAccount));
-
-        return this.convertUserToUserDto(savedUser,savedBankAccount);
+        return convertUserToUserDto(savedUser, savedBankAccount);
     }
 
     @Override
-    public User1 updateUser(Long id, UserDto userdto) {
-//        user.setId(id); // Assuming setId method exists in User1 class
+    public User1 updateUser(String id, UserDto userDto) {
+        User1 existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
-        User1 user= new User1(userdto.getFirstName(),userdto.getLastName(),userdto.getEmail(),userdto.getPassword(),userdto.getPhoneNumber(), userdto.getRole(), userdto.getAddress(),userdto.getBankAccount());
-//        user.setPassword(bCryptPasswordEncoder.encode(userdto.getPassword()));
-
-        return userRepository.save(user);
+        existingUser.setFirstName(userDto.getFirstName());
+        existingUser.setLastName(userDto.getLastName());
+        existingUser.setEmail(userDto.getEmail());
+        existingUser.setPassword(userDto.getPassword());
+        existingUser.setPhoneNumber(userDto.getPhoneNumber());
+        existingUser.setRole(userDto.getRole());
+        existingUser.setAddress(userDto.getAddress());
+        // Update bank account if needed
+        return userRepository.save(existingUser);
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
 
     @Override
-    public User1 activateUser(Long id) {
-        // Fetch the user by ID
+    public User1 activateUser(String id) {
         User1 user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
-        // Set the confirmedByAdmin property to true
         user.setConfirmedByAdmin(true);
-
-        // Save the updated user entity
         return userRepository.save(user);
     }
-
-
 
     public String generateAccountNumber() {
         Random random = new Random();
         int accountNumber = random.nextInt(900000) + 100000; // Generates a random number between 100000 and 999999
         return String.valueOf(accountNumber); // Convert int to String
     }
-    public String generateIBAN(String bankId, String accountNumber,String country) {
+
+    public String generateIBAN(String bankId, String accountNumber, String country) {
         Random random = new Random();
         int digit = random.nextInt(9) + 1; // Generates a random number between 1 and 9
         String countryCode;
         try {
-             countryCode = fetchCountryCode(country); // Retrieve country code from API
+            countryCode = fetchCountryCode(country); // Retrieve country code from API
         } catch (IOException e) {
             e.printStackTrace(); // Handle or log the exception
             return "DE"; // Return a default country code or handle the error in some other way
         }
-        String iban = countryCode + digit + digit+ bankId + accountNumber;
-        return iban;
+        return countryCode + digit + digit + bankId + accountNumber;
     }
+
     public String fetchCountryCode(String country) throws IOException {
         OkHttpClient client = new OkHttpClient();
         String url = REST_COUNTRIES_URL + country;
@@ -241,7 +208,6 @@ public class UserServiceImpl implements UserService {
             }
 
             String responseBody = response.body().string();
-
             JSONArray jsonArray = new JSONArray(responseBody);
             if (jsonArray.length() > 0) {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
@@ -258,16 +224,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public User1 convertUserDtoToUser(UserDto userDto,BankAccount bankAccount) {
-        User1 user= new User1(userDto.getFirstName(),userDto.getLastName(),
-                userDto.getEmail(),userDto.getPassword(),
-                userDto.getPhoneNumber(), userDto.getRole(),
-                userDto.getAddress(), bankAccount);
-        return user;
-    }
-
-    public UserDto convertUserToUserDto(User1 user,BankAccount bankAccount) {
-        UserDto userDto= new UserDto();
+    public UserDto convertUserToUserDto(User1 user, BankAccount bankAccount) {
+        UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());

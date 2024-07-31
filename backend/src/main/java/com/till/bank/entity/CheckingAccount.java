@@ -5,11 +5,12 @@ import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
 @Getter
 @Setter
 @DiscriminatorValue("Girokonto")
+@Document(collection = "checking_accounts")
 public class CheckingAccount extends BankAccount {
 
 

@@ -1,6 +1,5 @@
 package com.till.bank.controller;
 
-
 import com.till.bank.dto.BankAccountDto;
 import com.till.bank.dto.BankAccountDtoForAccountsPage;
 import com.till.bank.entity.BankAccount;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,12 +35,13 @@ public class BankAccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BankAccount> getBankAccountById(@PathVariable Long id) {
+    public ResponseEntity<BankAccount> getBankAccountById(@PathVariable String id) {
         BankAccount bankAccount = bankAccountService.getBankAccountById(id);
         return new ResponseEntity<>(bankAccount, HttpStatus.OK);
     }
+
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<BankAccountDto>> getBankAccountsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<BankAccountDto>> getBankAccountsByUserId(@PathVariable String userId) {
         List<BankAccount> bankAccounts = bankAccountService.getBankAccountsByUserId(userId);
         log.info("Found {} bank accounts for user {}", bankAccounts.size(), userId);
         log.info("account: "+bankAccounts.get(0).toString());
@@ -54,9 +55,8 @@ public class BankAccountController {
         return new ResponseEntity<>(bankAccountDtos, HttpStatus.OK);
     }
 
-
     private static BankAccountDto convertBAToBADto(BankAccount bankAccount) {
-        BankAccountDto bankAccountDto=new BankAccountDto();
+        BankAccountDto bankAccountDto = new BankAccountDto();
         bankAccountDto.setAccountNumber(bankAccount.getAccountNumber());
         bankAccountDto.setUser(bankAccount.getUser());
         bankAccountDto.setIBAN(bankAccount.getIBAN());
@@ -69,7 +69,7 @@ public class BankAccountController {
     }
 
     @GetMapping("/user/{id}/accounts")
-    public ResponseEntity<List<BankAccountDtoForAccountsPage>> getAccountsByUserId(@PathVariable Long id) {
+    public ResponseEntity<List<BankAccountDtoForAccountsPage>> getAccountsByUserId(@PathVariable String id) {
         List<BankAccountDtoForAccountsPage> accounts = bankAccountService.getBankAccountsByUserIdWithBankAccountDtoForAccountsPage(id);
         System.out.println(accounts);
         return accounts != null ? ResponseEntity.ok(accounts) : ResponseEntity.notFound().build();
@@ -104,32 +104,31 @@ public class BankAccountController {
 
     @PostMapping
     public ResponseEntity<BankAccount> createBankAccount(@RequestBody BankAccountDto bankAccountDto) {
-        BankAccount createdBankAccount= bankAccountService.createBankAccount(bankAccountDto);
+        BankAccount createdBankAccount = bankAccountService.createBankAccount(bankAccountDto);
         return new ResponseEntity<>(createdBankAccount, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BankAccount> updateBankAccount(@PathVariable Long id, @RequestBody BankAccountDto bankAccountDto) {
+    public ResponseEntity<BankAccount> updateBankAccount(@PathVariable String id, @RequestBody BankAccountDto bankAccountDto) {
         BankAccount updatedBankAccount = bankAccountService.updateBankAccount(id, bankAccountDto);
         return new ResponseEntity<>(updatedBankAccount, HttpStatus.OK);
     }
+
     @PutMapping("/activate/{id}")
-    public ResponseEntity<BankAccount> activateBankAccount(@PathVariable Long id) {
+    public ResponseEntity<BankAccount> activateBankAccount(@PathVariable String id) {
         BankAccount updatedBankAccount = bankAccountService.activateBankAccount(id);
         return new ResponseEntity<>(updatedBankAccount, HttpStatus.OK);
     }
+
     @PutMapping("/cancel/{id}")
-    public ResponseEntity<BankAccount> cancelBankAccount(@PathVariable Long id) {
+    public ResponseEntity<BankAccount> cancelBankAccount(@PathVariable String id) {
         BankAccount updatedBankAccount = bankAccountService.cancelBankAccount(id);
         return new ResponseEntity<>(updatedBankAccount, HttpStatus.OK);
     }
 
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBankAccount(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteBankAccount(@PathVariable String id) {
         bankAccountService.deleteBankAccount(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
 }

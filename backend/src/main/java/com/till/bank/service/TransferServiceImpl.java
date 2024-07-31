@@ -15,7 +15,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,13 +57,13 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public Transfer getTransferById(Long id) {
+    public Transfer getTransferById(String id) {
         return transferRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transfer not found with id: " + id));
     }
 
     @Override
-    public List<TransferDto> getAllTransfersOfABankAccount(Long bankAccountId) {
+    public List<TransferDto> getAllTransfersOfABankAccount(String bankAccountId) {
         List<TransferDto> transferDtos = new ArrayList<>();
         List<Transfer> transfersSent = transferRepository.findBySender_Id(bankAccountId);
         List<Transfer> transfersReceived = transferRepository.findByRecipient_Id(bankAccountId);
@@ -80,7 +79,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public List<TransferDto> getAllDepositsOfABankAccount(Long bankAccountId) {
+    public List<TransferDto> getAllDepositsOfABankAccount(String bankAccountId) {
         List<TransferDto> transferDtos = new ArrayList<>();
         List<Transfer> transfersReceived = transferRepository.findByRecipient_Id(bankAccountId);
 
@@ -92,7 +91,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public List<TransferDto> getAllPayoutsOfABankAccount(Long bankAccountId) {
+    public List<TransferDto> getAllPayoutsOfABankAccount(String bankAccountId) {
         List<TransferDto> transferDtos = new ArrayList<>();
         List<Transfer> transfersSent = transferRepository.findBySender_Id(bankAccountId);
 
@@ -134,7 +133,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public Transfer updateTransfer(Long id, TransferDto transferDto) {
+    public Transfer updateTransfer(String id, TransferDto transferDto) {
         log.info("TRANSFER DTO BEFORE SAVING" + transferDto);
         Optional<Transfer> optionalTransfer = transferRepository.findById(id);
 
@@ -154,7 +153,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public void deleteTransfer(Long id) {
+    public void deleteTransfer(String id) {
         transferRepository.deleteById(id);
     }
 
@@ -165,122 +164,62 @@ public class TransferServiceImpl implements TransferService {
         bankAccountDto.setUser(bankAccount.getUser());
         bankAccountDto.setIBAN(bankAccount.getIBAN());
         bankAccountDto.setBankId(bankAccount.getBankId());
-        bankAccountDto.setBalance(bankAccount.getBalance());
-        bankAccountDto.setAccountType(bankAccount.getAccountType());
-        bankAccountDto.setConfirmedByAdmin(bankAccount.isConfirmedByAdmin());
         return bankAccountDto;
     }
 
     @Override
     public TransferDto convertTToTDto(Transfer transfer) {
-        log.info("TRANSFER BEFORE CONVERTING" + transfer);
         TransferDto transferDto = new TransferDto();
         transferDto.setId(transfer.getId());
-        transferDto.setSender(convertBAToBADto(transfer.getSender()));
-        transferDto.setRecipient(convertBAToBADto(transfer.getRecipient()));
+        transferDto.setDate(transfer.getDate());
         transferDto.setReasonOfTransfer(transfer.getReasonOfTransfer());
         transferDto.setAuthorized(transfer.isAuthorized());
         transferDto.setSum(transfer.getSum());
-        transferDto.setDate(transfer.getDate());
+        transferDto.setSender(convertBAToBADto(transfer.getSender()));
+        transferDto.setRecipient(convertBAToBADto(transfer.getRecipient()));
         return transferDto;
     }
 
     @Override
     public String processFile(MultipartFile file) throws IOException {
-        Path tempDir = Files.createTempDirectory("upload");
-        Path tempFile = tempDir.resolve(file.getOriginalFilename());
-        file.transferTo(tempFile.toFile());
-
+        Path tempFile = Files.createTempFile(null, null);
+        Files.write(tempFile, file.getBytes());
 
         Tesseract tesseract = new Tesseract();
-        tesseract.setDatapath("C:\\Users\\MatsEngbers\\IdeaProjects\\abschlussprojekt\\backend\\src\\main\\resources\\tessdata-main");
-        tesseract.setTessVariable("user_defined_dpi", "300");
-
-        tesseract.setLanguage("deu");
-
-
-
+        String extractedText;
         try {
-            System.out.println("Hallo");
-            return tesseract.doOCR(tempFile.toFile());
+            extractedText = tesseract.doOCR(tempFile.toFile());
         } catch (TesseractException e) {
-            throw new IOException("Error processing file", e);
-        } finally {
-            Files.delete(tempFile);
-            Files.delete(tempDir);
+            throw new RuntimeException("Failed to process image", e);
         }
+
+        Files.delete(tempFile);
+
+        String iban = extractIban(extractedText);
+        String recipient = empfaengerExtractor(extractedText);
+        String amount = betragExtractor(extractedText);
+
+        return "IBAN: " + iban + ", Recipient: " + recipient + ", Amount: " + amount;
     }
 
     @Override
-    public String extractIban(String text) {
-        String ibanRegex = "\\b[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}\\b";
-        Pattern pattern = Pattern.compile(ibanRegex);
-        Matcher matcher = pattern.matcher(text);
-
-        String lastIban = "Bitte IBAN eingeben";
-        while (matcher.find()) {
-            lastIban = matcher.group();
-        }
-        return lastIban;
+    public String extractIban(String extractedText) {
+        Pattern ibanPattern = Pattern.compile("\\b[A-Z]{2}\\d{2}[A-Z0-9]{4}\\d{4}\\d{4}\\d{4}\\d{4}\\b");
+        Matcher matcher = ibanPattern.matcher(extractedText);
+        return matcher.find() ? matcher.group() : "Not found";
     }
 
     @Override
-    public String empfaengerExtractor(String text) {
-        String regex = "(\\b\\w+\\b\\s+\\b\\w+\\b\\s+(?:GmbH|UG|AG|GbR|OHG|KG|GmbH & Co\\. KG|eG))|(\\b\\w+\\b\\s+(?:GmbH|UG|AG|GbR|OHG|KG|GmbH & Co\\. KG|eG))";
-
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
-
-        if (matcher.find()) {
-            return matcher.group();
-        } else {
-            return "Empfänger bitte hier eingeben";
-        }
+    public String empfaengerExtractor(String extractedText) {
+        Pattern recipientPattern = Pattern.compile("Recipient: ([\\w\\s]+)");
+        Matcher matcher = recipientPattern.matcher(extractedText);
+        return matcher.find() ? matcher.group(1) : "Not found";
     }
 
     @Override
-    public String betragExtractor(String text) {
-        String regexWithEuro = "(?:€\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})?|\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})?€)";
-        String regexWithoutEuro = "\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})?";
-
-        Pattern patternWithEuro = Pattern.compile(regexWithEuro);
-        Pattern patternWithoutEuro = Pattern.compile(regexWithoutEuro);
-
-        Matcher matcherWithEuro = patternWithEuro.matcher(text);
-        Matcher matcherWithoutEuro = patternWithoutEuro.matcher(text);
-
-        String lastFoundNumber = null;
-
-        while (matcherWithEuro.find()) {
-            lastFoundNumber = matcherWithEuro.group();
-        }
-
-        if (lastFoundNumber == null) {
-            while (matcherWithoutEuro.find()) {
-                lastFoundNumber = matcherWithoutEuro.group();
-            }
-        }
-
-        if (lastFoundNumber != null) {
-            // Entferne unerwünschte Zeichen und konvertiere das Format
-            String cleanedNumber = lastFoundNumber.replaceAll("[^\\d,\\.]", ""); // Entferne alles außer Ziffern, Kommas und Punkten
-            cleanedNumber = cleanedNumber.replace(",", "."); // Ersetze Kommas durch Punkte
-
-            // Entferne Tausendertrennzeichen
-            if (cleanedNumber.contains(".")) {
-                int lastIndex = cleanedNumber.lastIndexOf(".");
-                String integerPart = cleanedNumber.substring(0, lastIndex).replaceAll("\\.", "");
-                String decimalPart = cleanedNumber.substring(lastIndex);
-                cleanedNumber = integerPart + decimalPart;
-            } else {
-                cleanedNumber = cleanedNumber.replaceAll("\\.", "");
-            }
-
-            return cleanedNumber;
-        } else {
-            return "Rechnungsbetrag bitte hier eingeben";
-        }
+    public String betragExtractor(String extractedBetrag) {
+        Pattern amountPattern = Pattern.compile("Amount: ([\\d,\\.]+)");
+        Matcher matcher = amountPattern.matcher(extractedBetrag);
+        return matcher.find() ? matcher.group(1) : "Not found";
     }
-
-
 }

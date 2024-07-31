@@ -1,5 +1,3 @@
-package com.till.bank.controller;
-
 import com.till.bank.entity.RegistRequest;
 import com.till.bank.service.RegistRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,7 @@ public class RegistRequestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RegistRequest> getRegistRequestById(@PathVariable Long id) {
+    public ResponseEntity<RegistRequest> getRegistRequestById(@PathVariable String id) {
         RegistRequest registRequest = registRequestService.getRegistRequestById(id);
         return new ResponseEntity<>(registRequest, HttpStatus.OK);
     }
@@ -39,13 +37,13 @@ public class RegistRequestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RegistRequest> updateRegistRequest(@PathVariable Long id, @RequestBody RegistRequest registRequest) {
+    public ResponseEntity<RegistRequest> updateRegistRequest(@PathVariable String id, @RequestBody RegistRequest registRequest) {
         RegistRequest updatedRegistRequest = registRequestService.updateRegistRequest(id, registRequest);
         return new ResponseEntity<>(updatedRegistRequest, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRegistRequest(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteRegistRequest(@PathVariable String id) {
         registRequestService.deleteRegistRequest(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

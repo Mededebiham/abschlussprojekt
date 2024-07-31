@@ -1,9 +1,6 @@
 package com.till.bank.repository;
-
 import com.till.bank.entity.RegistRequest;
-import com.till.bank.entity.Transfer;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface RegistRequestRepository extends JpaRepository<RegistRequest, Long> {
-
+public interface RegistRequestRepository extends MongoRepository<RegistRequest, String> {
 }

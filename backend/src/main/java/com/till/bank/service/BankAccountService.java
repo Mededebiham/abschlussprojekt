@@ -10,22 +10,23 @@ import java.util.List;
 public interface BankAccountService {
     List<BankAccount> getAllBankAccounts();
 
-    BankAccount getBankAccountById(Long id);
+    BankAccount getBankAccountById(String id);
 
     BankAccount createBankAccount(BankAccountDto bankAccountDto);
 
-    BankAccount updateBankAccount(Long id, BankAccountDto bankAccountDto);
+    BankAccount updateBankAccount(String id, BankAccountDto bankAccountDto);
 
-    void deleteBankAccount(Long id);
+    void deleteBankAccount(String id);
 
     ResponseEntity<?> getBankAccountByAccNumbOrIBAN(BankAccountDto bankAccountDto);
 
-    BankAccount getBankAccountByUserId(Long userId);
+    BankAccount getBankAccountByUserId(String userId);
 
-    List<BankAccountDtoForAccountsPage> getBankAccountsByUserIdWithBankAccountDtoForAccountsPage(Long userId);
-    List<BankAccount> getBankAccountsByUserId(Long userId);
+    List<BankAccountDtoForAccountsPage> getBankAccountsByUserIdWithBankAccountDtoForAccountsPage(String userId);
 
-    BankAccount activateBankAccount(Long id);
+    List<BankAccount> getBankAccountsByUserId(String userId);
 
-    BankAccount cancelBankAccount(Long id);
+    BankAccount activateBankAccount(String id);
+
+    BankAccount cancelBankAccount(String id);
 }

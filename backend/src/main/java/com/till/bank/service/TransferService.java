@@ -13,25 +13,24 @@ public interface TransferService {
 
     List<TransferDto> getAllTransfers();
 
-    Transfer getTransferById(Long id);
+    Transfer getTransferById(String id);
 
     Transfer createTransfer(TransferDto transferDto);
 
-    Transfer updateTransfer(Long id, TransferDto transferDto);
+    Transfer updateTransfer(String id, TransferDto transferDto);
 
-    void deleteTransfer(Long id);
+    void deleteTransfer(String id);
 
-    List<TransferDto> getAllTransfersOfABankAccount(Long bankAccountId);
+    List<TransferDto> getAllTransfersOfABankAccount(String bankAccountId);
 
-    List<TransferDto> getAllPayoutsOfABankAccount(Long bankAccountId);
+    List<TransferDto> getAllPayoutsOfABankAccount(String bankAccountId);
 
-    List<TransferDto> getAllDepositsOfABankAccount(Long bankAccountId);
+    List<TransferDto> getAllDepositsOfABankAccount(String bankAccountId);
 
     BankAccountDto convertBAToBADto(BankAccount bankAccount);
 
     TransferDto convertTToTDto(Transfer transfer);
 
-    // Neue Methoden zum Verarbeiten der Datei und Extrahieren der IBAN
     String processFile(MultipartFile file) throws IOException;
 
     String extractIban(String extractedText);
