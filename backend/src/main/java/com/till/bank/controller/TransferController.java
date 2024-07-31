@@ -12,7 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -153,13 +156,46 @@ public class TransferController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             String extractedText = transferService.processFile(file);
             String iban = transferService.extractIban(extractedText);
-            return new ResponseEntity<>(iban, HttpStatus.OK);
+            String empfaenger = transferService.empfaengerExtractor(extractedText);
+            String betrag = transferService.betragExtractor(extractedText);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("iban", iban);
+            response.put("empfaenger", empfaenger);
+            response.put("betrag", betrag);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IOException e) {
-            return new ResponseEntity<>("File upload failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(Collections.singletonMap("error", "File upload failed: " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @PostMapping("/betragExtractor")
+    public ResponseEntity<String> betragExtractor(@RequestParam("file") MultipartFile file) {
+        try {
+            String extractedText = transferService.processFile(file);
+            String betrag = transferService.betragExtractor(extractedText);
+            return new ResponseEntity<>(betrag, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>("Betrag extraction failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/empfaengerExtractor")
+    public ResponseEntity<String> empfaengerExtractor(@RequestParam("file") MultipartFile file) {
+        try {
+            String extractedText = transferService.processFile(file);
+            String empfaenger = transferService.empfaengerExtractor(extractedText);
+            return new ResponseEntity<>(empfaenger, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>("Empfänger extraction failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

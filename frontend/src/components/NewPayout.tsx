@@ -39,7 +39,10 @@ const NewPayout: React.FC = () => {
   const [ibanError, setIbanError] = useState<string>('');
   const [sumError, setSumError] = useState<string>('');
   const [recipientError, setRecipientError] = useState<string>('');
-  let userPhone;
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+
+    let userPhone;
 
   useEffect(() => {
     const loggedIn = Cookies.get('isloggedin') === 'true';
@@ -64,11 +67,21 @@ const NewPayout: React.FC = () => {
         }
       }));
 
+
       if (userData?.confirmedByAdmin === false) {
         navigate('/Unconfirmed');
       }
     }
   }, [navigate]);
+
+  useEffect(() => {
+    if (isCameraOpen && cameraStream) {
+      const video = document.getElementById('video') as HTMLVideoElement;
+      if (video) {
+        video.srcObject = cameraStream;
+      }
+    }
+  }, [isCameraOpen, cameraStream]);
 
   const handleButtonClick = () => {
     if (showInput1) {
@@ -95,7 +108,6 @@ const NewPayout: React.FC = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-   console.log("handleChace dw")
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -212,16 +224,22 @@ const NewPayout: React.FC = () => {
           body: formData,
         });
 
-        const data = await response.text();
+     //   const data = await response.text();
+        const data = await response.json();
         if (response.ok) {
-          setIban(data);
+          setIban(data.iban);
           setBankData((prevData) => ({
             ...prevData,
-            iban: data,
+            iban: data.iban,
           }));
+          setFormData((prevData) => ({
+            ...prevData,
+            sum: parseFloat(data.betrag),
+          }));
+          setRecipientNotImportTheName(data.empfaenger);
         } else {
-          console.error('File upload failed:', data);
-          alert(`File upload failed: ${data}`);
+          console.error('File upload failed:', data.error);
+          alert(`File upload failed: ${data.error}`);
         }
       } catch (error) {
         console.error('Error uploading file:', error);
@@ -230,10 +248,87 @@ const NewPayout: React.FC = () => {
     }
   };
 
+  const openCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      setCameraStream(stream);
+      setIsCameraOpen(true);
+    } catch (error) {
+      console.error('Error opening camera:', error);
+      alert('Error opening camera');
+    }
+  };
+
+  const capturePhoto = () => {
+    const video = document.getElementById('video') as HTMLVideoElement;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d');
+    if (context) {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+          setSelectedImage(file);
+          setIsCameraOpen(false);
+          if (cameraStream) {
+            cameraStream.getTracks().forEach((track) => track.stop());
+          }
+        }
+      }, 'image/jpeg');
+    }
+  };
+
   return (
       <div className="new-payout-container">
         <div className="new-payout-title">Überweisung</div>
         <div>
+          <button
+              onClick={handleUploadClick}
+              style={{
+                backgroundColor: 'red',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                cursor: 'pointer'
+              }}
+          >
+            🧾 Rechnung hochladen
+          </button>
+          <input
+              type="file"
+              id="fileInput"
+              style={{ display: 'none' }}
+              accept="image/*"
+              onChange={handleImageChange}
+          />
+          <button
+              onClick={openCamera}
+              style={{
+                backgroundColor: 'red',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                cursor: 'pointer',
+                marginLeft: '10px'
+              }}
+          >
+            📸 Foto aufnehmen
+          </button>
+          {isCameraOpen && (
+              <div>
+                <video id="video" autoPlay style={{ width: '100%' }}></video>
+                <button onClick={capturePhoto} style={{
+                  backgroundColor: 'red',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  cursor: 'pointer',
+                  marginTop: '10px'
+                }}>Foto aufnehmen</button>
+              </div>
+          )}
           {selectedImage && (
               <div className="new-payout-image-preview">
                 <p>{selectedImage.name}</p>
@@ -241,6 +336,14 @@ const NewPayout: React.FC = () => {
                 <button
                     onClick={handleSubmit}
                     className="new-payout-file-upload-button"
+                    style={{
+                      backgroundColor: 'red',
+                      color: 'white',
+                      border: 'none',
+                      padding: '10px 20px',
+                      cursor: 'pointer',
+                      marginTop: '10px'
+                    }}
                 >
                   Hochladen
                 </button>
