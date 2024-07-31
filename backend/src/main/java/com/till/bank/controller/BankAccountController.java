@@ -5,9 +5,7 @@ import com.till.bank.dto.BankAccountDto;
 import com.till.bank.dto.BankAccountDtoForAccountsPage;
 import com.till.bank.entity.BankAccount;
 import com.till.bank.service.BankAccountService;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +19,9 @@ import java.util.List;
 //@CrossOrigin(origins = "http://localhost:3000")
 public class BankAccountController {
 
+
     private final BankAccountService bankAccountService;
+
 
     @Autowired
     public BankAccountController(BankAccountService bankAccountService) {
@@ -130,6 +130,7 @@ public class BankAccountController {
         bankAccountService.deleteBankAccount(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 
 
 }

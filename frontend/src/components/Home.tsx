@@ -83,9 +83,9 @@ const Home = () => {
   };
 
   return (
-      <div className="relative w-screen  w-full max-w-screen-xl px-6 mx-auto flex bg-red-500">
+      <div className="relative w-screen  w-full max-w-screen-xl px-6 mx-auto flex bg-red-500  m-5">
         <div className="w-full max-w-screen-xl px-6 mx-auto">
-          <Slider {...settings} className="w-full max-w-screen-xl px-6 mx-auto">
+          <Slider {...settings} className="w-full max-w-screen-xl px-6 mx-auto mt-5">
             {posts.map((post, index) => (
                 <div key={index} className="p-4">
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-screen-lg mx-auto">

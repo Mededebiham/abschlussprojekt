@@ -7,6 +7,7 @@ import com.till.bank.dto.UserDto;
 import com.till.bank.entity.*;
 import com.till.bank.error.EmailAlreadyExistsException;
 import com.till.bank.repository.AddressRepository;
+import com.till.bank.repository.BalanceRepository;
 import com.till.bank.repository.BankAccountRepository;
 import com.till.bank.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
@@ -53,6 +54,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RegistRequestService registRequestService;
 
+    @Autowired
+    private BalanceRepository balanceRepository;
+
 
     //commented because I had problems with the new version of spring boot 3.2.2 to include security
 //    @Autowired
@@ -96,6 +100,10 @@ public class UserServiceImpl implements UserService {
             savedUser.setRole(role);
             savedUser.setConfirmedByAdmin(true);
             userRepository.save(savedUser);
+
+
+        Balance initialBalance = new Balance(iban, new Date(), bankAccount.getBalance());
+        balanceRepository.save(initialBalance);
 
     }
     @Override
@@ -175,6 +183,9 @@ public class UserServiceImpl implements UserService {
 
         //now create a new registrequest in order for the admin to see what he has to approve
         registRequestService.createRegistRequest(new RegistRequest(new Date(),savedUser,savedBankAccount));
+
+        Balance initialBalance = new Balance(iban, new Date(), savedBankAccount.getBalance());
+        balanceRepository.save(initialBalance);
 
         return this.convertUserToUserDto(savedUser,savedBankAccount);
     }
