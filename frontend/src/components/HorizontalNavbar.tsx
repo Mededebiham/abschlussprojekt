@@ -44,7 +44,9 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ logout }) => {
                                 </>):
                             (<li className="mx-10 text-white"><a href="/AdminProfil">Profil</a></li>)
                         }
+
                         <li className="mx-10 text-white" onClick={handleLogout}><a href="#">Abmelden</a></li>
+
                     </>
                 ) : (
                     <>
