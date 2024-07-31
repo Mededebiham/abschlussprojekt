@@ -79,7 +79,7 @@ const NewPayout: React.FC = () => {
       setShowInput1(false);
       setShowInput2(true);
     } else if (showInput2) {
-      const sum = parseFloat(formData.sum.toString()); // Sum değerini sayıya çevir
+      const sum = parseFloat(formData.sum.toString());
       if (isNaN(sum) || sum < 20) {
         setSumError('Beträge unter 20€ sind nicht zulässig');
         return; // Eğer hata varsa işlemi durdur

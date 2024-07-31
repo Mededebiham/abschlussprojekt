@@ -6,7 +6,7 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { format, parseISO } from 'date-fns';
 import "./css/AccountBalanceChart.css";
 
-// Chart.js bileşenlerini ve ölçeklerini kaydedin
+
 Chart.register(...registerables);
 
 interface AccountBalanceChartProps {
@@ -45,11 +45,11 @@ const AccountBalanceChart: React.FC<AccountBalanceChartProps> = ({ iban }) => {
                             label: 'Kontostand',
                             data: balances,
                             fill: false,
-                            backgroundColor: 'rgba(192,192,192,0.6)', // Açık gri
-                            borderColor: 'rgba(192,192,192,1)', // Açık gri
+                            backgroundColor: 'rgb(99,101,99)', // Açık gri
+                            borderColor: 'rgba(0, 255, 0, 1)', // Açık gri
                         },
                     ],
-                });
+                })
 
                 setLoading(false);
             } catch (error) {
@@ -66,35 +66,35 @@ const AccountBalanceChart: React.FC<AccountBalanceChartProps> = ({ iban }) => {
         scales: {
             x: {
                 grid: {
-                    color: 'rgba(192,192,192,0.5)' // X ekseni grid çizgilerini gri yap
+                    color: 'rgba(192,192,192,0.5)'
                 },
                 title: {
                     display: true,
                     text: 'Datum',
-                    color: 'white', // Yazı rengini beyaz yap
+                    color: 'white',
                 },
                 ticks: {
-                    color: 'white' // X ekseni yazı rengini beyaz yap
+                    color: 'white'
                 }
             },
             y: {
                 grid: {
-                    color: 'rgba(192,192,192,0.5)' // Y ekseni grid çizgilerini gri yap
+                    color: 'rgba(192,192,192,0.5)'
                 },
                 title: {
                     display: true,
                     text: 'Kontostand',
-                    color: 'white', // Yazı rengini beyaz yap
+                    color: 'white',
                 },
                 ticks: {
-                    color: 'white' // Y ekseni yazı rengini beyaz yap
+                    color: 'white'
                 }
             }
         },
         plugins: {
             legend: {
                 labels: {
-                    color: 'white' // Legend yazı rengini beyaz yap
+                    color: 'white'
                 }
             }
         }

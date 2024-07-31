@@ -1,4 +1,4 @@
-/* ClientProfil.css */
+
 body, html {
     height: 100%;
     margin: 0;
@@ -9,23 +9,21 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%; /* Full height */
-    /*background-color: #1c1c1c; !* Dark background *!*/
-    color: white; /* Text color */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    height: 100%;
+    box-sizing: border-box;
     width: 100%;
 }
 
 .client-profile-card {
-    background-color: #2c2c2c; /* Gray background for card */
+    background-color: #2c2c2c;
     padding: 20px;
     border-radius: 10px;
-    margin: 20px; /* Add some margin around the card */
+    margin: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 80%; /* Adjust the width as needed */
-    max-width: 800px; /* Max width for the card */
+    width: 80%;
+    max-width: 800px; 
 }
 
 .client-profile-info {
@@ -70,12 +68,12 @@ body, html {
 
 .client-profile-balance {
     font-size: 1.5em;
-    color: #00ff00; /* Green color for balance */
+    color: #00ff00;
 }
 
 .client-profile-buttons {
-    width: 80%; /* Adjust the width as needed */
-    max-width: 800px; /* Max width for the buttons container */
+    width: 80%;
+    max-width: 800px;
     display: flex;
     justify-content: space-between;
 }

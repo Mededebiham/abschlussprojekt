@@ -14,8 +14,8 @@ import "./css/ClientProfil.css";
 import konto from "../konto.png";
 import AccountBalanceChart from './AccountBalanceChart';
 
-
 const ClientProfil: React.FC = ({}) => {
+    const [showChart, setShowChart] = useState(true);
     const [showDeposits, setShowDeposits] = useState(false);
     const [showPayouts, setShowPayouts] = useState(false);
     const [showTransfers, setShowTransfers] = useState(false);
@@ -26,7 +26,7 @@ const ClientProfil: React.FC = ({}) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
     const [selectedBankAccount, setSelectedBankAccount] = useState<BankAccount | null>(null);
-    const [user, setUser] = useState<User | null>(null); // Provide the type for user
+    const [user, setUser] = useState<User | null>(null);
     const [greeting, setGreeting] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
@@ -107,31 +107,44 @@ const ClientProfil: React.FC = ({}) => {
     };
 
     const toggleDeposits = () => {
-        setShowDeposits(!showDeposits);
+        setShowDeposits(true);
         setShowPayouts(false);
         setShowNewPayout(false);
         setShowTransfers(false);
+        setShowChart(false);
     };
 
     const togglePayouts = () => {
-        setShowPayouts(!showPayouts);
+        setShowPayouts(true);
         setShowDeposits(false);
         setShowNewPayout(false);
         setShowTransfers(false);
+        setShowChart(false);
     };
 
     const toggleTransfers = () => {
-        setShowTransfers(!showTransfers);
+        setShowTransfers(true);
         setShowPayouts(false);
         setShowDeposits(false);
         setShowNewPayout(false);
+        setShowChart(false);
     };
 
     const toggleNewPayout = () => {
-        setShowNewPayout(!showNewPayout);
+        setShowNewPayout(true);
         setShowDeposits(false);
         setShowPayouts(false);
         setShowTransfers(false);
+        setShowChart(false);
+    };
+
+    const toggleChart = () => {
+        setShowChart(true);
+        setShowNewPayout(false);
+        setShowDeposits(false);
+        setShowPayouts(false);
+        setShowTransfers(false);
+
     };
 
     return (
@@ -165,22 +178,28 @@ const ClientProfil: React.FC = ({}) => {
                     <div className="client-profile-info-right">
                         {account.balance !== undefined && (
                             <div className="client-profile-balance">
-                                <strong>€{account.balance.toFixed(2)}</strong>
+                                <strong>€{new Intl.NumberFormat('de-DE', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }).format(account.balance)}</strong>
                             </div>
                         )}
                     </div>
                 </div>
             </div>
-            <AccountBalanceChart iban={account.iban} />
+
             <div className="client-profile-buttons flex justify-between mx-5 my-5">
                 <div className="flex mt-5">
-                    <button className="client-profile-btn-red mr-5" onClick={toggleDeposits}>Eingehende Transaktionen</button>
-                    <button className="client-profile-btn-red mr-5" onClick={togglePayouts}>Ausgehende Transaktionen</button>
+                    <button className="client-profile-btn-red mr-5" onClick={toggleDeposits}>Eingehende Transaktionen
+                    </button>
+                    <button className="client-profile-btn-red mr-5" onClick={togglePayouts}>Ausgehende Transaktionen
+                    </button>
                     <button className="client-profile-btn-red mr-5" onClick={toggleTransfers}>Alle Transaktionen</button>
-                    <button className="client-profile-btn-red" onClick={toggleNewPayout}>✚ Überweisung</button>
+                    <button className="client-profile-btn-red mr-5" onClick={toggleNewPayout}>✚ Überweisung</button>
+                    <button className="client-profile-btn-red" onClick={toggleChart}>Chart Anzeigen</button>
                 </div>
             </div>
-
+            {showChart && <AccountBalanceChart iban={account.iban} />}
             <div className="flex justify-center mx-5 my-5">
                 {showDeposits && (
                     <div>
