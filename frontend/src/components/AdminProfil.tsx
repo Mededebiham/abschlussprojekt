@@ -85,9 +85,6 @@ const AdminProfil: React.FC = () => {
                 <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5"
                         onClick={toggleTransfers}>Show Transfers
                 </button>
-                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={toggleRegistRequests}>Show RegistRequests
-                </button>
             </div>
             {showSearchForUsers &&
                 <>
