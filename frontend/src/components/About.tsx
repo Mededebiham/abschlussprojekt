@@ -49,7 +49,7 @@ const About: React.FC = () => {
   return (
       <div className="h-screen flex flex-col items-center">
         {isLoggedIn ? (
-            <h2 className="text-black text-center ml-20 mt-20">You are logged in! {user?.username}</h2>
+            <h2 className="text-black text-center ml-20 mt-20">You are logged in! {user?.firstName}</h2>
         ) : (
             <h2 className="text-black text-center ml-20 mt-20">You are not logged in.</h2>
         )}
