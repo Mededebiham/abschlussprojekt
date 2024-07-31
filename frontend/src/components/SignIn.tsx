@@ -77,7 +77,7 @@ const ConnectedSignIn: React.FC<SignInProps & DispatchProps & RootStateProps> = 
 
       // Create a User object
       const user1: User =
-          { username: firstName, id, role,confirmedByAdmin };
+          { firstName, id, role,confirmedByAdmin };
 
       // Dispatch login success action with the user data
       console.log(user);
@@ -109,7 +109,7 @@ const ConnectedSignIn: React.FC<SignInProps & DispatchProps & RootStateProps> = 
 
       // Create a User object
       const user: User =
-          { username: firstName, id, role,confirmedByAdmin };
+          { firstName, id, role,confirmedByAdmin };
 
       // Dispatch the login action with user data
       Cookies.set('isloggedin', 'true');
