@@ -3,15 +3,11 @@ server:
 
 spring:
   datasource:
-    #        url: jdbc:mariadb://sql7.freesqldatabase.com/sql7722459
-    #        username: sql7722459
-    #        password: kDIrJFeknj
-    #        driver-class-name: org.mariadb.jdbc.Driver
 
-      url: jdbc:mariadb://localhost:3306/finanz_pilot_matsnewestwork
-      username: root
-      password: root
-      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:postgresql://ep-summer-union-a2jr769u.eu-central-1.aws.neon.tech/finanzpilot?user=finanzpilot_owner&password=ROMcoK7U0FLS&sslmode=require
+      username: finanzpilot_owner
+      password: ROMcoK7U0FLS
+      driver-class-name: org.postgresql.Driver
 
 
   jpa:
