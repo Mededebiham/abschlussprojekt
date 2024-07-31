@@ -113,7 +113,7 @@ public class TransferServiceImpl implements TransferService {
 
         Transfer transfer = new Transfer();
         transfer.setReasonOfTransfer(transferDto.getReasonOfTransfer());
-        transfer.setAuthorized(false);
+        transfer.setAuthorized(true);
         transfer.setDate(transferDto.getDate());
         transfer.setRecipient(bankAccountRecipient.orElse(null));
         transfer.setSender(bankAccountSender.orElse(null));
