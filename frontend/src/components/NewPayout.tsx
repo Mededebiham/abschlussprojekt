@@ -399,20 +399,6 @@ const NewPayout: React.FC = () => {
                 onChange={handleBankChange}
                 className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
-            <div>
-              <button
-                  onClick={handleUploadClick}
-                  className="new-payout-file-upload-button"
-              >
-                🧾 Rechnung hochladen
-              </button>
-              <input
-                  type="file"
-                  id="fileInput"
-                  accept="image/*"
-                  onChange={handleImageChange}
-              />
-            </div>
           </div>
 
           <div className={`new-payout-input ${showInput2 ? 'show' : ''}`}>

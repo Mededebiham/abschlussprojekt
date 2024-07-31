@@ -15,21 +15,21 @@ const profiles = [
   },
   {
     id: 2,
-    name: 'Tillman',
+    name: 'Tillmann Leiner',
     description: 'Bitte hier eine Beschreibung zu dir und eventuell ein Bild von dir hochladen',
     imageUrl: 'https://avatars.githubusercontent.com/u/96163637?v=4',
   },
   {
     id: 3,
-    name: 'Yasin',
+    name: 'Yasin Ekinci',
     description: 'Bitte hier eine Beschreibung zu dir und eventuell',
     imageUrl: 'https://avatars.githubusercontent.com/u/76652837?v=4',
   },
   {
     id: 4,
-    name: 'Mats',
+    name: 'Mats Engbers',
     description: 'Bitte hier eine Beschreibung zu dir und eventuell ein Bild von dir hochladen 4',
-    imageUrl: 'https://avatars.githubusercontent.com/u/165942282?v=4',
+    imageUrl: 'https://media.licdn.com/dms/image/D4D03AQEWwWUNOmv8Gw/profile-displayphoto-shrink_800_800/0/1674298551686?e=1727913600&v=beta&t=KZAbxGnTGDO00iyPU5c715a0h3JKHSwvPKA6AFLzANI',
   },
 ];
 

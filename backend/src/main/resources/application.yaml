@@ -8,7 +8,7 @@ spring:
     #        password: kDIrJFeknj
     #        driver-class-name: org.mariadb.jdbc.Driver
 
-      url: jdbc:mariadb://localhost:3306/finanzpilote
+      url: jdbc:mariadb://localhost:3306/finanz_pilot_matsnewestwork
       username: root
       password: root
       driver-class-name: org.mariadb.jdbc.Driver
