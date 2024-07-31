@@ -8,6 +8,7 @@ import { sendVerificationCode } from '../phoneAuth';
 import OTPVerification from './OTPVerification';
 import 'react-phone-input-2/lib/style.css';
 import { ConfirmationResult } from 'firebase/auth';
+//
 
 const NewPayout: React.FC = () => {
   const [showInput1, setShowInput1] = useState(true);
