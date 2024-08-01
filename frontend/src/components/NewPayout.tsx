@@ -403,7 +403,7 @@ const NewPayout: React.FC = () => {
           </div>
 
           <div className={`new-payout-input ${showInput2 ? 'show' : ''}`}>
-            <p className="text-black font-bold">Wie viel Geld möchten Sie schicken?</p>
+            <p className="text-black font-bold">Wie viel Geld möchten Sie senden?</p>
             <input
                 type="text"
                 placeholder="Type here"
@@ -450,7 +450,7 @@ const NewPayout: React.FC = () => {
               <button className="new-payout-button text-black" disabled={input1Disabled} onClick={handleBankAccountClick}>Zur Überprüfung</button>
           )}
           {(showInput2 || showInput3) && (
-              <button className="new-payout-button text-black" onClick={handleButtonClick}>Next</button>
+              <button className="new-payout-button text-black" onClick={handleButtonClick}>Weiter</button>
           )}
         </div>
 
