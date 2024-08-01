@@ -123,7 +123,7 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
       // Create a User object
       const user1: User =
-          { username: firstName, id, role,confirmedByAdmin };
+          {firstName, id, role,confirmedByAdmin };
 
       // Dispatch the login action with user data
       Cookies.set('isloggedin', 'true');
