@@ -8,19 +8,19 @@ const posts = [
     title: 'Privatkredit',
     text: 'Profitieren Sie von unseren attraktiven Konditionen und flexiblen Laufzeiten. Unser Privatkredit bietet Ihnen die Flexibilität, die Sie benötigen, um Ihre persönlichen Projekte zu verwirklichen. Egal ob Autokauf, Renovierung oder eine Traumreise – mit unseren maßgeschneiderten Kreditlösungen sind Sie immer gut beraten.',
     link: '/privatkredit',
-    image: 'https://img.freepik.com/fotos-kostenlos/schluessel-mit-hausfiguerchen-und-papieren_23-2147737976.jpg?t=st=1721222182~exp=1721225782~hmac=2e783398a2cd9084fcedc946ded7c0d7cf847f9aa799bc19223ea10ef9786435&w=1380',
+    image: 'https://cdn.pixabay.com/photo/2020/04/06/04/04/drone-5008211_1280.jpg',
   },
   {
     title: 'Für dich am Start',
     text: 'Wir unterstützen dich bei deinem nächsten großen Schritt. Ob es um den Start in die Selbstständigkeit, eine berufliche Weiterbildung oder den Kauf der ersten eigenen Wohnung geht – wir sind an deiner Seite und helfen dir, deine Ziele zu erreichen. Mit unserem umfangreichen Serviceangebot steht deinem Erfolg nichts mehr im Weg.',
     link: '/fuer-dich-am-start',
-    image: 'https://img.freepik.com/vektoren-kostenlos/ein-mann-hebt-geld-vom-geldautomaten-ab-und-seine-frau-cartoon-chara_1308-109770.jpg?t=st=1721222314~exp=1721225914~hmac=757a1d6a5d152c91b7ebbb55c5fffc31aa5a4d258dddfdbfc133a2b1d9246536&w=740',
+    image: 'https://cdn.pixabay.com/photo/2015/09/02/12/30/hiker-918473_1280.jpg',
   },
   {
-    title: 'PS Sparen und Gewinn',
+    title: 'Sparen und Gewinnen',
     text: 'Sparen und gleichzeitig die Chance auf tolle Gewinne nutzen. Mit PS Sparen und Gewinnen kombinieren Sie die Vorteile eines sicheren Sparplans mit der Möglichkeit, attraktive Preise zu gewinnen. Jede Einzahlung erhöht Ihre Gewinnchancen und bringt Sie Ihren Sparzielen näher.',
     link: '/ps-sparen-und-gewinn',
-    image: 'https://img.freepik.com/fotos-kostenlos/anordnung-von-sparschwein-und-geschenkboxen_23-2148669976.jpg?t=st=1721222596~exp=1721226196~hmac=8e4d7d99c9a8844d4bfef0527af173f0cfa2406f47082260e9aca73daa95dedd&w=1380',
+    image: 'https://cdn.pixabay.com/photo/2016/07/11/20/19/piggy-bank-1510525_1280.jpg',
   },
   {
     title: 'Mastercard Gold',
@@ -33,6 +33,19 @@ const posts = [
     text: 'Setzen Sie auf nachhaltige Investitionen für eine bessere Zukunft. Mit unseren nachhaltigen Investmentmöglichkeiten tragen Sie aktiv zum Umweltschutz bei und profitieren gleichzeitig von soliden Renditen. Gemeinsam können wir die Welt ein Stück besser machen – investieren Sie in Nachhaltigkeit.',
     link: '/gemeinsam-nachhaltig-stark',
     image: 'https://img.freepik.com/vektoren-kostenlos/menschen-mit-oekologischem-nachhaltigkeitskonzept_53876-66157.jpg?t=st=1721222444~exp=1721226044~hmac=74c7cf14bf83227b069a275df73a1465dec35d3323c78e70e06d93f209b6fdc2&w=996',
+  },
+  {
+    title: 'Rechnung hochladen, überweisen, check ✅',
+    text: 'Mit unserer neuen Fotoüberwiesung können Sie blitzschnell Ihre Rechnungen begleichen. Wir extrahieren aus dem von Ihnen hochgeladenen Foto den Empfängernamen, die IBAN und den Betrag der Rechnung. So können Sie sich schnell wieder den wichtigen Dingen im Leben widmen.',
+    link: '/gemeinsam-nachhaltig-stark',
+    image: 'https://cdn.pixabay.com/photo/2017/08/09/10/49/shopping-2614150_1280.jpg',
+  },
+
+  {
+    title: 'Willkommen in unserer digitalen Bankfiliale!',
+    text: 'Vielen Dank für den Besuch unserer Website. Wenn Sie eine Überwiesung tätigen, ihre Finanzen verwalten oder eine Auswertung zu Ihren Finanzen erhalten wollen, dann sind Sie hier genau richtig!',
+    link: '/gemeinsam-nachhaltig-stark',
+    image: '/Digital-Bank-Logo.png',
   },
 ];
 

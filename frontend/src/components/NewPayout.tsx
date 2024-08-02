@@ -287,47 +287,32 @@ const NewPayout: React.FC = () => {
         <div>
           <button
               onClick={handleUploadClick}
-              style={{
-                backgroundColor: 'red',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                cursor: 'pointer'
-              }}
+              className="bg-red-500 text-white border-none px-4 py-2 rounded-full cursor-pointer"
           >
             🧾 Rechnung hochladen
           </button>
           <input
               type="file"
               id="fileInput"
-              style={{ display: 'none' }}
+              className="hidden"
               accept="image/*"
               onChange={handleImageChange}
           />
           <button
               onClick={openCamera}
-              style={{
-                backgroundColor: 'red',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                cursor: 'pointer',
-                marginLeft: '10px'
-              }}
+              className="bg-red-500 text-white border-none px-4 py-2 rounded-full cursor-pointer ml-2"
           >
             📸 Foto aufnehmen
           </button>
           {isCameraOpen && (
               <div>
                 <video id="video" autoPlay style={{ width: '100%' }}></video>
-                <button onClick={capturePhoto} style={{
-                  backgroundColor: 'red',
-                  color: 'white',
-                  border: 'none',
-                  padding: '10px 20px',
-                  cursor: 'pointer',
-                  marginTop: '10px'
-                }}>Foto aufnehmen</button>
+                <button
+                    onClick={capturePhoto}
+                    className="bg-red-500 text-white border-none px-4 py-2 rounded-full cursor-pointer mt-2"
+                >
+                  Foto aufnehmen
+                </button>
               </div>
           )}
           {selectedImage && (
@@ -336,15 +321,7 @@ const NewPayout: React.FC = () => {
                 <img src={URL.createObjectURL(selectedImage)} alt="Preview" />
                 <button
                     onClick={handleSubmit}
-                    className="new-payout-file-upload-button"
-                    style={{
-                      backgroundColor: 'red',
-                      color: 'white',
-                      border: 'none',
-                      padding: '10px 20px',
-                      cursor: 'pointer',
-                      marginTop: '10px'
-                    }}
+                    className="bg-red-500 text-white border-none px-4 py-2 rounded-full cursor-pointer mt-2"
                 >
                   Hochladen
                 </button>

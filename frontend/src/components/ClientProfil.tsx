@@ -187,7 +187,6 @@ const ClientProfil: React.FC = ({}) => {
                     </div>
                 </div>
             </div>
-
             <div className="client-profile-buttons flex justify-between mx-5 my-5">
                 <div className="flex mt-5">
                     <button className="client-profile-btn-red mr-5" onClick={toggleDeposits}>Eingehende Transaktionen

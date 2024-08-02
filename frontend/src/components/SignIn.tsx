@@ -92,7 +92,7 @@ const ConnectedSignIn: React.FC<SignInProps & DispatchProps & RootStateProps> = 
     } catch (error) {
       // Handle error (e.g., show error message)
       console.error('Error occurred during login:', error);
-      setErrorApi('Failed to sign in. Please check your credentials and try again.');
+      setErrorApi('Der Login ist fehlgeschlagen. Bitte versuchen Sie es erneut.');
     }
   };
 
@@ -129,18 +129,18 @@ const ConnectedSignIn: React.FC<SignInProps & DispatchProps & RootStateProps> = 
       <div className="flex ">
         <div className="ml-20">
           {showLogin ? ( <>
-                <h2 className="ml-20 text-white mt-5" >Sign In</h2>
+                <h2 className="ml-20 text-white mt-5" >Anmelden</h2>
                 <div className="ml-20 mt-5">
                   <Login onSubmit={handleLoginSubmit} />
-                  <p className="text-white cursor-pointer" onClick={handleSwitch}>Switch to Register</p>
+                  <p className="text-white cursor-pointer" onClick={handleSwitch}>Wechsel zur Registrierung</p>
                 </div>
               </>
           ) : (
               <>
-                <h2 className="ml-20 text-white" >Sign Up</h2>
+                <h2 className="ml-20 text-white" ></h2>
                 <div className="ml-20">
                   <Register onSubmit={handleRegisterSubmit} />
-                  <p className="text-white cursor-pointer" onClick={handleSwitch}>Switch to Login</p>
+                  <p className="text-white cursor-pointer" onClick={handleSwitch}>Wechsel zur Anmeldung</p>
                 </div>
               </>
           )}

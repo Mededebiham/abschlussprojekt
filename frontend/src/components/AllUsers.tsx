@@ -54,10 +54,10 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
     return (
         <div className="h-screen items-center ml-5">
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <h3>All Users:</h3>
+                <h3>Alle Kunden:</h3>
                 <input
                     type="text"
-                    placeholder="Search users..."
+                    placeholder="Suche nach Kunden..."
                     value={searchQueryUser}
                     onChange={(e) => setSearchQueryUser(e.target.value)}
                     className="my-4 rounded text-black"
@@ -66,16 +66,16 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
                     onClick={() => setShowUnconfirmedOnly((prev) => !prev)}
                     className="mb-4 rounded bg-blue-500 text-white py-2 px-4"
                 >
-                    {showUnconfirmedOnly ? 'Show All Users' : 'Show Unconfirmed Users'}
+                    {showUnconfirmedOnly ? 'Show All Users' : 'Unbestätigte Kunden'}
                 </button>
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
                     <tr>
-                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">First name</th>
-                        <th scope="col" className="px-6 py-3">Last name</th>
-                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">Email</th>
-                        <th scope="col" className="px-6 py-3">Address</th>
-                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">Activated</th>
+                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">Vorname</th>
+                        <th scope="col" className="px-6 py-3">Nachname</th>
+                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">E-Mail</th>
+                        <th scope="col" className="px-6 py-3">Adresse</th>
+                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">Aktiviert</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -105,10 +105,10 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
             </div>
             <div className="flex justify-center">
                 <button onClick={prevPage} disabled={currentPage === 1}
-                        className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Previous
+                        className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Zurück
                 </button>
                 <span className="mx-4">{currentPage}/{totalPages}</span>
-                <button onClick={nextPage} disabled={currentPage === totalPages} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Next</button>
+                <button onClick={nextPage} disabled={currentPage === totalPages} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Weiter</button>
             </div>
             {choosenUser && <UserModal isOpen={true} onClose={() => setChoosenUser(null)} user={choosenUser} />}
         </div>
