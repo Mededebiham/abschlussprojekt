@@ -11,6 +11,12 @@ const posts = [
     image: 'https://cdn.pixabay.com/photo/2020/04/06/04/04/drone-5008211_1280.jpg',
   },
   {
+    title: 'Rechnung fotografieren, überweisen, check ✅',
+    text: 'Mit unserer neuen Fotoüberwiesung können Sie blitzschnell Ihre Rechnungen begleichen. Wir extrahieren aus dem von Ihnen hochgeladenen Foto den Empfängernamen, die IBAN und den Betrag der Rechnung. So können Sie sich schnell wieder den wichtigen Dingen im Leben widmen.',
+    link: '/gemeinsam-nachhaltig-stark',
+    image: 'https://cdn.pixabay.com/photo/2015/05/31/13/02/mobile-phone-791644_1280.jpg',
+  },
+  {
     title: 'Für dich am Start',
     text: 'Wir unterstützen dich bei deinem nächsten großen Schritt. Ob es um den Start in die Selbstständigkeit, eine berufliche Weiterbildung oder den Kauf der ersten eigenen Wohnung geht – wir sind an deiner Seite und helfen dir, deine Ziele zu erreichen. Mit unserem umfangreichen Serviceangebot steht deinem Erfolg nichts mehr im Weg.',
     link: '/fuer-dich-am-start',
@@ -29,23 +35,16 @@ const posts = [
     image: 'https://img.freepik.com/vektoren-kostenlos/realistisches-kreditkartendesign_23-2149125388.jpg?t=st=1721222506~exp=1721226106~hmac=344b80d6623f682dc70bbc4c258da370b91736a206d41df20c35e5c9604010e2&w=826',
   },
   {
-    title: 'Gemeinsam Nachhaltig Stark',
-    text: 'Setzen Sie auf nachhaltige Investitionen für eine bessere Zukunft. Mit unseren nachhaltigen Investmentmöglichkeiten tragen Sie aktiv zum Umweltschutz bei und profitieren gleichzeitig von soliden Renditen. Gemeinsam können wir die Welt ein Stück besser machen – investieren Sie in Nachhaltigkeit.',
-    link: '/gemeinsam-nachhaltig-stark',
-    image: 'https://img.freepik.com/vektoren-kostenlos/menschen-mit-oekologischem-nachhaltigkeitskonzept_53876-66157.jpg?t=st=1721222444~exp=1721226044~hmac=74c7cf14bf83227b069a275df73a1465dec35d3323c78e70e06d93f209b6fdc2&w=996',
-  },
-  {
-    title: 'Rechnung hochladen, überweisen, check ✅',
-    text: 'Mit unserer neuen Fotoüberwiesung können Sie blitzschnell Ihre Rechnungen begleichen. Wir extrahieren aus dem von Ihnen hochgeladenen Foto den Empfängernamen, die IBAN und den Betrag der Rechnung. So können Sie sich schnell wieder den wichtigen Dingen im Leben widmen.',
-    link: '/gemeinsam-nachhaltig-stark',
-    image: 'https://cdn.pixabay.com/photo/2017/08/09/10/49/shopping-2614150_1280.jpg',
-  },
-
-  {
     title: 'Willkommen in unserer digitalen Bankfiliale!',
     text: 'Vielen Dank für den Besuch unserer Website. Wenn Sie eine Überwiesung tätigen, ihre Finanzen verwalten oder eine Auswertung zu Ihren Finanzen erhalten wollen, dann sind Sie hier genau richtig!',
     link: '/gemeinsam-nachhaltig-stark',
     image: '/Digital-Bank-Logo.png',
+  },
+  {
+    title: 'Gemeinsam Nachhaltig Stark',
+    text: 'Setzen Sie auf nachhaltige Investitionen für eine bessere Zukunft. Mit unseren nachhaltigen Investmentmöglichkeiten tragen Sie aktiv zum Umweltschutz bei und profitieren gleichzeitig von soliden Renditen. Gemeinsam können wir die Welt ein Stück besser machen – investieren Sie in Nachhaltigkeit.',
+    link: '/gemeinsam-nachhaltig-stark',
+    image: 'https://img.freepik.com/vektoren-kostenlos/menschen-mit-oekologischem-nachhaltigkeitskonzept_53876-66157.jpg?t=st=1721222444~exp=1721226044~hmac=74c7cf14bf83227b069a275df73a1465dec35d3323c78e70e06d93f209b6fdc2&w=996',
   },
 ];
 

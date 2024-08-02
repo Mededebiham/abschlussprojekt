@@ -383,7 +383,7 @@ const NewPayout: React.FC = () => {
             <p className="text-black font-bold">Wie viel Geld möchten Sie senden?</p>
             <input
                 type="text"
-                placeholder="Type here"
+                placeholder="Betrag bitte hier eingeben"
                 name="sum"
                 value={formData.sum}
                 onChange={handleChange}
@@ -398,7 +398,7 @@ const NewPayout: React.FC = () => {
             <p className="text-black font-bold">Was ist der Grund für Ihre Transaktion?</p>
             <input
                 type="text"
-                placeholder="Type here"
+                placeholder="Verwenungszweck"
                 name="reasonOfTransfer"
                 value={formData.reasonOfTransfer}
                 onChange={handleChange}
