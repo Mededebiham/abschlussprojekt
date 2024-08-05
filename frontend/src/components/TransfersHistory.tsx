@@ -86,8 +86,9 @@ const TransfersHistory: React.FC<DepositsHistoryProps> = ({ transfers, userRole 
         setTransferToUpdate(transfer);
     };
     const resetSearch = () => {
-        const originalTransfersCopy = [...transfers]; 
-        setSortedTransfers(originalTransfersCopy);
+        setSearchQueryTransfer(''); // Reset the search query
+        setSortedTransfers([...transfers]); // Reset sortedTransfers to original transfers
+        setCurrentPage(1); // Reset to the first page
     };
     const confirmAuthorizationChange = async (newValue: boolean) => {
         if (transferToUpdate && newValue) {
@@ -157,7 +158,7 @@ const TransfersHistory: React.FC<DepositsHistoryProps> = ({ transfers, userRole 
                     />
                 <button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mx-4 mt-5" onClick={resetSearch}>Zurücksetzen</button>
 
-                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mt-9">
                     <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
                         <tr>
                             <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">
@@ -212,10 +213,10 @@ const TransfersHistory: React.FC<DepositsHistoryProps> = ({ transfers, userRole 
                     </tbody>
                 </table>
             </div>
-            <div className="flex justify-center">
-                <button onClick={prevPage} disabled={currentPage === 1} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">❮ Zurück</button>
+            <div className="flex justify-center mt-4">
+                <button onClick={prevPage} disabled={currentPage === 1} className="mt-2 rounded bg-gray-500 text-white py-1 px-3 mx-4">❮ Zurück</button>
                 <span>{currentPage}/{totalPages}</span>
-                <button onClick={nextPage} disabled={currentPage === totalPages} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Weiter ❯</button>
+                <button onClick={nextPage} disabled={currentPage === totalPages} className="mt-2 rounded bg-gray-500 text-white py-1 px-3 mx-4">Weiter ❯</button>
             </div>
         </div>
     );

@@ -52,7 +52,7 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
     };
 
     return (
-        <div className="h-screen items-center ml-5">
+        <div className="h-screen items-center ml-5 mt-9">
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <h3>Alle Kunden:</h3>
                 <input
@@ -64,17 +64,17 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
                 />
                 <button
                     onClick={() => setShowUnconfirmedOnly((prev) => !prev)}
-                    className="mb-4 rounded bg-blue-500 text-white py-2 px-4"
+                    className="mb-4 rounded bg-blue-500 text-white py-2 px-4 ml-4"
                 >
-                    {showUnconfirmedOnly ? 'Show All Users' : 'Unbestätigte Kunden'}
+                    {showUnconfirmedOnly ? 'Alle Benutzer' : 'Unbestätigte Kunden'}
                 </button>
-                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mt-9">
                     <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
                     <tr>
                         <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">Vorname</th>
-                        <th scope="col" className="px-6 py-3">Nachname</th>
+                        <th scope="col" className="px-6 py-3 text-white">Nachname</th>
                         <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">E-Mail</th>
-                        <th scope="col" className="px-6 py-3">Adresse</th>
+                        <th scope="col" className="px-6 py-3 text-white">Adresse</th>
                         <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">Aktiviert</th>
                     </tr>
                     </thead>
@@ -91,7 +91,7 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
                             <td className="px-6 py-4">
                                 {user.address.street}, {user.address.streetNumber}, {user.address.city}, {user.address.zipCode}, {user.address.country}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-6 py-4 bg-gray-50 dark:bg-gray-800">
                                 {user.confirmedByAdmin ? (
                                     <span className="text-green-500">&#10004;</span> // Green checkmark
                                 ) : (
@@ -103,7 +103,7 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
                     </tbody>
                 </table>
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-4">
                 <button onClick={prevPage} disabled={currentPage === 1}
                         className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Zurück
                 </button>
