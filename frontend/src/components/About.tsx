@@ -23,7 +23,7 @@ const profiles = [
   {
     id: 3,
     name: 'Yasin Ekinci',
-    description: 'Bitte hier eine Beschreibung zu dir und eventuell',
+    description: 'Hallo. Ich bin Yasin, einer der Entwickler, die an diesem Projekt gearbeitet haben. Ich freue mich darauf, Ihre Fragen zu beantworten und Ihr Feedback entgegenzunehmen. Mit meiner Leidenschaft für Technologie arbeite ich kontinuierlich daran, innovative Lösungen zu entwickeln. Mein Ziel ist es, eine benutzerfreundliche und effiziente Anwendung zu schaffen, die Ihren Bedürfnissen entspricht.',
     imageUrl: 'https://avatars.githubusercontent.com/u/76652837?v=4',
   },
   {
