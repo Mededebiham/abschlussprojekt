@@ -17,6 +17,7 @@ const profiles = [
     id: 2,
     name: 'Tillmann Leiner',
     description: 'Hallo. Ich bin Tillmann einer der glorreichen Vier, die an diesem tollen Projekt gearbeitet haben.' +
+        'Ob Designsveränderungen, neue Features auf der Website, oder komplizierte Algorithmen hinter den Kulissen - die Arbeit bei unserer Bank ist immer interessant und vielfältig!'+
         'Für Verbesserungsvorschläge und Fehlermeldungen bin ich immer gerne zu haben.',
     imageUrl: 'https://avatars.githubusercontent.com/u/96163637?s=400&u=23367306c1fb98dabed974437941f821f534034b&v=4',
   },
