@@ -23,7 +23,7 @@ const Login: React.FC<LoginFormProps> = ({ onSubmit }) => {
           </label>
           <input
             type="text"
-            placeholder="email"
+            placeholder="E-Mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -35,7 +35,7 @@ const Login: React.FC<LoginFormProps> = ({ onSubmit }) => {
           </label>
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Passwort"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"

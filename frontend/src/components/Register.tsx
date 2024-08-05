@@ -123,7 +123,7 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
       // Create a User object
       const user1: User =
-          { firstName, id, role,confirmedByAdmin };
+          {firstName, id, role,confirmedByAdmin };
 
       // Dispatch the login action with user data
       Cookies.set('isloggedin', 'true');
@@ -150,13 +150,13 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
         <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange}
                className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
 
-        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange}
+        <input type="password" name="password" placeholder="Passwort" value={formData.password} onChange={handleChange}
                className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
 
         <input
             type="password"
             name="confirmPassword"
-            placeholder="Pasword wiederholen"
+            placeholder="Paswort wiederholen"
             value={confirmPassword}
             onChange={handleChangeConfirmPassword}
             className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
@@ -177,7 +177,7 @@ const Register: React.FC<RegisterFormProps> = ({ onSubmit }) => {
         <input
             type="text"
             name="streetNumber"
-            placeholder="Haus Nummer"
+            placeholder="Hausnummer"
             value={formData.address.streetNumber}
             onChange={handleAddressChange}
             className="shadow appearance-none border rounded w-full my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>

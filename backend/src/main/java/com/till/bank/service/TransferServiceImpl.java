@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -214,8 +215,14 @@ public class TransferServiceImpl implements TransferService {
         file.transferTo(tempFile.toFile());
 
 
+        URL tessdataURL = TransferServiceImpl.class.getClassLoader().getResource("tessdata-main");
+        File tessdataDir = new File(tessdataURL.getFile());
+
         Tesseract tesseract = new Tesseract();
-        tesseract.setDatapath("C:\\Users\\MatsEngbers\\IdeaProjects\\abschlussprojekt\\backend\\src\\main\\resources\\tessdata-main");
+
+        tesseract.setDatapath(tessdataDir.getAbsolutePath());
+
+
         tesseract.setTessVariable("user_defined_dpi", "300");
 
         tesseract.setLanguage("deu");

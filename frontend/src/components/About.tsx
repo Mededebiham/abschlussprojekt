@@ -6,7 +6,7 @@ const profiles = [
   {
     id: 1,
     name: 'Medede Biham Tchala',
-    description: 'Hallo. Ich bin Medede einer der drei Entwickler, die an der Erstellung der Plattform zu' +
+    description: 'Hallo. Ich bin Medede einer der vier Entwickler, die an der Erstellung der Plattform zu' +
         ' simulieren eines Online-Banking gearbeitet haben. Mit einem starken Fokus auf die Entwicklung' +
         ' robuster, skalierbarer und sicherer Backend-Lösungen trage ich dazu bei, dass unsere Anwendungen' +
         ' reibungslos und effizient funktionieren. Meine Leidenschaft für Technologie und Problemlösung treibt ' +
@@ -29,7 +29,8 @@ const profiles = [
   {
     id: 4,
     name: 'Mats Engbers',
-    description: 'Bitte hier eine Beschreibung zu dir und eventuell ein Bild von dir hochladen 4',
+    description: 'Hallo, ich heiße Mats und habe ebenfalls an dieser Webapplikation mitgearbeitet. In den letzten drei Monaten habe ich sehr viel über die Softwareentwicklung gerlernt und ' +
+        'konnte schon einiges bei den Assesments und den drei Projekten unter Beweise stellen. Es hat mir viel Spaß gemacht und ich konnte vor allem im letzten Projekt viel über die Zusammenarbeit und Problemlösung lernen. Wir sehen uns bei der FI 👋',
     imageUrl: 'https://media.licdn.com/dms/image/D4D03AQEWwWUNOmv8Gw/profile-displayphoto-shrink_800_800/0/1674298551686?e=1727913600&v=beta&t=KZAbxGnTGDO00iyPU5c715a0h3JKHSwvPKA6AFLzANI',
   },
 ];
