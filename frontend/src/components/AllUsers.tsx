@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { UserTable } from '../store/types'; // Import the user interface
-import UserModal from "./UserModal"
+import UserModal from "./UserModal";
 
 interface AllUsersProps {
     users: UserTable[]; // Prop to receive an array of user objects
@@ -12,9 +12,10 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
     const [choosenUser, setChoosenUser] = useState<UserTable | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [showUnconfirmedOnly, setShowUnconfirmedOnly] = useState(false);
+    const [userList, setUserList] = useState(users);
     const usersPerPage = 5;
 
-    const filteredUsers = users.filter((user) =>
+    const filteredUsers = userList.filter((user) =>
         `${user.firstName} ${user.lastName} ${user.email}`.toLowerCase().includes(searchQueryUser.toLowerCase()) &&
         (!showUnconfirmedOnly || !user.confirmedByAdmin)
     );
@@ -33,6 +34,10 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
                     await axios.put(`http://localhost:8088/users/activate/${selectedUser.id}`);
                     setChoosenUser(updatedUser);
                     // Update the user list with the new confirmed status
+                    const updatedUserList = userList.map(user =>
+                        user.id === selectedUser.id ? { ...user, confirmedByAdmin: true } : user
+                    );
+                    setUserList(updatedUserList);
                     setCurrentPage(1); // Reset to first page to reflect the changes immediately
                 } catch (error) {
                     console.error('Error activating user:', error);
@@ -40,6 +45,21 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
             }
         } else {
             setChoosenUser(selectedUser);
+        }
+    };
+
+    const handleDeleteUser = async (userId: number) => {
+        const confirmDeletion = window.confirm('Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?');
+        if (confirmDeletion) {
+            try {
+                await axios.delete(`http://localhost:8088/users/${userId}`);
+                // Update the user list by removing the deleted user
+                const updatedUserList = userList.filter(user => user.id !== userId);
+                setUserList(updatedUserList);
+                setCurrentPage(1); // Reset to first page to reflect the changes immediately
+            } catch (error) {
+                console.error('Error deleting user:', error);
+            }
         }
     };
 
@@ -54,28 +74,29 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
     return (
         <div className="h-screen items-center ml-5">
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <h3>All Users:</h3>
+                <h3>Alle Benutzer:</h3>
                 <input
                     type="text"
-                    placeholder="Search users..."
+                    placeholder="Benutzer suchen..."
                     value={searchQueryUser}
                     onChange={(e) => setSearchQueryUser(e.target.value)}
                     className="my-4 rounded text-black"
                 />
                 <button
                     onClick={() => setShowUnconfirmedOnly((prev) => !prev)}
-                    className="mb-4 rounded bg-blue-500 text-white py-2 px-4"
+                    className="mb-4 rounded bg-blue-500 text-white py-2 px-4 ml-5"
                 >
-                    {showUnconfirmedOnly ? 'Show All Users' : 'Show Unconfirmed Users'}
+                    {showUnconfirmedOnly ? 'Alle Benutzer anzeigen' : 'Nicht bestätigte benutzer anzeigen'}
                 </button>
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
                     <tr>
-                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">First name</th>
-                        <th scope="col" className="px-6 py-3">Last name</th>
+                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">Vorname</th>
+                        <th scope="col" className="px-6 py-3 text-white">Nachname</th>
                         <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">Email</th>
-                        <th scope="col" className="px-6 py-3">Address</th>
-                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">Activated</th>
+                        <th scope="col" className="px-6 py-3 text-white">Addresse</th>
+                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">Aktiviert</th>
+                        <th scope="col" className="px-6 py-3 text-white">Löschen</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -91,12 +112,25 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
                             <td className="px-6 py-4">
                                 {user.address.street}, {user.address.streetNumber}, {user.address.city}, {user.address.zipCode}, {user.address.country}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-6 py-4 bg-gray-50 dark:bg-gray-800">
                                 {user.confirmedByAdmin ? (
                                     <span className="text-green-500">&#10004;</span> // Green checkmark
                                 ) : (
                                     <span className="text-red-500">&#10008;</span> // Red cross
                                 )}
+                            </td>
+                            <td className="px-6 py-4">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (user.id != null) {
+                                            handleDeleteUser(user.id);
+                                        }
+                                    }}
+                                    className="bg-red-500 text-white py-1 px-3 rounded"
+                                >
+                                    Löschen
+                                </button>
                             </td>
                         </tr>
                     ))}
@@ -105,10 +139,10 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
             </div>
             <div className="flex justify-center">
                 <button onClick={prevPage} disabled={currentPage === 1}
-                        className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Previous
+                        className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Letzte
                 </button>
                 <span className="mx-4">{currentPage}/{totalPages}</span>
-                <button onClick={nextPage} disabled={currentPage === totalPages} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Next</button>
+                <button onClick={nextPage} disabled={currentPage === totalPages} className="mt-2 rounded bg-gray-500 text-white py-1 px-3">Nächste</button>
             </div>
             {choosenUser && <UserModal isOpen={true} onClose={() => setChoosenUser(null)} user={choosenUser} />}
         </div>

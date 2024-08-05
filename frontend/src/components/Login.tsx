@@ -49,7 +49,7 @@ const Login: React.FC<LoginFormProps> = ({ onSubmit }) => {
           >
             Anmelden
           </button>
-          <p className="inline-block align-baseline font-bold text-sm text-red-500 hover:text-red-800">
+          <p className="inline-block align-baseline font-bold text-sm text-red-500 hover:text-red-800 ml-2">
             Passwort vergessen?
           </p>
         </div>

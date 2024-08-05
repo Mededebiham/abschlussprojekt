@@ -79,11 +79,11 @@ const AdminProfil: React.FC = () => {
     return (
         <div className="text-white">
             <div className="flex justify-center mt-5">
-                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-5"
-                        onClick={toggleSearchForUsers}>All Users
+                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-5 my-5"
+                        onClick={toggleSearchForUsers}>Alle Benutzer
                 </button>
-                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5"
-                        onClick={toggleTransfers}>Show Transfers
+                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-5 my-5"
+                        onClick={toggleTransfers}>Alle Transaktionen anzeigen
                 </button>
             </div>
             {showSearchForUsers &&

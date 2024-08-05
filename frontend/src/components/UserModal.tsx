@@ -80,20 +80,20 @@ const UserModal: React.FC<UserModalProps> = ({ user, onClose, isOpen }) => {
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={handleModalClick}>
-                <h2>User Details</h2>
-                <p><strong>First Name:</strong> {user.firstName}</p>
-                <p><strong>Last Name:</strong> {user.lastName}</p>
+                <h2><strong>Benutzer Details:</strong></h2>
+                <p><strong>Vorname:</strong> {user.firstName}</p>
+                <p><strong>Nachname:</strong> {user.lastName}</p>
                 <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Address:</strong> {user.address.street}, {user.address.streetNumber}, {user.address.city}, {user.address.zipCode}, {user.address.country}</p>
+                <p><strong>Addresse:</strong> {user.address.street}, {user.address.streetNumber}, {user.address.city}, {user.address.zipCode}, {user.address.country}</p>
 
-                <h3>Bank Accounts</h3>
+                <h3><strong>Bankkonten:</strong>:</h3>
                 {bankAccounts.map(account => (
                     <div key={account.id} className="account-details">
-                        <p><strong>Account Number:</strong> {account.accountNumber}</p>
-                        <p><strong>Account Type:</strong> {account.accountType}</p>
-                        <p><strong>Balance:</strong> {account.balance}</p>
+                        <p><strong>Kontonummer:</strong> {account.accountNumber}</p>
+                        <p><strong>Kontotyp:</strong> {account.accountType}</p>
+                        <p><strong>Kontostand:</strong> {account.balance}</p>
                         <p><strong>IBAN:</strong> {account.iban}</p>
-                        <p><strong>Confirmed By Admin:</strong> {account.confirmedByAdmin ? 'Yes' : 'No'}</p>
+                        <p><strong>Vom Admin autorisiert:</strong> {account.confirmedByAdmin ? 'Yes' : 'No'}</p>
                         {!account.confirmedByAdmin ? (
                             <button onClick={() => handleActivate(Number(account.id))} className="activate-button">
                                 Aktivieren
@@ -106,7 +106,7 @@ const UserModal: React.FC<UserModalProps> = ({ user, onClose, isOpen }) => {
                     </div>
                 ))}
 
-                <button onClick={onClose} className="close-button">Close</button>
+                <button onClick={onClose} className="close-button">Schliessen</button>
             </div>
         </div>
     );
