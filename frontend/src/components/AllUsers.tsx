@@ -33,6 +33,10 @@ const AllUsers: React.FC<AllUsersProps> = ({ users }) => {
                     await axios.put(`http://localhost:8088/users/activate/${selectedUser.id}`);
                     setChoosenUser(updatedUser);
                     // Update the user list with the new confirmed status
+                    const updatedUserList = userList.map(user =>
+                        user.id === selectedUser.id ? { ...user, confirmedByAdmin: true } : user
+                    );
+                    setUserList(updatedUserList);
                     setCurrentPage(1); // Reset to first page to reflect the changes immediately
                 } catch (error) {
                     console.error('Error activating user:', error);
